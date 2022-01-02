@@ -1,4 +1,5 @@
-# Data for water in the range 0 C to 95 C from VDI Waermeatlas. Note: Temperature should be given in Kelvin
+# Data for water in the range 0 C to 95 C from VDI Waermeatlas. 
+# Note: Temperature should be given in Kelvin
 
 #Function for density
 def rho(T):

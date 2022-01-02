@@ -1,16 +1,22 @@
 import fluids
 import solids
+import shapes
 
-class Fluid():
-    def select(self, fluid_type):
+class Properties():
+    def select_fluid(self, fluid_type):
         try:
-            self.fluid_type = getattr(fluids, fluid_type)
+            self.fluid = getattr(fluids, fluid_type)
         except:
             raise Exception("Valid options for fluid are:",fluids.__all__)
 
-class Solid():
-    def select(self, solid_type):
+    def select_solid(self, solid_type):
         try:
-            self.solid_type = getattr(solids, solid_type)
+            self.solid = getattr(solids, solid_type)
         except:
             raise Exception("Valid options for solid are:",solids.__all__)
+
+    def select_shape(self, shape):
+        try:
+            self.shape = getattr(shapes, shape)
+        except:
+            raise Exception("Valid options for shape are:",shapes.__all__)
