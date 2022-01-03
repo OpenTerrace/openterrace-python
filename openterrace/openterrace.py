@@ -1,8 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import pathlib
-import timeit
-import sys
+import cProfile, pstats, io
+from pstats import SortKey
 
 import properties
 import parameters
@@ -11,35 +10,36 @@ import plots
 
 if __name__ == '__main__':
     const = parameters.Constants()
-    fluid = parameters.Var.Fluid(const)
-    particle = parameters.Var.Particle(const)
 
     prop =  properties.Properties()
     prop.select_fluid('water')
     prop.select_solid('stone')
     prop.select_shape('sphere')
 
-    diff_1d = solvers.Diff1D(const)
-    #diff_1d.matrix_assembly_tri(prop, particle)
-
-    #print(const.d_p)
-    sys.exit()
-        #convection_diffusion_1d = solvers.ConvectionDiffusion1D(u, alpha_f, y[0], y[-1], ny, dt)
-        #convection_diffusion_1d.matrix_assembly(scheme='upwind')
-        # convection_diffusion_1d.A[0][0] = 1
-        # print(convection_diffusion_1d.A)
+    fluid = parameters.Var.Fluid(const, prop)
+    particle = parameters.Var.Particle(const, prop)
     
-    diff_1d.update_bc(bc_particle='forced_convection', h=200)
+    diff_1d = solvers.Diff1D(const, prop)
+    A0 = diff_1d.matrix_assembly_tri(const, particle)
+    A = diff_1d.update_A(const, particle, A0)
 
-    start = timeit.default_timer()
-    for t in range(0,int(params.t_end/params.dt)):
-        T_m = diffusion_1d.matrix_solve_tri(T_m0=T_m0, T_f0=12)
-        T_m0 = T_m
-    end = timeit.default_timer()
-    print('Simulation time was:', end-start, 's')
-        
-        # diffusion_1d.analytical()
+    Tm0 = particle.T_old
 
-        # plt.plot(diffusion_1d.r/(params.dp/2),T_m0,'-s',diffusion_1d.r/(params.dp/2),diffusion_1d.theta*(Tinit-12)+12,'-')
-        # plt.grid()
-        # plt.show()
+    pr = cProfile.Profile()
+    pr.enable()
+
+    for t in range(0,int(const.t_end/const.dt)):
+        b = diff_1d.update_b(const, particle, fluid, Tm0)
+        Tm0 = diff_1d.solve_tridiagonal(A, b)
+
+    pr.disable()
+    s = io.StringIO()
+    sortby = SortKey.CUMULATIVE
+    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    ps.print_stats()
+    print(s.getvalue())
+
+    # diff_1d.analytical(const, particle)
+    # plt.plot(diff_1d.r/(const.d_p/2),Tm0,'-s',diff_1d.r/(const.d_p/2),diff_1d.theta*(const.Tinit-const.Tfluid)+const.Tfluid,'-')
+    # plt.grid()
+    # plt.show()
