@@ -15,10 +15,14 @@ Open Terrace is built from the ground up to be flexible to allow for integration
 - **EXTENDABLE**  
 Modules for new materials such as non-spherical rocks or exotic Phase Change Materials (PCM) can easily be plugged into the framework of Open Terrace.
 
-## Want to contribute?
+# How to use?
+
+Open Terrace is still under active development.
+
+# Want to collaborate?
 Contributions are welcome :pray: Feel free to send pull requests or get in touch with me to discuss how to collaborate.
 
-### A student?
+## Contributing as a student
 Want to contribute to a green society built on renewables? We offer several student projects within thermal energy storage. Please get in touch to discuss the content of a project that suits your background and learning goals. We are looking for all kind of studies ranging from system level, detailed conjugate heat transfer CFD studies, Discrete Element Method (DEM) studies to optimisation and AI studies. Experimental data for validation purposes is also welcome! In case you develop an extension that make its way into the main code, you will be added as a contributor of Open Terrace.
 
 ## Code contributors
