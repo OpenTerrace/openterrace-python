@@ -4,10 +4,10 @@ def area(r):
     return 4*np.pi*r**2
 
 def vol(r):
-    return 4/3*pi*r**3
+    return 4/3*np.pi*r**3
 
-def volElement(rArr):
-    return np.diff(4/3*np.pi*self.rFace**3)
+def vol_element(r):
+    return np.diff(4/3*np.pi*r**3, axis=0)
 
 # Function for Nusselt number as function of Reynolds number, Prandtl number, 
 # dynamic viscosity at free stream temperature and dynamic visocity at surface
