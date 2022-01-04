@@ -1,11 +1,5 @@
 site_name: Open Terrace Documentation
 
-handlers:
-  python:
-    setup_commands:
-      - import sys
-      - sys.path.append("openterrace")
-
 theme:
   name: material
   features:
@@ -28,8 +22,8 @@ site_description: >-
   Open Terrace Documentation
 
 plugins:
-  - search
-  - mkdocstrings:
+- search
+- mkdocstrings:
     default_handler: python
     handlers:
       python:
