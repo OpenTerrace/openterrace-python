@@ -12,6 +12,15 @@ theme:
   palette:
     primary: 'green'
 
+  features:
+    - search.highlight
+    - search.share
+    - search.suggest
+
+site_author: Jakob Hærvig
+site_description: >-
+  Open Terrace Documentation
+
 plugins:
   - search
   - mkdocstrings
