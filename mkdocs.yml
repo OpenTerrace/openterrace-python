@@ -28,13 +28,13 @@ site_description: >-
   Open Terrace Documentation
 
 plugins:
-  - search
-  - mkdocstrings
+- mkdocstrings:
     default_handler: python
     handlers:
       python:
-      rendering:
-        show_source: true
+        rendering:
+          show_source: true
+    custom_templates: templates
     watch:
       - openterrace
 
