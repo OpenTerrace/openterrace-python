@@ -1,0 +1,13 @@
+site_name: Open Terrace Documentation
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.tracking
+    - navigation.sections
+  icon:
+    repo: fontawesome/brands/github
+
+repo_url: https://github.com/OpenTerrace/openterrace-python
