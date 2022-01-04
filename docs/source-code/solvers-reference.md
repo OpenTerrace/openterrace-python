@@ -1,2 +1,2 @@
 # Solvers
-::: openterrace.solvers
+::: solvers
