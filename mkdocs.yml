@@ -29,18 +29,6 @@ plugins:
                   - import sys
                   - sys.path.append("openterrace")
 
-# plugins:
-# - mkdocstrings:
-#     default_handler: python
-#     handlers:
-#       python:
-#         rendering:
-#           show_source: false
-#     custom_templates: templates
-#     watch:
-#       - src/my_package
-
-
 repo_url: https://github.com/OpenTerrace/openterrace-python
 edit_uri: blob/main/docs/
 
@@ -56,6 +44,7 @@ nav:
       - installation/linux.md
   - Source code:
       - source-code/properties-reference.md
+      - source-code/solvers-reference.md
   - Project proposals:
       - project-proposals/contributing-as-a-student.md
       - project-proposals/optimisation-of-thermal-storage-systems.md
