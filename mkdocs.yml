@@ -26,10 +26,20 @@ plugins:
         handlers:
             python:
                 setup_commands:
-                    - import sys
-                    - sys.path.append('../')
-                selection:
-                    new_path_syntax: true
+                  - import sys
+                  - sys.path.append("openterrace")
+
+# plugins:
+# - mkdocstrings:
+#     default_handler: python
+#     handlers:
+#       python:
+#         rendering:
+#           show_source: false
+#     custom_templates: templates
+#     watch:
+#       - src/my_package
+
 
 repo_url: https://github.com/OpenTerrace/openterrace-python
 edit_uri: blob/main/docs/
