@@ -1,2 +1,2 @@
 # Properties
-::: properties
+::: openterrace/properties
