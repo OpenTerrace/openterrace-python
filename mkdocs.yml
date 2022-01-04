@@ -1,5 +1,11 @@
 site_name: Open Terrace Documentation
 
+handlers:
+  python:
+    setup_commands:
+      - import sys
+      - sys.path.append("openterrace-python")
+
 theme:
   name: material
   features:
