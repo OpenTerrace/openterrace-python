@@ -35,8 +35,8 @@ plugins:
       python:
       rendering:
         show_source: true
-  - watch:
-        - openterrace
+    watch:
+      - openterrace
 
 repo_url: https://github.com/OpenTerrace/openterrace-python
 edit_uri: blob/main/docs/
