@@ -10,4 +10,8 @@ theme:
   icon:
     repo: fontawesome/brands/github
 
+plugins:
+  - search
+  - mkdocstrings
+
 repo_url: https://github.com/OpenTerrace/openterrace-python
