@@ -14,4 +14,4 @@ jobs:
           python-version: 3.x
       - run: pip install mkdocs-material 
 
-      - run: mkdocs gh-deploy --config-file docs/mkdocs.yml --remote-branch gh-pages
+      - run: mkdocs gh-deploy --force --config-file docs/mkdocs.yml --remote-branch gh-pages
