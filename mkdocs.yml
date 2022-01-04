@@ -4,7 +4,7 @@ handlers:
   python:
     setup_commands:
       - import sys
-      - sys.path.append("openterrace-python")
+      - sys.path.append("openterrace")
 
 theme:
   name: material
