@@ -47,7 +47,7 @@ nav:
       - installation/macos.md
       - installation/linux.md
   - Source code:
-      - source-code/solvers-reference.md
+      - source-code/properties-reference.md
   - Project proposals:
       - project-proposals/contributing-as-a-student.md
       - project-proposals/optimisation-of-thermal-storage-systems.md
