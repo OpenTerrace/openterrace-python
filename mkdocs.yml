@@ -28,7 +28,8 @@ site_description: >-
   Open Terrace Documentation
 
 plugins:
-- mkdocstrings:
+  - search
+  - mkdocstrings:
     default_handler: python
     handlers:
       python:
