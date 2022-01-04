@@ -22,16 +22,14 @@ site_description: >-
   Open Terrace Documentation
 
 plugins:
-- search
-- mkdocstrings:
-    default_handler: python
-    handlers:
-      python:
-        rendering:
-          show_source: true
-    custom_templates: templates
-    watch:
-      - openterrace
+    - mkdocstrings:
+        handlers:
+            python:
+                setup_commands:
+                    - import sys
+                    - sys.path.append('../')
+                selection:
+                    new_path_syntax: true
 
 repo_url: https://github.com/OpenTerrace/openterrace-python
 edit_uri: blob/main/docs/
