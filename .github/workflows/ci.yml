@@ -15,4 +15,7 @@ jobs:
       - run: pip install mkdocs-material
       - run: pip install mkdocstrings
       - run: pip install pytkdocs[numpy-style]
+      - run: pip install numpy
+      - run: pip install matplotlib
+      - run: pip install scipy
       - run: mkdocs gh-deploy --force
