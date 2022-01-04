@@ -9,9 +9,28 @@ theme:
     - navigation.sections
   icon:
     repo: fontawesome/brands/github
+  palette:
+    primary: 'green'
 
 plugins:
   - search
   - mkdocstrings
 
 repo_url: https://github.com/OpenTerrace/openterrace-python
+edit_uri: blob/main/docs/
+
+nav:
+  - index.md
+  - User guide:
+      - user-guide/equations.md
+      - user-guide/verification.md
+      - user-guide/validation.md
+  - Installation:
+      - installation/windows.md
+      - installation/macos.md
+      - installation/linux.md
+  - Source code:
+      - source-code/solvers-reference.md
+  - Project proposals:
+      - project-proposals/contributing-as-a-student.md
+      - project-proposals/optimisation-of-thermal-storage-systems.md
