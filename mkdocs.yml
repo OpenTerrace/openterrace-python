@@ -30,6 +30,13 @@ site_description: >-
 plugins:
   - search
   - mkdocstrings
+    default_handler: python
+    handlers:
+      python:
+      rendering:
+        show_source: true
+  - watch:
+        - openterrace
 
 repo_url: https://github.com/OpenTerrace/openterrace-python
 edit_uri: blob/main/docs/
