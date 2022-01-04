@@ -92,10 +92,6 @@ class Diff1D():
                 arr_lambda_n = np.append(arr_lambda_n ,lambda_n)
             i += 0.01
 
-        Bi = particle.h[0]*(const.d_p/2)/particle.k[0,0]
-        lambda_n = np.linspace(0,45,200)
-        y = 1-lambda_n*np.cos(lambda_n)/np.sin(lambda_n)-Bi
-        
         self.theta = []
         for r in self.r:
             self.theta = np.append(self.theta, (np.sum(4*(np.sin(arr_lambda_n)-arr_lambda_n*np.cos(arr_lambda_n))/(2*arr_lambda_n-np.sin(2*arr_lambda_n)) * np.exp(-arr_lambda_n**2*Fo) * np.sin(arr_lambda_n*r/(const.d_p/2))/(arr_lambda_n*r/(const.d_p/2)))))
