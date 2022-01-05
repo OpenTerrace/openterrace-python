@@ -31,14 +31,14 @@ plugins:
 
 repo_url: https://github.com/OpenTerrace/openterrace-python
 edit_uri: blob/main/docs/
+repo_name: openterrace-python/
 
 nav:
-  - index.md
   - User guide:
       - user-guide/equations.md
       - user-guide/verification.md
       - user-guide/validation.md
-  - Installation:
+  - Installation guide:
       - installation/windows.md
       - installation/macos.md
       - installation/linux.md
@@ -48,3 +48,6 @@ nav:
   - Project proposals:
       - project-proposals/contributing-as-a-student.md
       - project-proposals/optimisation-of-thermal-storage-systems.md
+
+extra:
+  generator: false
