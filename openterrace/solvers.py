@@ -56,12 +56,18 @@ class Diff1D():
         return b
 
     def solve_tridiagonal(self, A, b):
-        """
-        Solve Ax=b for x, where A is tridiagonal.
-            
-        :param A: Upper diagonal, diagonal, lower diagonal, in same format as solve_banded
-        :param b: right hand side
-        :return: x=A^{-1}b
+        """Solves n sets of Ax=b systems for x, where A is tridiagonal.
+            Args:
+                A ndarray: 3D array containing data with `float` type. Upper diagonal, diagonal, lower diagonal, in same format as scipy.linalg.solve_banded
+                b ndarray: 2D array containing data with `float` type.
+            Returns:
+                ndarray: 2D array containing data with `float` type.
+            Example:
+                Solves two 3x3 Ax=b systems with ones at the diagonal and zeros on upper and lower diagonal
+                >>> A=[[[0,0,0],[0,0,0]],[[1,1,1],[1,1,1]],[[0,0,0],[0,0,0]]]
+                >>> b=[[1,1,1],[1,1,1]]
+                >>> solve_tridiagonal(A, b)
+                [[1,1,1],[1,1,1]]]
         """
         b_ = b.copy()
         x = np.zeros_like(b)
