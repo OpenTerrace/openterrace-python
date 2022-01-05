@@ -4,8 +4,11 @@ Open Terrace is a pure Python framework for thermal energy storage packed bed si
 
 Open Terrace uses awesome open-source software such as
 [Numba](https://numba.pydata.org), [NumPy](https://numpy.org/) and [SciPy](https://scipy.org/):grey_exclamation:
-## Why Open Terrace?
 
+## [Read the docs](https://openterrace.github.io/openterrace-python/)
+#
+
+## Why Open Terrace?
 - **FAST**  
 By making use of modern compilers and optimised tri-diagonal matrix solvers, Open Terrace approaches the speed of compiled C or FORTRAN code with the added convenience of easy-to-read Python language.
 
@@ -15,18 +18,8 @@ Open Terrace is built from the ground up to be flexible to allow for integration
 - **EXTENDABLE**  
 Modules for new materials such as non-spherical rocks or exotic Phase Change Materials (PCM) can easily be plugged into the framework of Open Terrace.
 
-# How to use?
-
-Open Terrace is still under active development.
-
-# Want to collaborate?
-Contributions are welcome :pray: Feel free to send pull requests or get in touch with me to discuss how to collaborate.
-
-## Contributing as a student
-Want to contribute to a green society built on renewables? We offer several student projects within thermal energy storage. Please get in touch to discuss the content of a project that suits your background and learning goals. We are looking for all kind of studies ranging from system level, detailed conjugate heat transfer CFD studies, Discrete Element Method (DEM) studies to optimisation and AI studies. Experimental data for validation purposes is also welcome! In case you develop an extension that make its way into the main code, you will be added as a contributor of Open Terrace.
+## Want to contribute?
+Contributions are welcome :pray: Feel free to send pull requests or get in touch with me to discuss how to collaborate. More details in the [docs](https://openterrace.github.io/openterrace-python/).
 
 ## Code contributors
 * Jakob Hærvig, Assistant Professor, AAU Energy
-
-## Funding received
-* ?
