@@ -5,8 +5,7 @@ Open Terrace is a pure Python framework for thermal energy storage packed bed si
 Open Terrace uses awesome open-source software such as
 [Numba](https://numba.pydata.org), [NumPy](https://numpy.org/) and [SciPy](https://scipy.org/):grey_exclamation:
 
-## [Read the docs](https://openterrace.github.io/openterrace-python/)
-#
+### [Read the docs](https://openterrace.github.io/openterrace-python/)
 
 ## Why Open Terrace?
 - **FAST**  
