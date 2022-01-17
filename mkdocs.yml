@@ -26,6 +26,7 @@ theme:
   palette:
     scheme: default
     primary: green
+  custom_dir: docs/overrides
 
 extra_css:
   - stylesheets/extra.css

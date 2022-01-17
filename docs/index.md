@@ -1,1 +1,3 @@
-# Welcome to Open Terrace
+---
+template: home.html
+---
