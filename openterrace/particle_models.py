@@ -1,35 +1,6 @@
 import numpy as np
 from scipy.linalg import solve_banded
 from scipy.optimize import least_squares
-import matplotlib.pyplot as plt
-
-class ConvDiff1D:
-    def __init__(self, u, alpha, yStart, yEnd, ny, dt):
-        self.u = u
-        self.alpha = alpha
-        self.yStart = yStart  
-        self.yEnd = yEnd
-        self.ny = ny
-        self.dt = dt   
-        self.dy = (yEnd-yStart)/ny
-
-    def matrix_assembly(self, scheme):
-        if scheme == 'upwind':
-            a1 = [ self.alpha*self.dt/self.dy**2.0     + max(self.u*self.dt/self.dy,0)] * (self.ny-1)
-            a2 = [-2.0*self.alpha*self.dt/self.dy**2.0 + 1 + min(self.u*self.dt/self.dy,0) - max(self.u*self.dt/self.dy,0) ] * (self.ny)
-            a3 = [ self.alpha*self.dt/self.dy**2.0     - min(self.u*self.dt/self.dy,0)] * (self.ny-1)
-            self.A = np.diag(a1, -1) + np.diag(a2, 0) + np.diag(a3, 1)
-
-        elif scheme == "centralDifference":
-            a1 = [ self.alpha*self.dt/self.dy**2.0     + self.u*self.dt/(2*self.dy)] * (self.ny-1)
-            a2 = [-2.0*self.alpha*self.dt/self.dy**2.0 + 1] * (self.ny)
-            a3 = [ self.alpha*self.dt/self.dy**2.0     - self.u*self.dt/(2*self.dy)] * (self.ny-1)
-            self.A = np.diag(a1, -1) + np.diag(a2, 0) + np.diag(a3, 1)
-        else:
-            raise Exception("Valid schemes are 'upwind' and 'centralDifference'")
-    
-    def MatrixSolve(self, T0):
-        return np.matmul(self.A, T0)
 
 class Diff1D():
     def __init__(self, const, prop):

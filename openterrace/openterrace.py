@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 
 import properties
 import parameters
-import solvers
+import particle_models
+import tank_models
 import profilers
 
 if __name__ == '__main__':
@@ -19,7 +20,7 @@ if __name__ == '__main__':
 
     profiling = profilers.Profiling()
     
-    diff_1d = solvers.Diff1D(const, prop)
+    diff_1d = particle_models.Diff1D(const, prop)
     A0 = diff_1d.matrix_assembly_tri(const, particle)
     A = diff_1d.update_A(const, particle, A0)
 
