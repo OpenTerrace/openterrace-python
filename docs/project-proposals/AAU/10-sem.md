@@ -1,1 +1,0 @@
-# AAU - 10 sem project proposal

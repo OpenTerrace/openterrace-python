@@ -62,5 +62,9 @@ nav:
       - source-code/properties-reference.md
       - source-code/particle_models-reference.md
   - Project proposals:
-      - project-proposals/index.md
-      - project-proposals/AAU/2-sem.md
+    - project-proposals/index.md
+    - AAU:
+      - project-proposals/AAU/6-semester.md
+      - project-proposals/AAU/8-semester.md
+      - project-proposals/AAU/10-semester.md
+    - project-proposals/completed-projects.md
