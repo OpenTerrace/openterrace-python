@@ -1,4 +1,11 @@
 site_name: Open Terrace Documentation
+site_author: Jakob Hærvig
+site_description: >-
+  Open Terrace Documentation
+
+repo_url: https://github.com/OpenTerrace/openterrace-python
+edit_uri: blob/main/docs/
+repo_name: openterrace-python/
 
 theme:
   name: material
@@ -9,17 +16,31 @@ theme:
     - navigation.sections
   icon:
     repo: fontawesome/brands/github
-  palette:
-    primary: 'green'
-
   features:
     - search.highlight
     - search.share
     - search.suggest
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.indexes
+  palette:
+    scheme: default
+    primary: green
 
-site_author: Jakob Hærvig
-site_description: >-
-  Open Terrace Documentation
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+extra:
+  generator: false
 
 plugins:
     - mkdocstrings:
@@ -28,14 +49,9 @@ plugins:
                 setup_commands:
                   - import sys
                   - sys.path.append("openterrace")
-
-repo_url: https://github.com/OpenTerrace/openterrace-python
-edit_uri: blob/main/docs/
-repo_name: openterrace-python/
-
 nav:
+  - index.md
   - User guide:
-      - user-guide/equations.md
       - user-guide/verification.md
       - user-guide/validation.md
   - Installation guide:
@@ -44,10 +60,7 @@ nav:
       - installation/linux.md
   - Source code:
       - source-code/properties-reference.md
-      - source-code/solvers-reference.md
+      - source-code/tank_models-reference.md
   - Project proposals:
-      - project-proposals/contributing-as-a-student.md
-      - project-proposals/optimisation-of-thermal-storage-systems.md
-
-extra:
-  generator: false
+      - project-proposals/index.md
+      - project-proposals/AAU/2-sem.md

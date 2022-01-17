@@ -1,2 +1,0 @@
-# Solvers
-::: openterrace.solvers
