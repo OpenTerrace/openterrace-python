@@ -18,6 +18,11 @@ if __name__ == '__main__':
     fluid = parameters.Var.Fluid(const, prop)
     particle = parameters.Var.Particle(const, prop)
 
+    tank_model = tank_models.ConvDiff1DExp(const)
+    tank_model.test(const)
+
+    sys.exit()
+
     profiling = profilers.Profiling()
     
     diff_1d = particle_models.Diff1D(const, prop)

@@ -3,6 +3,8 @@ import solids
 import shapes
 
 class Properties():
+    """The properties class stores functions that load function of thermophysical properties of the fluid and bed material. Also shape functions of the bed material are stored.
+    """
     def select_fluid(self, fluid_type):
         try:
             self.fluid = getattr(fluids, fluid_type)
