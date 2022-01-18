@@ -1,2 +1,2 @@
-# Solvers
-::: openterrace.particle_models
+# Tank models
+::: openterrace.tank_models
