@@ -1,36 +1,50 @@
 import numpy as np
+import pathlib
+import yaml
+from yaml.loader import SafeLoader
+import fluids
+import solids
+import shapes
 
-class Constants():
-    def __init__(self):
-        self.dt = 1
-        self.t_end = 900
-        self.h_tank = 2
+class Parameters():
+    def read_input_data(self, inputfile):
+        try: 
+            with open(pathlib.Path(inputfile).absolute()) as f:
+                self.input_data = yaml.load(f, Loader=SafeLoader)
+        except:
+            raise Exception("Inputfile not found at ", pathlib.Path(inputfile).absolute())
+    
+    def update_massflow_rate(self, t):
+        self.mdot = np.interp(t, [row[0] for row in self.input_data['massflow_vs_time']], [row[1] for row in self.input_data['massflow_vs_time']])
+            
+    def update_inlet_temperature(self, t):
+        self.Tin = np.interp(t, [row[0] for row in self.input_data['inlettemp_vs_time']], [row[1] for row in self.input_data['inlettemp_vs_time']])
 
-        self.nx_tank = 100
-        self.nx_particles = 200
+class Fluid():
+    def __init__(self, params):
+        try:
+            self.fcns = getattr(fluids, params.input_data['fluid'])
+        except:
+            raise Exception("Valid options for fluid are:",fluids.__all__) 
+        self.rho = 2
 
-        self.d_p = 2e-2
-        self.phi_p = 0.3
 
-        self.Tinit = 40
-        self.Tfluid = 12
+class Particle():
+    def __init__(self, params):
+        try:
+            self.fcns = getattr(solids, params.input_data['solid'])
+        except:
+            raise Exception("Valid options for solid are:",solids.__all__)
 
-        self.u = np.array([0.1])
-        self.bc = 'forced_convection'
+        try:
+            self.shape = getattr(shapes, params.input_data['shape'])
+        except:
+            raise Exception("Valid options for shape are:",shapes.__all__)
 
-class Var():
-    class Fluid():
-        def __init__(self, const, prop):
-            self.T = np.full(const.nx_tank, const.Tfluid)
-            self.T_old = np.copy(self.T)
-            self.rho = prop.fluid.rho(self.T)
-
-    class Particle():
-        def __init__(self, const, prop):
-            self.T = np.full((const.nx_particles, const.nx_tank), const.Tinit)
-            self.T_old = np.copy(self.T)
-            self.rho = prop.solid.rho(self.T)
-            self.k = prop.solid.k(self.T)
-            self.cp = prop.solid.cp(self.T)
-            self.bc = const.bc
-            self.h = np.full(const.nx_tank, 200)
+            # self.T = np.full((const.nx_particles, const.nx_tank), const.Tinit)
+            # self.T_old = np.copy(self.T)
+            # self.rho = prop.solid.rho(self.T)
+            # self.k = prop.solid.k(self.T)
+            # self.cp = prop.solid.cp(self.T)
+            # self.bc = const.bc
+            # self.h = np.full(const.nx_tank, 200)

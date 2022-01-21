@@ -1,0 +1,53 @@
+---
+ #Fluid
+ fluid: 'water'
+
+ #Particle
+ solid: 'stone'
+
+ #Particle shape
+ shape: 'sphere'
+
+ #End time (s)
+ t_end: 900
+
+ #Time step size (s)
+ dt: 1
+
+ #Heights of tank (m)
+ h_tank: 5
+
+ #Diameter of tank (m)
+ d_tank: 2
+
+ #Number of vertical tank discretisations
+ ny_tank: 50
+ 
+ #Equivalent Diameter of particles (m)
+ dp_particles: 2e-2
+
+ #Number of particle discretisations
+ nx_particles: 20
+
+ #Particle volume fraction of total volume
+ phi_p: 0.6
+
+ #Mechanism of heat transfer from particles to fluid
+ bc_type: ['forced_convection']
+ #bc: ['forced_convection','radiation']
+
+ #First column is time (s), second column is massflow rate (kg/s)
+ massflow_vs_time:
+  [
+  [0,  3],
+  [2,  6],
+  [2,  8],
+  [10, 8],
+  ]
+
+ #First column is time (s), second column is inlet temperature (K)
+ inlettemp_vs_time:
+  [
+  [0,  300],
+  [10, 320],
+  ]

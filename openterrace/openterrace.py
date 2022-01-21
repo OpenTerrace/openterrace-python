@@ -1,25 +1,29 @@
+#Standard modules
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
-import properties
+#Open Terrace modules
+import profilers
 import parameters
 import particle_models
 import tank_models
-import profilers
+
 
 if __name__ == '__main__':
-    const = parameters.Constants()
+    params = parameters.Parameters()
+    params.read_input_data(inputfile='openterrace/simulation_data/benchmark1.yaml')
+    
+    fluid = parameters.Fluid(params)
+    particle = parameters.Particle(params)
 
-    prop =  properties.Properties()
-    prop.select_fluid('water')
-    prop.select_solid('stone')
-    prop.select_shape('sphere')
+    
 
-    fluid = parameters.Var.Fluid(const, prop)
-    particle = parameters.Var.Particle(const, prop)
+    #tank_model = tank_models.ConvDiff1DExp(params)
+    #tank_model.solve_eq()
 
-    tank_model = tank_models.ConvDiff1DExp(const)
-    tank_model.test(const)
+    #params.update_massflow_rate(t)
+    #params.update_inlet_temperature(t)
 
     sys.exit()
 
