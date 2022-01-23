@@ -14,12 +14,12 @@ if __name__ == '__main__':
     params = parameters.Parameters()
     params.read_input_data(inputfile='openterrace/simulation_data/benchmark1.yaml')
     
-    fluid = parameters.Fluid(params)
-    particle = parameters.Particle(params)
-
-    
-
+    #fluid = parameters.Fluid(params)
+    #particle = parameters.Particle(params)
     #tank_model = tank_models.ConvDiff1DExp(params)
+
+    sys.exit()
+    #print(tank_model.dy)
     #tank_model.solve_eq()
 
     #params.update_massflow_rate(t)

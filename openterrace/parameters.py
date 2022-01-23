@@ -11,12 +11,20 @@ class Parameters():
         try: 
             with open(pathlib.Path(inputfile).absolute()) as f:
                 self.input_data = yaml.load(f, Loader=SafeLoader)
+
+                #self.test = getattr(fluids, params.input_data['fluid'])
+                # self.t_end = self.input_data['t_end']
+                # self.dt = self.input_data['dt']
+                # self.h_tank = self.input_data['h_tank']
+                # self.d_tank = self.input_data['d_tank']
+                # self.ny_tank = self.input_data['ny_tank']
+
         except:
             raise Exception("Inputfile not found at ", pathlib.Path(inputfile).absolute())
     
     def update_massflow_rate(self, t):
         self.mdot = np.interp(t, [row[0] for row in self.input_data['massflow_vs_time']], [row[1] for row in self.input_data['massflow_vs_time']])
-            
+    
     def update_inlet_temperature(self, t):
         self.Tin = np.interp(t, [row[0] for row in self.input_data['inlettemp_vs_time']], [row[1] for row in self.input_data['inlettemp_vs_time']])
 
@@ -27,7 +35,6 @@ class Fluid():
         except:
             raise Exception("Valid options for fluid are:",fluids.__all__) 
         self.rho = 2
-
 
 class Particle():
     def __init__(self, params):
