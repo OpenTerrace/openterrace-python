@@ -60,7 +60,7 @@ nav:
       - installation/macos.md
       - installation/linux.md
   - Source code:
-      - source-code/properties-reference.md
+      - source-code/parameters-reference.md
       - source-code/tank_models-reference.md
       - source-code/particle_models-reference.md
   - Project proposals:
