@@ -1,4 +1,4 @@
-#Standard modules
+#Standard Python modules
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
@@ -6,44 +6,37 @@ import matplotlib.pyplot as plt
 #Open Terrace modules
 import profilers
 import parameters
-import particle_models
-import tank_models
-
+import solvers
 
 if __name__ == '__main__':
-    params = parameters.Parameters()
-    params.read_input_data(inputfile='openterrace/simulation_data/benchmark1.yaml')
-    
-    #fluid = parameters.Fluid(params)
-    #particle = parameters.Particle(params)
-    #tank_model = tank_models.ConvDiff1DExp(params)
-
-    sys.exit()
-    #print(tank_model.dy)
-    #tank_model.solve_eq()
-
-    #params.update_massflow_rate(t)
-    #params.update_inlet_temperature(t)
-
-    sys.exit()
-
     profiling = profilers.Profiling()
-    
-    diff_1d = particle_models.Diff1D(const, prop)
-    A0 = diff_1d.matrix_assembly_tri(const, particle)
-    A = diff_1d.update_A(const, particle, A0)
 
-    Tm0 = particle.T_old
+    params = parameters.Parameters()
+    params.read_input_data(inputfile='simulations/benchmark1.yaml')
+    params.initialise_case(overwrite=True)
+
+    fluid = parameters.Fluid(params)
+    fluid.update_props(method='constprops', T=293.15)
+
+    particle = parameters.Particle(params)
+    particle.update_props(method='constprops', T=293.15)
+
+    solver_tank = solvers.Tank(params, fluid)
+    solver_tank.select_schemes(conv='upwind', diff='central_difference')
+
+    solver_particle = solvers.Particle(params, particle)
+
+    fluid.u = 0.5
+    fluid.T = np.zeros_like(fluid.T)
 
     profiling.start()
 
-    for t in range(0, int(const.t_end/const.dt)):
-        b = diff_1d.update_b(const, particle, fluid, Tm0)
-        Tm0 = diff_1d.solve_tridiagonal(A, b)
+    for params.t in np.linspace(0,params.t_end,int(params.t_end/(params.dt)+1)):
+        solver_tank.update_lower_bc()
+        solver_tank.eq()
 
     profiling.end()
 
-    # diff_1d.analytical(const, particle)
-    # plt.plot(diff_1d.r/(const.d_p/2),Tm0,'-s',diff_1d.r/(const.d_p/2),diff_1d.theta*(const.Tinit-const.Tfluid)+const.Tfluid,'-')
-    # plt.grid()
-    # plt.show()
+    plt.plot(solver_tank.yc,fluid.T[1:-1],'-sk')
+    plt.grid()
+    plt.show()
