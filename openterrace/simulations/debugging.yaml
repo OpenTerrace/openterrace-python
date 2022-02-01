@@ -1,3 +1,5 @@
+# This is an example of a Open Terrace input file.
+
 ---
  #Fluid
  fluid: 'water'
@@ -9,10 +11,10 @@
  shape: 'sphere'
 
  #End time (s)
- t_end: 900
+ t_end: 5
 
  #Time step size (s)
- dt: 1
+ dt: 0.1
 
  #Heights of tank (m)
  h_tank: 5
@@ -21,20 +23,19 @@
  d_tank: 2
 
  #Number of vertical tank discretisations
- ny_tank: 50
+ ny_tank: 100
  
  #Equivalent Diameter of particles (m)
- dp_particles: 2e-2
+ dp_particle: 0.02
 
  #Number of particle discretisations
- nx_particles: 20
+ nx_particle: 20
 
  #Particle volume fraction of total volume
  phi_p: 0.6
 
  #Mechanism of heat transfer from particles to fluid
  bc_type: ['forced_convection']
- #bc: ['forced_convection','radiation']
 
  #First column is time (s), second column is massflow rate (kg/s)
  massflow_vs_time:
@@ -49,5 +50,5 @@
  inlettemp_vs_time:
   [
   [0,  300],
-  [10, 320],
+  [10, 200]
   ]
