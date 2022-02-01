@@ -11,6 +11,8 @@ class Tank:
         self.yc = 0.5*(self.y[:-1]+self.y[1:])
 
     def select_schemes(self, conv=None, diff=None):
+        """Imports the specified convection and diffusion schemes from the available schemes in schemes.py.
+        """
         module = __import__('schemes')
         try:
             self.conv = getattr(module.Convective, conv)

@@ -53,6 +53,8 @@ plugins:
 nav:
   - index.md
   - User guide:
+      - user-guide/get-started.md
+      - user-guide/governing.md
       - user-guide/verification.md
       - user-guide/validation.md
   - Installation guide:
@@ -61,8 +63,8 @@ nav:
       - installation/linux.md
   - Source code:
       - source-code/parameters-reference.md
-      - source-code/tank_models-reference.md
-      - source-code/particle_models-reference.md
+      - source-code/tank-reference.md
+      - source-code/particle-reference.md
   - Project proposals:
     - project-proposals/index.md
     - AAU:

@@ -1,2 +1,0 @@
-# Schemes
-::: openterrace.schemes
