@@ -8,7 +8,7 @@ import solids
 import shapes
 
 class Parameters():
-    def read_input_data(self, inputfile=None, simulation_folder='simulations'):
+    def read_input_data(self, inputfile=None, storagefolder=None):
         """Read a Open Terrace input file in .yaml format
         """
         self.cwd = pathlib.Path(__file__).resolve().parent
@@ -16,7 +16,7 @@ class Parameters():
         try: 
             with open(self.inputfile_path) as f:
                 self.__dict__.update(yaml.load(f, Loader=yaml.loader.SafeLoader))
-                self.case_path = self.cwd / simulation_folder / self.inputfile_path.stem
+                self.case_path = self.cwd / storagefolder / self.inputfile_path.stem
         except:
             raise Exception("Inputfile not found at ", pathlib.Path(inputfile).absolute())
     
@@ -45,25 +45,27 @@ class Fluid():
         try:
             self.fcns = getattr(fluids, params.fluid)
         except:
-            raise Exception("Valid options for fluid are:",fluids.__all__) 
-        self.T = np.full((params.ny_tank+2,1), params.update_inlet_temperature(0))
+            raise Exception("Valid options for fluid are:",fluids.__all__)
+        
+        self.T = np.empty((params.ny_tank+2,1))
         self.Told = np.copy(self.T)
 
-    def update_props(self, **kwargs):
-        if kwargs['method'] == 'constprops':
+    def initialise_temp(self, **kwargs):
+        validlist = ['const']
+        if not kwargs['method'] in validlist:
+            raise Exception(kwargs['method']+" is not a valid option. Valid options are "+str(validlist))
+
+        if kwargs['method'] == 'const':
             try:
-                self.rho = self.fcns.rho(np.full_like(self.T, kwargs['T']))
-                self.cp = self.fcns.cp(np.full_like(self.T, kwargs['T']))
-                self.k = self.fcns.k(np.full_like(self.T, kwargs['T']))
+                self.T[:] = kwargs['T']
+                self.Told[:] = kwargs['T']
             except:
                 raise Exception("'T' not specfied")
-        elif kwargs['method'] == 'varprops':
-            self.rho = self.fcns.rho(self.T)
-            self.cp = self.fcns.cp(self.T)
-            self.k = self.fcns.k(self.T)  
-        else:
-            raise Exception(kwargs['method']+" is not a valid method.")
-            
+
+    def update_props(self):
+        self.rho = self.fcns.rho(self.T)
+        self.cp = self.fcns.cp(self.T)
+        self.k = self.fcns.k(self.T)   
         self.alpha = self.k/(self.rho*self.cp)
 
 class Particle():
@@ -78,29 +80,25 @@ class Particle():
         except:
             raise Exception("Valid options for shape are:",shapes.__all__)
 
-        self.T = np.empty(params.nx_particle)
-        self.Told = np.empty(params.nx_particle)
+        self.T = np.empty((params.nx_particle, params.ny_tank))
+        self.Told = np.copy(self.T)
 
-    def update_props(self, **kwargs):
-        if kwargs['method'] == 'constprops':
+    def initialise_temp(self, **kwargs):
+        validlist = ['const']
+        if not kwargs['method'] in validlist:
+            raise Exception(kwargs['method']+" is not a valid option. Valid options are "+str(validlist))
+
+        if kwargs['method'] == 'const':
             try:
-                self.rho = self.fcns.rho(np.full_like(self.T, kwargs['T']))
-                self.cp = self.fcns.cp(np.full_like(self.T, kwargs['T']))
-                self.k = self.fcns.k(np.full_like(self.T, kwargs['T']))
+                self.T[:] = kwargs['T']
+                self.Told[:] = kwargs['T']
             except:
                 raise Exception("'T' not specfied")
-        elif kwargs['method'] == 'varprops':
-            self.rho = self.fcns.rho(self.T)
-            self.cp = self.fcns.cp(self.T)
-            self.k = self.fcns.k(self.T)  
-        else:
-            raise Exception(kwargs['method']+" is not a valid method.")
-            
+
+    def update_props(self):
+        self.rho = self.fcns.rho(self.T)
+        self.cp = self.fcns.cp(self.T)
+        self.k = self.fcns.k(self.T)   
         self.alpha = self.k/(self.rho*self.cp)
 
-
-
-
-        self.rho = self.fcns.rho(self.T)
-        self.k = self.fcns.k(self.T)
-        self.cp = self.fcns.cp(self.T)
+        self.h = 20
