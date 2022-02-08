@@ -6,13 +6,14 @@ import matplotlib.pyplot as plt
 # Open Terrace modules
 import profilers
 import parameters
+import models
 import solvers
 
 if __name__ == '__main__':
     profiling = profilers.Profiling()
 
     params = parameters.Parameters()
-    params.read_input_data(inputfile='simulations/debugging.yaml', storagefolder='simulations')
+    params.read_input_data(inputfile='simulations/example.yaml', storagefolder='simulations')
     params.initialise_case(overwrite=True)
 
     fluid = parameters.Fluid(params)
@@ -23,14 +24,20 @@ if __name__ == '__main__':
     particle.initialise_temp(method='const', T=293.15)
     particle.update_props()
 
-    solver_tank = solvers.Tank(params, fluid)
-    solver_tank.select_schemes(conv='upwind', diff='central_difference')
+    model_particle = models.Particle(params, particle)
+    model_particle.A_assembly()
+    model_particle.b_assembly(fluid.T)
+    particle.T = solvers.tridiagonal(model_particle.A, model_particle.b)
+    
+    # model_tank = models.Tank(params, fluid)
+    # model_tank.select_schemes(conv='upwind', diff='central_difference')
+    # model_tank.advance_time()
 
-    solver_particle = solvers.Particle(params, particle)
-    solver_particle.A_assembly()
+    # Update old temperatures
+    particle.Told = particle.T
+    fluid.Told = fluid.T
 
-    solver_particle.b_assembly(fluid.T)
-    particle.T = solver_particle.solve_eq(A=solver_particle.A, b=solver_particle.b)
+    sys.exit()
 
     # profiling.start()
 
