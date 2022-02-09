@@ -13,15 +13,15 @@
  phi_particle: 0.6
 
  # Numerical settings
- t_end: 5
+ t_end: 7200
  dt: 0.1
  nx_particle: 10
- ny_tank: 3
+ ny_tank: 10
 
  # Define transient mass flow rate
  # First column is time (s)
  # Second column is massflow rate (kg/s)
- massflow_vs_time:
+ timeseries_mdot:
   [
   [0,  3],
   [2,  6],
@@ -32,7 +32,7 @@
  # Define transient tank inlet tamperature
  # First column is time (s)
  # Second column is temperature (K)
- inlettemp_vs_time:
+ timeseries_Tin:
   [
   [0,  300],
   [10, 200],

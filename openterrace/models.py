@@ -10,39 +10,34 @@ class Tank:
         self.dy = params.h_tank/(params.ny_tank)
         self.y = np.linspace(0,params.h_tank,params.ny_tank+1)
         self.yc = 0.5*(self.y[:-1]+self.y[1:])
+        self.V = self.dy*np.pi*(params.d_tank/2)**2
+        self.bedCoupling = 1
 
     def select_schemes(self, conv=None, diff=None):
         """Imports the specified convection and diffusion schemes from the available schemes in schemes.py.
         """
         module = __import__('schemes')
         try:
-            self.conv = getattr(module.Convective, conv)
+            self.conv = getattr(module.Convection, conv)
         except:
-            raise Exception('Valid convection schemes are: '+str([method for method in dir(module.Convective) if method.startswith('__') is False]))
+            raise Exception('Valid convection schemes are: '+str([method for method in dir(module.Convection) if method.startswith('__') is False]))
         try:
             self.diff = getattr(module.Diffusion, diff)
         except:
             raise Exception('Valid diffusion schemes are: '+str([method for method in dir(module.Diffusion) if method.startswith('__') is False]))
 
-    def update_lower_bc(self):
-        """Updates the inlet temperature of the fluid according
-        """
-        self.fluid.T[0] = self.params.update_inlet_temperature(self.params.t)
-    
-    def update_upper_bc(self):
+    def apply_bcs(self):
         """Ensures a zero gradient, e.g. dT/dy=0, at the top of the tank
         """
-        self.fluid.T[-2] = self.fluid.T[-1]
+        self.fluid.T[-1] = self.fluid.T[-2]
 
-    def governing_eq(self):
-#       LHS = self.conv(self.fluid.u*self.fluid.rho*self.fluid.cp/self.dy,self.fluid.T)\
-#            + self.diff(self.fluid.k/self.dy**2,self.fluid.T)
-        LHS = self.conv(self.fluid.u*self.fluid.rho*self.fluid.cp/self.dy,self.fluid.T)
-
-        self.fluid.T[1:-1] += LHS*self.params.dt/(self.fluid.rho[1:-1]*self.fluid.cp[1:-1])
-
-    def solve_eq(self):
-        pass
+    def advance_time(self):
+        LHS = self.conv(self.fluid.mdot*self.fluid.cp, self.fluid.T)\
+            + self.diff(self.fluid.k/self.dy**2, self.fluid.T)\
+            + self.bedCoupling
+        print(self.conv(self.fluid.mdot*self.fluid.cp, self.fluid.T))
+        dT_dt = LHS/(self.V*self.fluid.rho[1:-1]*self.fluid.cp[1:-1])
+        self.fluid.T[1:-1] = self.fluid.T[1:-1] + dT_dt*self.params.dt
 
 class Particle:
     """This class handles modelling of the particle phase.

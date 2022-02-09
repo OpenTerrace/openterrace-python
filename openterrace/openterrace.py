@@ -19,6 +19,8 @@ if __name__ == '__main__':
     fluid = parameters.Fluid(params)
     fluid.initialise_temp(method='const', T=303.15)
     fluid.update_props()
+    fluid.update_mdot(params.timeseries_mdot, params.t)
+    fluid.update_Tin(params.timeseries_Tin, params.t)
 
     particle = parameters.Particle(params)
     particle.initialise_temp(method='const', T=293.15)
@@ -28,11 +30,17 @@ if __name__ == '__main__':
     model_particle.A_assembly()
     model_particle.b_assembly(fluid.T)
     particle.T = solvers.tridiagonal(model_particle.A, model_particle.b)
-    
-    # model_tank = models.Tank(params, fluid)
-    # model_tank.select_schemes(conv='upwind', diff='central_difference')
-    # model_tank.advance_time()
 
+    sys.exit()
+
+    model_tank = models.Tank(params, fluid)
+    model_tank.select_schemes(conv='upwind', diff='central_difference')
+
+    for params.t in params.t_array:
+        model_particle.advance_time()
+        model_tank.advance_time()
+        model_tank.apply_bcs()
+        
     # Update old temperatures
     particle.Told = particle.T
     fluid.Told = fluid.T
@@ -40,15 +48,4 @@ if __name__ == '__main__':
     sys.exit()
 
     # profiling.start()
-
-    # for params.t in np.linspace(0,params.t_end,int(params.t_end/(params.dt)+1)):
-    #     pass
-    #     # solver_tank.update_lower_bc()
-    #     # solver_tank.solve_eq()
-
     # profiling.end()
-
-    # diff_1d.analytical(const, particle)
-    # plt.plot(diff_1d.r/(const.d_p/2),Tm0,'-s',diff_1d.r/(const.d_p/2),diff_1d.theta*(const.Tinit-const.Tfluid)+const.Tfluid,'-')
-    # plt.grid()
-    # plt.show()

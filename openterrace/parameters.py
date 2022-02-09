@@ -31,14 +31,9 @@ class Parameters():
                 raise Exception('Case folder already exists and overwrite is False')
         self.case_path.absolute().mkdir(parents=True, exist_ok=False)
         print("New case folder created")
-        self.t = 0
-        print("Initialised with time t=0 s")
-
-    def update_massflow_rate(self, t):
-        return np.interp(t, [row[0] for row in self.massflow_vs_time], [row[1] for row in self.massflow_vs_time])
-    
-    def update_inlet_temperature(self, t):
-        return np.interp(t, [row[0] for row in self.inlettemp_vs_time], [row[1] for row in self.inlettemp_vs_time])
+        self.t_array = np.linspace(0,self.t_end,int(self.t_end/(self.dt)+1))
+        self.t = self.t_array[0]
+        print("Initialised with time t = 0 s")
 
 class Fluid():
     def __init__(self, params):
@@ -49,6 +44,7 @@ class Fluid():
         
         self.T = np.empty((params.ny_tank+2,1))
         self.Told = np.copy(self.T)
+        self.mdot = np.empty(1)
 
     def initialise_temp(self, **kwargs):
         validlist = ['const']
@@ -61,6 +57,12 @@ class Fluid():
                 self.Told[:] = kwargs['T']
             except:
                 raise Exception("'T' not specfied")
+
+    def update_mdot(self, x, t):
+        self.mdot = np.interp(t, [row[0] for row in x], [row[1] for row in x])
+
+    def update_Tin(self, x, t):
+        self.T[0] = np.interp(t, [row[0] for row in x], [row[1] for row in x])
 
     def update_props(self):
         self.rho = self.fcns.rho(self.T)
