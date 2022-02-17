@@ -55,7 +55,8 @@ nav:
   - User guide:
       - user-guide/get-started.md
       - user-guide/governing.md
-      - user-guide/add-new-fluid-and-material.md
+      - user-guide/fluids-and-solids.md
+      - user-guide/new-fluid-and-solid-types.md
       - user-guide/verification.md
       - user-guide/validation.md
   - Installation guide:
