@@ -64,9 +64,7 @@ nav:
       - installation/macos.md
       - installation/linux.md
   - Source code:
-      - source-code/parameters-reference.md
-      - source-code/tank-reference.md
-      - source-code/particle-reference.md
+      - source-code/schemes-reference.md
   - Project proposals:
     - project-proposals/index.md
     - AAU:

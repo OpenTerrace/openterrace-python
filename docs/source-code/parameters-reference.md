@@ -1,2 +1,0 @@
-# Parameters
-::: openterrace.parameters.Parameters
