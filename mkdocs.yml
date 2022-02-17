@@ -34,6 +34,11 @@ extra_css:
 markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
+  - markdown_katex:
+      no_inline_svg: True
+      insert_fonts_css: True
+      #macro-file: macros.tex
+
 
 extra_javascript:
   - javascripts/mathjax.js
@@ -54,11 +59,18 @@ nav:
   - index.md
   - User guide:
       - user-guide/get-started.md
-      - user-guide/governing.md
-      - user-guide/fluids-and-solids.md
-      - user-guide/new-fluid-and-solid-types.md
-      - user-guide/verification.md
-      - user-guide/validation.md
+      - Theory:
+        - user-guide/governing.md
+      - Fluids and materials:
+        - user-guide/adding-new-fluids-and-solids.md
+        - Fluids:
+          - user-guide/air.md
+          - user-guide/water.md
+        - Solids:
+          - user-guide/stone.md
+      - Validation and verification:
+        - user-guide/verification.md
+        - user-guide/validation.md
   - Installation guide:
       - installation/windows.md
       - installation/macos.md

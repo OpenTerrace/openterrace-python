@@ -1,5 +1,5 @@
 # Convection schemes
-::: openterrace.schemes.Convection
+::: schemes.Convection
 
 # Diffusion schemes
-::: openterrace.schemes.Diffusion
+::: schemes.Diffusion
