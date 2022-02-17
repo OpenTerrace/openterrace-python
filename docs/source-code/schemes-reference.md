@@ -1,2 +1,5 @@
-# Particle class
-::: openterrace.solvers.Particle
+# Convection schemes
+::: openterrace.schemes.Convection
+
+# Diffusion schemes
+::: openterrace.schemes.Diffusion
