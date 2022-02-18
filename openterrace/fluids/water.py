@@ -1,5 +1,5 @@
 def rho(T):
-    """Density as function of temperature in K at 1 atm (valid in the 273.15 K to 363.15 K).
+    """Density as function of temperature in K at 1 atm (valid between 273.15 K to 363.15 K).
 
     Args:
         T (float): Temperature in kelvin
@@ -11,7 +11,7 @@ def rho(T):
     return -0.00365471*T**2 + 1.93017*T + 746.025
 
 def k(T):
-    """Thermal conductivity as function of temperature in K at 1 atm (valid in the 273.15 K to 363.15 K).
+    """Thermal conductivity as function of temperature in K at 1 atm (valid between 273.15 K to 363.15 K).
 
     Args:
         T (float): Temperature in kelvin
@@ -22,7 +22,7 @@ def k(T):
     return -9.29827e-6*T**2 + 0.0071857*T - 0.710696
 
 def cp(T):
-    """Specific heat capacity as function of temperature in K at 1 atm (valid in the 273.15 K to 363.15 K).
+    """Specific heat capacity as function of temperature in K at 1 atm (valid between 273.15 K to 363.15 K).
     
     Args:
         T (float): Temperature in kelvin
@@ -33,7 +33,7 @@ def cp(T):
     return -0.000127063*T**3 + 0.13736*T**2 - 48.6714*T + 9850.69
 
 def mu(T):
-    """Dynamic viscosity as function of temperature in K at 1 atm (valid in the 273.15 K to 363.15 K).
+    """Dynamic viscosity as function of temperature in K at 1 atm (valid between 273.15 K to 363.15 K).
 
     Args:
         T (float): Temperature in kelvin

@@ -1,6 +1,14 @@
 import numpy as np
 
 def area(r):
+    """Returns the surface area as function of radius
+
+    Args:
+        r (float): Radius of sphere
+
+    Returns:
+        float: Surface area of sphere
+    """
     return 4*np.pi*r**2
 
 def vol(r):
