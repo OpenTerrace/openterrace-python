@@ -66,8 +66,10 @@ nav:
         - Fluids:
           - user-guide/air.md
           - user-guide/water.md
-        - Solids:
-          - user-guide/stone.md
+        - Bed materials:
+          - user-guide/swedish_diabase.md
+          - user-guide/magnetite.md
+          - user-guide/ATS58.md
       - Validation and verification:
         - user-guide/verification.md
         - user-guide/validation.md
@@ -76,7 +78,8 @@ nav:
       - installation/macos.md
       - installation/linux.md
   - Source code:
-      - source-code/schemes-reference.md
+      - source-code/advection-schemes-reference.md
+      - source-code/diffusion-schemes-reference.md
   - Project proposals:
     - project-proposals/index.md
     - AAU:
