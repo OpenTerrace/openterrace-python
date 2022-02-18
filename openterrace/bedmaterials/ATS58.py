@@ -1,5 +1,7 @@
 """Data for AXIOTHERM ATS 58 Phase Change Material (PCM)
 
+https://www.axiotherm.de/en/download/project/productdatasheet/file/19/
+
 h_if = 240000 J/kg (specific latent heat of fusion)
 
 T_s = 56 C (melting temperature)
