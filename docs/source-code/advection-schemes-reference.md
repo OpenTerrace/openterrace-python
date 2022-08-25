@@ -1,5 +1,5 @@
 # Advection schemes
-::: schemes.Convection
+::: schemes.Advection
     rendering:
       show_source: true
       heading_level: 1
