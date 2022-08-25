@@ -23,7 +23,7 @@ def k(T):
 
 def cp(T):
     """Specific heat capacity as function of temperature in K at 1 atm (valid between 273.15 K to 363.15 K).
-    
+        
     Args:
         T (float): Temperature in kelvin
 
