@@ -38,10 +38,12 @@ class OpenTerrace:
         if not domain:
             raise Exception("Keyword 'domain' not specified.")
         try:
-            self.fluid.domain = getattr(domains, domain)
+            self.fluid = getattr(globals()['domains'],domain) 
+            #self.fluid.domain = getattr(domains, domain)
         except:
             raise Exception("domain "+domain+" specified. Valid domain options are:",domains.__all__)
 
+        print(dir(self.fluid))
         # self.fluid.nx = nx
         # self.fluid.ny = ny
         # X,Y = np.meshgrid(np.linspace(0,Lx,nx+1),np.linspace(0,Ly,ny+1))
@@ -129,7 +131,7 @@ if __name__ == '__main__':
     ot.define_fluid_phase(substance='air')
     ot.define_bed_phase(substance='magnetite')
     ot.select_fluid_domain(domain='1d_cylinder', D=0.3, H=5, ny=200)
-    ot.select_bed_domain(domain='1d_sphere', D=0.01, n=5)
+    # ot.select_bed_domain(domain='1d_sphere', D=0.01, n=5)
     # ot.initialise_fields(Tf=600+273.15, Tb=600+273.15)
     # ot.update_fluid_vel_field()
     # ot.update_fluid_properties()
