@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import sys
 
 class OpenTerrace:
-    def __init__(self, t_end=None, dt=None):
+    def __init__(self, t_end=3600, dt=1):
         """Initialise Open Terrace with control parameters"""
         self.t = 0
         self.t_end = t_end
@@ -22,32 +22,39 @@ class OpenTerrace:
         if not substance:
             raise Exception("Keyword 'substance' not specified.")
         if not substance in globals()['fluids'].__all__:
-            raise Exception("Substance "+substance+" specified. Valid fluid substances are:",globals()['fluids'].__all__)
-        self.fluid = getattr(globals()['fluids'],substance)
+            raise Exception("Substance "+substance+" specified. Valid fluid substances are:", globals()['fluids'].__all__)
+        self.fluid = getattr(globals()['fluids'], substance)
     
     def define_bed_phase(self, substance=None):
         """Load functions for the bed phase"""
         if not substance:
             raise Exception("Keyword 'substance' not specified.")
         if not substance in globals()['bedmaterials'].__all__:
-            raise Exception("Substance "+substance+" specified. Valid bed material substances are:",globals()['bedmaterials'].__all__)
-        self.bed = getattr(globals()['bedmaterials'],substance) 
+            raise Exception("Substance "+substance+" specified. Valid bed material substances are:", globals()['bedmaterials'].__all__)
+        self.bed = getattr(globals()['bedmaterials'], substance) 
     
     def select_fluid_domain(self, domain=None, **kwargs):
         """Load a domain type for the fluid phase and create the computational grid"""
         if not domain:
             raise Exception("Keyword 'domain' not specified.")
-        try:
-            self.fluid = getattr(globals()['domains'],domain) 
-            #self.fluid.domain = getattr(domains, domain)
-        except:
-            raise Exception("domain "+domain+" specified. Valid domain options are:",domains.__all__)
+        if not domain in globals()['domains'].__all__:
+            raise Exception("domain "+domain+" specified. Valid domain options are:", domains.__all__)
+        self.domain = getattr(globals()['domains'], domain)
 
-        print(dir(self.fluid))
-        # self.fluid.nx = nx
-        # self.fluid.ny = ny
-        # X,Y = np.meshgrid(np.linspace(0,Lx,nx+1),np.linspace(0,Ly,ny+1))
-        # self.fluid.X,self.fluid.Y = (X,Y)
+        self.domain.validate_input(kwargs)
+        self.domain.shape = self.domain.shape(kwargs)
+
+        # self.domain.shape = self.domain.shape(kwargs)
+        # print(self.domain.shape)
+
+        # print(self.domain)
+        # print(dir(self.domain))
+        # print(self.domain.shape)
+        sys.exit()
+
+        self.fluid.nx = nx
+        X,Y = np.meshgrid(np.linspace(0,Lx,nx+1),np.linspace(0,Ly,ny+1))
+        self.fluid.X,self.fluid.Y = (X,Y,Z)
         # self.fluid.Aw = self.fluid.domain.Aw(X,Y)
         # self.fluid.Ae = self.fluid.domain.Ae(X,Y)
         # self.fluid.An = self.fluid.domain.An(X,Y)
@@ -130,7 +137,7 @@ if __name__ == '__main__':
     ot = OpenTerrace(t_end=20000, dt=0.01)
     ot.define_fluid_phase(substance='air')
     ot.define_bed_phase(substance='magnetite')
-    ot.select_fluid_domain(domain='1d_cylinder', D=0.3, H=5, ny=200)
+    ot.select_fluid_domain(domain='1d_rectangle', D=0.3, H=5, nx=200)
     # ot.select_bed_domain(domain='1d_sphere', D=0.01, n=5)
     # ot.initialise_fields(Tf=600+273.15, Tb=600+273.15)
     # ot.update_fluid_vel_field()
