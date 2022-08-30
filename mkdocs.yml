@@ -49,8 +49,7 @@ extra:
   generator: false
 
 plugins:
-- mkdocstrings:
-    default_handler: python
+- mkdocstrings-python
 
 nav:
   - index.md
