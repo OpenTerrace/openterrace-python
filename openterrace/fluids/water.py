@@ -1,11 +1,11 @@
-def rho(T):
+def rho(T: float) -> float:
     """Density as function of temperature in K at 1 atm (valid between 273.15 K to 363.15 K).
 
     Args:
-        T (float): Temperature in kelvin
+        T: Temperature in kelvin
 
     Returns:
-        float: Density in kg/m^3
+        Density in kg/m^3
     """
 
     return -0.00365471*T**2 + 1.93017*T + 746.025
@@ -28,7 +28,7 @@ def cp(T):
         T (float): Temperature in kelvin
 
     Returns:
-        float: Specific heat capacity in J/(kg K)
+        (float): Specific heat capacity in J/(kg K)
     """
     return -0.000127063*T**3 + 0.13736*T**2 - 48.6714*T + 9850.69
 

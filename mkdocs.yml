@@ -59,6 +59,10 @@ plugins:
 
 nav:
   - index.md
+  - Installation guide:
+      - installation/windows.md
+      - installation/macos.md
+      - installation/linux.md
   - User guide:
       - user-guide/get-started.md
       - Theory:
@@ -74,10 +78,6 @@ nav:
       - Validation and verification:
         - user-guide/verification-and-validation/verification.md
         - user-guide/verification-and-validation/validation.md
-  - Installation guide:
-      - installation/windows.md
-      - installation/macos.md
-      - installation/linux.md
   - Project proposals:
     - project-proposals/index.md
     - AAU:
