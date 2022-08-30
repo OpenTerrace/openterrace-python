@@ -29,7 +29,7 @@ def cp(T: float) -> float:
         T: Temperature in kelvin
 
     Returns:
-        float: Specific heat capacity in J/(kg K)
+        Specific heat capacity in J/(kg K)
     """
     return -3.84827075229561e-07*T**3 + 0.000838847684822935*T**2 -0.364483701712815*T + 1050.66046054049
 
