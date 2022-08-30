@@ -49,7 +49,10 @@ extra:
   generator: false
 
 plugins:
-- mkdocstrings-python
+- search
+- autorefs
+- mkdocstrings:
+    default_handler: python
 
 nav:
   - index.md
