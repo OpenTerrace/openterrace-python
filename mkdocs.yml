@@ -60,18 +60,18 @@ nav:
   - User guide:
       - user-guide/get-started.md
       - Theory:
-        - user-guide/governing.md
+        - user-guide/theory/governing.md
       - Fluids and materials:
         - Fluids:
-          - user-guide/air.md
-          - user-guide/water.md
+          - user-guide/fluids/air.md
+          - user-guide/fluids/water.md
         - Bed materials:
-          - user-guide/swedish_diabase.md
-          - user-guide/magnetite.md
-          - user-guide/ATS58.md
+          - user-guide/bedmaterials/swedish_diabase.md
+          - user-guide/bedmaterials/magnetite.md
+          - user-guide/bedmaterials/ATS58.md
       - Validation and verification:
-        - user-guide/verification.md
-        - user-guide/validation.md
+        - user-guide/verification-and-validation/verification.md
+        - user-guide/verification-and-validation/validation.md
   - Installation guide:
       - installation/windows.md
       - installation/macos.md
