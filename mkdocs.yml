@@ -54,10 +54,8 @@ plugins:
 - mkdocstrings:
     default_handler: python
     handlers:
-        python:
-            setup_commands:
-              - import sys
-              - sys.path.append("openterrace")
+      python:
+        paths: [openterrace]  # search packages in the src folder
 
 nav:
   - index.md
