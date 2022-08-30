@@ -53,6 +53,11 @@ plugins:
 - autorefs
 - mkdocstrings:
     default_handler: python
+    handlers:
+        python:
+            setup_commands:
+              - import sys
+              - sys.path.append("openterrace")
 
 nav:
   - index.md
