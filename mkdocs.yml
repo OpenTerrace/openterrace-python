@@ -49,19 +49,7 @@ extra:
   generator: false
 
 plugins:
-- mkdocstrings:
-    default_handler: python
-    # handlers:
-    #   python:
-    #     options:
-    #       show_source: false
-
-
-# plugins:
-# - mkdocstrings:
-#         handlers:
-#             python:
-#                 setup_commands:
+- mkdocstrings
 #                   - import sys
 #                   - sys.path.append("openterrace")
 nav:
