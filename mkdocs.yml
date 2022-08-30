@@ -49,10 +49,10 @@ extra:
   generator: false
 
 plugins:
-- mkdocstrings
+- mkdocstrings:
+    custom_templates: templates
     default_handler: python
-#                   - import sys
-#                   - sys.path.append("openterrace")
+
 nav:
   - index.md
   - User guide:
