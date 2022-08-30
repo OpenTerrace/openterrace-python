@@ -40,16 +40,14 @@ class OpenTerrace:
         if not domain in globals()['domains'].__all__:
             raise Exception("domain "+domain+" specified. Valid domain options are:", domains.__all__)
         self.domain = getattr(globals()['domains'], domain)
-
-        self.domain.validate_input(kwargs)
+        self.domain.validate_input(kwargs, domain)
         self.domain.shape = self.domain.shape(kwargs)
+        self.domain.An = self.domain.An(kwargs)
+        self.domain.As = self.domain.As(kwargs)
+        self.domain.Aw = self.domain.Aw(kwargs)
+        self.domain.Ae = self.domain.Ae(kwargs)
+        self.domain.V = self.domain.V(kwargs)
 
-        # self.domain.shape = self.domain.shape(kwargs)
-        # print(self.domain.shape)
-
-        # print(self.domain)
-        # print(dir(self.domain))
-        # print(self.domain.shape)
         sys.exit()
 
         self.fluid.nx = nx
@@ -137,7 +135,7 @@ if __name__ == '__main__':
     ot = OpenTerrace(t_end=20000, dt=0.01)
     ot.define_fluid_phase(substance='air')
     ot.define_bed_phase(substance='magnetite')
-    ot.select_fluid_domain(domain='1d_rectangle', D=0.3, H=5, nx=200)
+    ot.select_fluid_domain(domain='1d_cylinder', D=0.3, H=5, ny=200)
     # ot.select_bed_domain(domain='1d_sphere', D=0.01, n=5)
     # ot.initialise_fields(Tf=600+273.15, Tb=600+273.15)
     # ot.update_fluid_vel_field()
