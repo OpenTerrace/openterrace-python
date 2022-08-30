@@ -62,7 +62,6 @@ nav:
       - Theory:
         - user-guide/governing.md
       - Fluids and materials:
-        - user-guide/adding-new-fluids-and-solids.md
         - Fluids:
           - user-guide/air.md
           - user-guide/water.md
@@ -77,9 +76,6 @@ nav:
       - installation/windows.md
       - installation/macos.md
       - installation/linux.md
-  - Source code:
-      - source-code/advection-schemes-reference.md
-      - source-code/diffusion-schemes-reference.md
   - Project proposals:
     - project-proposals/index.md
     - AAU:
