@@ -65,9 +65,9 @@ nav:
           - user-guide/fluids/air.md
           - user-guide/fluids/water.md
         - Bed materials:
-          - user-guide/bedmaterials/swedish_diabase.md
-          - user-guide/bedmaterials/magnetite.md
-          - user-guide/bedmaterials/ATS58.md
+          - openterrace/user-guide/bedmaterials/swedish_diabase.md
+          - openterrace/user-guide/bedmaterials/magnetite.md
+          - openterrace/user-guide/bedmaterials/ATS58.md
       - Validation and verification:
         - user-guide/verification-and-validation/verification.md
         - user-guide/verification-and-validation/validation.md
