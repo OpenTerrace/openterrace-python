@@ -50,11 +50,12 @@ extra:
 
 plugins:
     - mkdocstrings:
-        handlers:
-            python:
-                setup_commands:
-                  - import sys
-                  - sys.path.append("openterrace")
+      default_handler: python
+      handlers:
+        python:
+          setup_commands:
+            - import sys
+            - sys.path.append("openterrace")
 nav:
   - index.md
   - User guide:
