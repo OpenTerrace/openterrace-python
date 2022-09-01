@@ -48,7 +48,7 @@ def Pr(T: float) -> float:
     """Prandtl number as function of temperature at 1 atm (valid between 250 K to 1000 K).
 
     Args:
-        T): Temperature in kelvin
+        T: Temperature in kelvin
 
     Returns:
         Prandtl number
