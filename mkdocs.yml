@@ -78,10 +78,11 @@ nav:
       - Validation and verification:
         - user-guide/verification-and-validation/verification.md
         - user-guide/verification-and-validation/validation.md
-  - Project proposals:
-    - project-proposals/index.md
+  - Student projects:
+    - student-projects/index.md
     - AAU:
       - project-proposals/AAU/6-semester.md
       - project-proposals/AAU/8-semester.md
       - project-proposals/AAU/10-semester.md
     - project-proposals/completed-projects.md
+  - Let's collaborate!: collaborate.md
