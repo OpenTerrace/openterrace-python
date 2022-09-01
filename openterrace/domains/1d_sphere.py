@@ -1,49 +1,23 @@
 import numpy as np
 
-def pos(args):
-    """Returns a position vector as function of radius
+def validate_input(vars, domain_shape):
+    required = ['n','D']
+    for var in required:
+        if not var in vars:
+            raise Exception("Keyword \'"+var+"\' not specified for domain of type \'"+domain_shape+"\'")
 
-    Args:
-        r (float): Radius of sphere
-        nx (float): Number of discretisations
+def shape(vars):
+    n = vars['n']
+    return np.array([n])
 
-    Returns:
-        numpy.dtype: Position vector in sphere
-    """
-    return np.linspace(0,args.r,args.nx+1)
+def A(vars):
+    D = vars['D']
+    n = vars['n']
+    r_vec = np.linspace(0,D/2,n+1)
+    return 4*np.pi*r_vec**2
 
-def pos_c(args):
-    """Returns the node positions
-
-    Args:
-        pos (float): Position vector in sphere
-
-    Returns:
-        float: Node positions in sphere
-    """
-    return (args.pos[:-1]+args.pos[1:])/2
-
-def Aw(args):
-    """Returns the west surface area given a position vector pos
-
-    Args:
-        numpy.dtype: Radial position in sphere
-
-    Returns:
-        numpy.dtype: Surface area at position
-    """
-    return 4*np.pi*args.pos[:-1]**2
-
-def Ae(args):
-    """Returns the west surface area given a position vector pos
-
-    Args:
-        numpy.dtype: Radial position in sphere
-
-    Returns:
-        numpy.dtype: Surface area at position
-    """
-    return 4*np.pi*args.pos[1:]**2
-
-def V(args):
-    return np.diff(4/3*np.pi*args.pos**3, axis=0)
+def V(vars):
+    n = vars['n']
+    D = vars['D']
+    r_vec = np.linspace(0,D/2,n+1)
+    return np.diff(4/3*np.pi*r_vec**3)

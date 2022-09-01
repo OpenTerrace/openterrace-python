@@ -1,31 +1,22 @@
 import numpy as np
 
-def validate_input(vars, domain):
-    required = ['ny','D','H']
+def validate_input(vars, domain_shape):
+    required = ['n','D','H']
     for var in required:
         if not var in vars:
-            raise Exception("Keyword \'"+var+"\' not specified for domain of type \'"+domain+"\'")
+            raise Exception("Keyword \'"+var+"\' not specified for domain of type \'"+domain_shape+"\'")
 
 def shape(vars):
-    ny = vars['ny']
-    return (1,ny,1)
+    n = vars['n']
+    return np.array([n])
 
-def An(vars, shape):
+def A(vars):
     D = vars['D']
-    return np.tile(np.pi*(D**2/4),shape)
+    n = vars['n']
+    return np.repeat(np.pi*(D**2/4), n+1)
 
-def As(vars, shape):
+def V(vars):
+    n = vars['n']
+    H = vars['H']
     D = vars['D']
-    return np.tile(np.pi*(D**2/4),shape)
-
-def Aw(vars, shape):
-    return np.tile(0,shape)
-
-def Ae(vars, shape):
-    return np.tile(0,shape)
-
-def V(vars, shape):
-    ny = vars.get('ny', 100)
-    H = vars.get('H',None)
-    D = vars.get('D',None)
-    return np.pi*D**2/4*H/ny
+    return np.repeat(np.pi*(D**2/4)*H/n, n)
