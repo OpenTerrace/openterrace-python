@@ -42,11 +42,13 @@ class OpenTerrace:
         self.domain = getattr(globals()['domains'], domain)
         self.domain.validate_input(kwargs, domain)
         self.domain.shape = self.domain.shape(kwargs)
-        self.domain.An = self.domain.An(kwargs)
-        self.domain.As = self.domain.As(kwargs)
-        self.domain.Aw = self.domain.Aw(kwargs)
-        self.domain.Ae = self.domain.Ae(kwargs)
-        self.domain.V = self.domain.V(kwargs)
+        self.domain.An = self.domain.An(kwargs,self.domain.shape)
+        self.domain.As = self.domain.As(kwargs,self.domain.shape)
+
+        print(self.domain.As)
+        # self.domain.Aw = self.domain.Aw(kwargs)
+        # self.domain.Ae = self.domain.Ae(kwargs)
+        # self.domain.V = self.domain.V(kwargs)
 
         sys.exit()
 
@@ -132,11 +134,11 @@ class OpenTerrace:
         sys.exit()
 
 if __name__ == '__main__':
-    ot = OpenTerrace(t_end=20000, dt=0.01)
+    ot = OpenTerrace(t_end=7200, dt=0.01)
     ot.define_fluid_phase(substance='air')
-    ot.define_bed_phase(substance='magnetite')
-    ot.select_fluid_domain(domain='1d_cylinder', D=0.3, H=5, ny=200)
-    # ot.select_bed_domain(domain='1d_sphere', D=0.01, n=5)
+    ot.define_bed_phase(substance='swedish_diabase')
+    ot.select_fluid_domain(domain='1d_cylinder', D=0.3, H=5, ny=5)
+    ot.select_bed_domain(domain='1d_sphere', D=0.01, n=10)
     # ot.initialise_fields(Tf=600+273.15, Tb=600+273.15)
     # ot.update_fluid_vel_field()
     # ot.update_fluid_properties()

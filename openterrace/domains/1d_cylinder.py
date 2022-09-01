@@ -7,21 +7,25 @@ def validate_input(vars, domain):
             raise Exception("Keyword \'"+var+"\' not specified for domain of type \'"+domain+"\'")
 
 def shape(vars):
-    ny = vars.get('ny', 100)
+    ny = vars['ny']
     return (1,ny,1)
 
-def An(vars):
+def An(vars, shape):
+    D = vars['D']
+    return np.tile(np.pi*(D**2/4),shape)
+
+def As(vars, shape):
+    D = vars['D']
+    return np.tile(np.pi*(D**2/4),shape)
+
+def Aw(vars, shape):
+    return np.tile(0,shape)
+
+def Ae(vars, shape):
+    return np.tile(0,shape)
+
+def V(vars, shape):
+    ny = vars.get('ny', 100)
+    H = vars.get('H',None)
     D = vars.get('D',None)
-    return np.diff
-
-def As(X=None,Y=None,Z=None):
-    return np.diff(X[1:,:],n=1,axis=1)
-
-def Aw(X=None,Y=None,Z=None):
-    return np.diff(X[1:,:],n=1,axis=1)
-
-def Ae(X=None,Y=None,Z=None):
-    return np.diff(X[1:,:],n=1,axis=1)
-
-def V(X=None,Y=None,Z=None):
-    return (X[1:,1:]-X[:-1,:-1])*(Y[1:,1:]-Y[:-1,:-1])
+    return np.pi*D**2/4*H/ny
