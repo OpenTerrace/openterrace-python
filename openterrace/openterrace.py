@@ -33,40 +33,44 @@ class OpenTerrace:
             raise Exception("Substance "+substance+" specified. Valid bed material substances are:", globals()['bedmaterials'].__all__)
         self.bed = getattr(globals()['bedmaterials'], substance) 
     
-    def select_domain(self, domain_shape=None, domain_type=None, **kwargs):
-        """Load a domain type and prepare variables"""
-        if not domain_type:
-            raise Exception("Keyword 'domain_type' not specified.")
-        if not domain_type in ['fluid','bed']:
-            raise Exception("domain_type \'"+domain_type+"\' specified. Valid options for domain_type are 'fluid' or 'bed'")
-        if not domain_shape:
-            raise Exception("Keyword 'domain_shape' not specified.")
-        if not domain_shape in globals()['domains'].__all__:
-            raise Exception("domain_shape \'"+domain_shape+"\' specified. Valid options for domain_shape are:", domains.__all__)
-        
-        if domain_type == 'fluid':
-            self.fluid.domain = getattr(globals()['domains'], domain_shape)
-            self.fluid.domain.validate_input(kwargs, domain_shape)
-            self.fluid.domain.n_nodes = self.fluid.domain.shape(kwargs)
-            self.fluid.domain.A = self.fluid.domain.A(kwargs)
-            self.fluid.domain.V = self.fluid.domain.V(kwargs)
+    def select_fluid_domain(self, domain=None, **kwargs):
+        """Select domain shape and type and initialise constants"""
+        if not domain:
+            raise Exception("Keyword 'domain' not specified.")
+        if not domain in globals()['domains'].__all__:
+            raise Exception("domain \'"+domain+"\' specified. Valid options for domain are:", domains.__all__)
+        self.fluid.domain = getattr(globals()['domains'], domain)
+        self.fluid.domain.validate_input(kwargs, domain)
+        self.fluid.domain.shape = self.fluid.domain.shape(kwargs)
+        self.fluid.domain.A = self.fluid.domain.A(kwargs)
+        self.fluid.domain.V = self.fluid.domain.V(kwargs)
 
-        if domain_type == 'bed':
-            self.bed.domain = getattr(globals()['domains'], domain_shape)
-            self.bed.domain.validate_input(kwargs, domain_shape)
-            self.bed.domain.n_nodes = self.bed.domain.shape(kwargs)
-            self.bed.domain.A = self.bed.domain.A(kwargs)
-            self.bed.domain.V = self.bed.domain.V(kwargs)
+    def select_bed_domain(self, domain=None, **kwargs):
+        """Select domain shape and type and initialise constants"""
+        if not domain:
+            raise Exception("Keyword 'domain' not specified.")
+        if not domain in globals()['domains'].__all__:
+            raise Exception("domain \'"+domain+"\' specified. Valid options for domain are:", domains.__all__)
+        self.bed.domain = getattr(globals()['domains'], domain)
+        self.bed.domain.validate_input(kwargs, domain)
+        self.bed.domain.shape = self.bed.domain.shape(kwargs)
+        self.bed.domain.A = self.bed.domain.A(kwargs)
+        self.bed.domain.V = self.bed.domain.V(kwargs)
     
-    def set_initialise_internal_fields(self, Tf=None, Tb=None):
-        self.fluid.T = np.tile(Tf,(self.fluid.domain.n_nodes+2))
-        self.bed.T = np.tile(Tb,(self.fluid.domain.n_nodes+2))
-        print(self.fluid.T)
-        print(self.bed.T)
-        #self.fluid.T[0,:] = 100+273.15
-        #self.bed.T = np.full((self.fluid.ny+2,self.fluid.nx+2,self.bed.nx),Tb)
+    def set_initial_fields(self, Tf=None, Tb=None):
+        if not Tf:
+            raise Exception("Keyword 'Tf' not specified.")
+        if not Tb:
+            raise Exception("Keyword 'Tb' not specified.")
+        self.fluid.T = np.tile(Tf,(self.fluid.domain.shape+2))
+        self.bed.T = np.tile(Tb,(self.bed.domain.shape+2)) 
 
-    def set_boundary_condition(self, domain_type=None, Tb=None):
+    def set_boundary_condition(self, phase=None, bc_type=None):
+        """Specify a boundary condition of type Neumann (fixed value) or Dirichlet (fixed gradient)"""
+        if not phase:
+            raise Exception("Keyword 'phase' not specified. How should I know which phase you are trying to specify a boundary condition for?")
+        if bc_type not in ['neumann','dirichlet']:
+            raise Exception("Keyword 'bc_type' not specified.")
     
     def update_fluid_vel_field(self):
         self.fluid.mw = np.ones_like(self.fluid.T[1:-1,1:-1])*0
@@ -129,10 +133,10 @@ if __name__ == '__main__':
     ot = OpenTerrace(t_end=7200, dt=0.01)
     ot.define_fluid_phase(substance='air')
     ot.define_bed_phase(substance='swedish_diabase')
-    ot.select_domain(domain_shape='1d_cylinder', domain_type='fluid', D=0.3, H=5, n=5)
-    ot.select_domain(domain_shape='1d_sphere', domain_type='bed', D=0.01, n=10)
-    ot.initialise_internal_fields(Tf=600+273.15, Tb=600+273.15)
-    #ot.set_boundary_condition(domain_type='fluid', bc_type='dirichlet')
+    ot.select_fluid_domain(domain='1d_cylinder', D=0.3, H=5, n=5)
+    ot.select_bed_domain(domain='1d_sphere', D=0.01, n=10)
+    ot.set_initial_fields(Tf=600+273.15, Tb=600+273.15)
+    ot.set_boundary_condition(phase='fluid', bc_type='dirichlet')
     # ot.update_fluid_vel_field()
     # ot.update_fluid_properties()
     # ot.select_fluid_schemes(diff='central_difference', conv='upwind', coupling=False)
