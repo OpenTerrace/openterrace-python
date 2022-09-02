@@ -69,8 +69,13 @@ class OpenTerrace:
         """Specify a boundary condition of type Neumann (fixed value) or Dirichlet (fixed gradient)"""
         if not phase:
             raise Exception("Keyword 'phase' not specified. How should I know which phase you are trying to specify a boundary condition for?")
-        if bc_type not in ['neumann','dirichlet']:
-            raise Exception("Keyword 'bc_type' not specified.")
+        if phase not in ['fluid','bed']:
+            raise Exception("phase \'"+phase+"\' specified. Valid options for bc_type are:", phase)
+        valid_bc_types = ['neumann','dirichlet']
+        if bc_type not in valid_bc_types:
+            raise Exception("bc_type \'"+bc_type+"\' specified. Valid options for bc_type are:", valid_bc_types)
+
+        self.fluid.T[-1] = 300+273.15
     
     def update_fluid_vel_field(self):
         self.fluid.mw = np.ones_like(self.fluid.T[1:-1,1:-1])*0
@@ -96,7 +101,7 @@ class OpenTerrace:
     def update_bcs(self):
         self.fluid.T[:,0] = self.fluid.T[:,1]
         self.fluid.T[:,-1] = self.fluid.T[:,-2]
-    
+
     def select_bed_schemes(self, diff=None):
         """Imports the specified diffusion scheme from the available schemes in schemes.py.
         """
@@ -107,8 +112,23 @@ class OpenTerrace:
             except:
                 raise Exception('Valid diffusion schemes are: '+str([method for method in dir(module.Diffusion) if method.startswith('__') is False]))
 
+    def select_fluid_schemes(self, diff=None, conv=None):
+        """Imports the specified diffusion and convection schemes from the available schemes in schemes.py.
+        """
+        module = __import__('schemes')
+        if diff:
+            try:
+                self.fluid.diff = getattr(module.Diffusion, diff)
+            except:
+                raise Exception('Valid diffusion schemes are: '+str([method for method in dir(module.Diffusion) if method.startswith('__') is False]))
+        if conv:
+            try:
+                self.fluid.conv = getattr(module.Convection, conv)
+            except:
+                raise Exception('Valid convection schemes are: '+str([method for method in dir(module.Convection) if method.startswith('__') is False]))
+
     def run_simulation(self):
-        """Main loop for execution the model."""
+        """This is the loop where all the magic happens."""
         _arr_out = np.zeros_like(self.fluid.T)
         for i in tqdm(np.arange(0, self.t_end, self.dt)):
             Qdot = np.zeros_like(self.fluid.T)
@@ -135,8 +155,17 @@ if __name__ == '__main__':
     ot.define_bed_phase(substance='swedish_diabase')
     ot.select_fluid_domain(domain='1d_cylinder', D=0.3, H=5, n=5)
     ot.select_bed_domain(domain='1d_sphere', D=0.01, n=10)
+    ot.select_bed_schemes(diff='central_difference')
+    ot.select_fluid_schemes(diff='central_difference')
     ot.set_initial_fields(Tf=600+273.15, Tb=600+273.15)
     ot.set_boundary_condition(phase='fluid', bc_type='dirichlet')
+
+
+    print(ot.fluid.conv)
+    print(ot.fluid.diff)
+
+    # plt.plot(ot.fluid.T,'-sk')
+    # plt.show()
     # ot.update_fluid_vel_field()
     # ot.update_fluid_properties()
     # ot.select_fluid_schemes(diff='central_difference', conv='upwind', coupling=False)
