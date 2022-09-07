@@ -1,11 +1,11 @@
-# Open Terrace modules
+# Import Open Terrace modules
 import fluids
 import bedmaterials
 import domains
 import schemes
 
-# Common Python modules
-from tqdm import tqdm
+# Import common Python modules
+import tqdm
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
@@ -58,8 +58,7 @@ class OpenTerrace:
         self.bed.domain.V = self.bed.domain.V(kwargs)
 
     def select_bed_schemes(self, diff=None):
-        """Imports the specified diffusion scheme from the available schemes in schemes.py.
-        """
+        """Imports the specified diffusion scheme from the available schemes in schemes.py."""
         if diff:
             try:
                 self.bed.diff = getattr(schemes.Diffusion, diff)
@@ -69,8 +68,7 @@ class OpenTerrace:
             self.bed.diff = diff
 
     def select_fluid_schemes(self, diff=None, conv=None):
-        """Imports the specified diffusion and convection schemes from the available schemes in schemes.py.
-        """
+        """Imports the specified diffusion and convection schemes from the available schemes in schemes.py."""
         if diff:
             try:
                 self.fluid.diff = getattr(schemes.Diffusion, diff)
@@ -107,20 +105,26 @@ class OpenTerrace:
         valid_bc_types = ['neumann']#,'dirichlet']
         if bc_type not in valid_bc_types:
             raise Exception("bc_type \'"+bc_type+"\' specified. Valid options for bc_type are:", valid_bc_types)
+        valid_parameters = ['temperature']
+        if parameter not in valid_parameters:
+            raise Exception("parameter \'"+parameter+"\' specified. Valid options for parameter are:", valid_parameters)
+        if not position:
+            raise Exception("Keyword 'position' not specified.")
+        if not value:
+            raise Exception("Keyword 'value' not specified.")
     
     def update_fluid_properties(self):
         self.fluid.rho = self.fluid.rho(self.fluid.T)
         self.fluid.cp = self.fluid.cp(self.fluid.T)
         self.fluid.k = self.fluid.k(self.fluid.T)
-
         self.fluid.D = self.fluid.domain.A*self.fluid.k
         self.fluid.F = self.fluid.mdot*self.fluid.cp
 
     def run_simulation(self):
-        """This is the loop where all the magic happens."""
+        """This is the function full of magic."""
         _arr_out = np.zeros_like(self.fluid.T)
 
-        for i in tqdm(np.arange(0, self.t_end, self.dt)):
+        for i in tqdm.tqdm(np.arange(0, self.t_end, self.dt)):
             Qdot = np.zeros_like(self.fluid.T)
             if self.fluid.diff:
                 Qdot += self.fluid.diff(self.fluid.T, self.fluid.D)
@@ -137,7 +141,7 @@ class OpenTerrace:
         sys.exit()
 
 if __name__ == '__main__':
-    ot = OpenTerrace(t_end=7200, dt=0.01)
+    ot = OpenTerrace(t_end=7200, dt=0.1)
     
     ot.define_fluid_phase(substance='air')
     ot.define_bed_phase(substance='swedish_diabase')
@@ -145,7 +149,7 @@ if __name__ == '__main__':
     ot.select_fluid_domain(domain='1d_cylinder', D=0.3, H=5, n=5)
     ot.select_bed_domain(domain='1d_sphere', D=0.01, n=10)
 
-    ot.select_fluid_schemes(conv='upwind_1d', diff='central_difference_1d')
+    ot.select_fluid_schemes(diff='central_difference_1d', conv='upwind_1d')
     ot.select_bed_schemes(diff='central_difference_1d')
 
     ot.set_initial_fields(Tf=600+273.15, Tb=600+273.15)
