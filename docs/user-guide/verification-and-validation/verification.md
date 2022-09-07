@@ -1,1 +1,1 @@
-# Code verification
+# Verification studies
