@@ -42,11 +42,7 @@ class OpenTerrace:
         self.fluid.domain = getattr(globals()['domains'], domain)
         self.fluid.domain.validate_input(kwargs, domain)
         self.fluid.domain.shape = self.fluid.domain.shape(kwargs)
-
-        self.fluid.domain.Aw = self.fluid.domain.Aw(kwargs)
-        self.fluid.domain.Ae = self.fluid.domain.Ae(kwargs)
-        self.fluid.domain.An = self.fluid.domain.An(kwargs)
-        self.fluid.domain.As = self.fluid.domain.As(kwargs)
+        self.fluid.domain.A = self.fluid.domain.A(kwargs)
         self.fluid.domain.V = self.fluid.domain.V(kwargs)
 
     def select_bed_domain(self, domain=None, **kwargs):
@@ -58,9 +54,7 @@ class OpenTerrace:
         self.bed.domain = getattr(globals()['domains'], domain)
         self.bed.domain.validate_input(kwargs, domain)
         self.bed.domain.shape = self.bed.domain.shape(kwargs)
-
-        self.bed.domain.Aw = self.bed.domain.Aw(kwargs)
-        self.bed.domain.Ae = self.bed.domain.Ae(kwargs)
+        self.bed.domain.A = self.bed.domain.A(kwargs)
         self.bed.domain.V = self.bed.domain.V(kwargs)
 
     def select_bed_schemes(self, diff=None):
@@ -86,6 +80,7 @@ class OpenTerrace:
                 raise Exception('Valid diffusion schemes are: '+str([method for method in dir(module.Diffusion) if method.startswith('__') is False]))
         else:
             self.fluid.diff = diff
+        
         if conv:
             try:
                 self.fluid.conv = getattr(module.Convection, conv)
@@ -103,10 +98,7 @@ class OpenTerrace:
         self.bed.T = np.tile(Tb,(self.bed.domain.shape+2)) 
 
     def update_massflow(self):
-        self.fluid.mw = 0
-        self.fluid.me = 0
-        self.fluid.mn = 0.1
-        self.fluid.ms = 0.1
+        self.fluid.mdot = (np.repeat(0.01, self.fluid.domain.shape+2), np.repeat(0.01, self.fluid.domain.shape+2))
 
     # def set_boundary_condition(self, phase=None, bc_type=None):
     #     """Specify a boundary condition of type Neumann (fixed value) or Dirichlet (fixed gradient)"""
@@ -119,36 +111,27 @@ class OpenTerrace:
     #         raise Exception("bc_type \'"+bc_type+"\' specified. Valid options for bc_type are:", valid_bc_types)
     
     def update_fluid_properties(self):
-        self.fluid.rho = self.fluid.rho(self.fluid.T)[1:-1]
-        self.fluid.cp = self.fluid.cp(self.fluid.T)[1:-1]
-        self.fluid.k = self.fluid.k(self.fluid.T)[1:-1]
+        self.fluid.rho = self.fluid.rho(self.fluid.T)
+        self.fluid.cp = self.fluid.cp(self.fluid.T)
+        self.fluid.k = self.fluid.k(self.fluid.T)
 
-        self.fluid.Dw = self.fluid.domain.Aw*self.fluid.k
-        self.fluid.De = self.fluid.domain.Ae*self.fluid.k
-        self.fluid.Dn = self.fluid.domain.An*self.fluid.k
-        self.fluid.Ds = self.fluid.domain.As*self.fluid.k
-
-        self.fluid.Fw = self.fluid.mw*self.fluid.cp
-        self.fluid.Fe = self.fluid.me*self.fluid.cp
-        self.fluid.Fn = self.fluid.mn*self.fluid.cp
-        self.fluid.Fs = self.fluid.ms*self.fluid.cp
+        self.fluid.D = self.fluid.domain.A*self.fluid.k
+        self.fluid.F = self.fluid.mdot*self.fluid.cp
 
     def run_simulation(self):
         """This is the loop where all the magic happens."""
         _arr_out = np.zeros_like(self.fluid.T)
+
         for i in tqdm(np.arange(0, self.t_end, self.dt)):
             Qdot = np.zeros_like(self.fluid.T)
-            if self.fluid.conv:
-                Qdot += self.fluid.conv(self.fluid.T, self.fluid.Fw, self.fluid.Fe, self.fluid.Fn, self.fluid.Fs, _arr_out)
             if self.fluid.diff:
-                Qdot += self.fluid.diff(self.fluid.T, self.fluid.Dw, self.fluid.De, self.fluid.Dn, self.fluid.Ds, _arr_out)
+                Qdot += self.fluid.diff(self.fluid.T, self.fluid.D)
+            if self.fluid.conv:
+                Qdot += self.fluid.conv(self.fluid.T, self.fluid.F)
 
-            self.bed.diff(self.bed.T, _arr_out)
-            
-            self.fluid.T[1:-1,1:-1] += Qdot[1:-1,1:-1]*self.dt/(self.fluid.rho*self.fluid.V*self.fluid.cp)
-            self.update_bcs()
+            self.fluid.T += Qdot*self.dt/(self.fluid.rho*self.fluid.domain.V*self.fluid.cp)
 
-        plt.plot(self.fluid.T[:,1])
+        plt.plot(self.fluid.T)
         plt.grid()
         plt.xlabel('Position y')
         plt.ylabel('Temperature T')
@@ -164,25 +147,12 @@ if __name__ == '__main__':
     ot.select_fluid_domain(domain='1d_cylinder', D=0.3, H=5, n=5)
     ot.select_bed_domain(domain='1d_sphere', D=0.01, n=10)
 
-    ot.select_fluid_schemes(diff='central_difference')
-    ot.select_bed_schemes(diff='central_difference')
-    
+    ot.select_fluid_schemes(conv='upwind_1d', diff='central_difference_1d')
+    ot.select_bed_schemes(diff='central_difference_1d')
+
     ot.set_initial_fields(Tf=600+273.15, Tb=600+273.15)
 
     ot.update_massflow()
     ot.update_fluid_properties()
 
     ot.run_simulation()
-
-    sys.exit()
-
-
-
-    sys.exit()
-
-
-
-    
-
-    print(ot.fluid.diff)
-
