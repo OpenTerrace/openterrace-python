@@ -60,32 +60,30 @@ class OpenTerrace:
     def select_bed_schemes(self, diff=None):
         """Imports the specified diffusion scheme from the available schemes in schemes.py.
         """
-        module = __import__('schemes')
         if diff:
             try:
-                self.bed.diff = getattr(module.Diffusion, diff)
+                self.bed.diff = getattr(schemes.Diffusion, diff)
             except:
-                raise Exception('Valid diffusion schemes are: '+str([method for method in dir(module.Diffusion) if method.startswith('__') is False]))
+                raise Exception('Valid diffusion schemes are: '+str([method for method in dir(schemes.Diffusion) if method.startswith('__') is False]))
         else:
             self.bed.diff = diff
 
     def select_fluid_schemes(self, diff=None, conv=None):
         """Imports the specified diffusion and convection schemes from the available schemes in schemes.py.
         """
-        module = __import__('schemes')
         if diff:
             try:
-                self.fluid.diff = getattr(module.Diffusion, diff)
+                self.fluid.diff = getattr(schemes.Diffusion, diff)
             except:
-                raise Exception('Valid diffusion schemes are: '+str([method for method in dir(module.Diffusion) if method.startswith('__') is False]))
+                raise Exception('Valid diffusion schemes are: '+str([method for method in dir(schemes.Diffusion) if method.startswith('__') is False]))
         else:
             self.fluid.diff = diff
         
         if conv:
             try:
-                self.fluid.conv = getattr(module.Convection, conv)
+                self.fluid.conv = getattr(schemes.Convection, conv)
             except:
-                raise Exception('Valid convection schemes are: '+str([method for method in dir(module.Convection) if method.startswith('__') is False]))
+                raise Exception('Valid convection schemes are: '+str([method for method in dir(schemes.Convection) if method.startswith('__') is False]))
         else:
             self.fluid.conv = conv
 
@@ -100,15 +98,15 @@ class OpenTerrace:
     def update_massflow(self):
         self.fluid.mdot = (np.repeat(0.01, self.fluid.domain.shape+2), np.repeat(0.01, self.fluid.domain.shape+2))
 
-    # def set_boundary_condition(self, phase=None, bc_type=None):
-    #     """Specify a boundary condition of type Neumann (fixed value) or Dirichlet (fixed gradient)"""
-    #     if not phase:
-    #         raise Exception("Keyword 'phase' not specified. How should I know which phase you are trying to specify a boundary condition for?")
-    #     if phase not in ['fluid','bed']:
-    #         raise Exception("phase \'"+phase+"\' specified. Valid options for bc_type are:", phase)
-    #     valid_bc_types = ['neumann','dirichlet']
-    #     if bc_type not in valid_bc_types:
-    #         raise Exception("bc_type \'"+bc_type+"\' specified. Valid options for bc_type are:", valid_bc_types)
+    def set_boundary_condition(self, phase=None, bc_type=None, parameter=None, position=None, value=None):
+        """Specify a boundary condition of type Neumann (fixed value) or Dirichlet (fixed gradient)"""
+        if not phase:
+            raise Exception("Keyword 'phase' not specified. How should I know which phase you are trying to specify a boundary condition for?")
+        if phase not in ['fluid','bed']:
+            raise Exception("phase \'"+phase+"\' specified. Valid options for bc_type are:", phase)
+        valid_bc_types = ['neumann']#,'dirichlet']
+        if bc_type not in valid_bc_types:
+            raise Exception("bc_type \'"+bc_type+"\' specified. Valid options for bc_type are:", valid_bc_types)
     
     def update_fluid_properties(self):
         self.fluid.rho = self.fluid.rho(self.fluid.T)
@@ -151,6 +149,8 @@ if __name__ == '__main__':
     ot.select_bed_schemes(diff='central_difference_1d')
 
     ot.set_initial_fields(Tf=600+273.15, Tb=600+273.15)
+
+    ot.set_boundary_condition(phase='fluid', bc_type='neumann', parameter='temperature', position=(0, 0), value=300)
 
     ot.update_massflow()
     ot.update_fluid_properties()
