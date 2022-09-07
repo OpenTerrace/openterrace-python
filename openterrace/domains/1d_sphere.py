@@ -10,20 +10,14 @@ def shape(vars):
     n = vars['n']
     return np.array([n])
 
-def Aw(vars):
-    D = vars['D']
+def A(vars):
     n = vars['n']
-    r_vec = np.linspace(0,D/2,n+1)[:-1]
-    return 4*np.pi*r_vec**2
-
-def Ae(vars):
     D = vars['D']
-    n = vars['n']
-    r_vec = np.linspace(0,D/2,n+1)[1:]
-    return 4*np.pi*r_vec**2
+    r_vec = np.linspace(0,D/2,n+1)
+    return ((4*np.pi*r_vec**2)[:-1], (4*np.pi*r_vec**2)[1:])
 
 def V(vars):
     n = vars['n']
     D = vars['D']
     r_vec = np.linspace(0,D/2,n+1)
-    return np.diff(4/3*np.pi*r_vec**3)
+    return (np.diff(4/3*np.pi*r_vec**3))

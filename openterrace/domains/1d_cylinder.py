@@ -10,30 +10,14 @@ def shape(vars):
     n = vars['n']
     return np.array([n])
 
-def Aw(vars):
+def A(vars):
     n = vars['n']
     D = vars['D']
     H = vars['H']
-    return np.repeat(np.pi*D*H/2/n, n)
-
-def Ae(vars):
-    n = vars['n']
-    D = vars['D']  
-    H = vars['H']
-    return np.repeat(np.pi*D*H/2/n, n)
-
-def An(vars):
-    n = vars['n']
-    D = vars['D']  
-    return np.repeat(np.pi*D**2/4, n)
-
-def As(vars):
-    n = vars['n']
-    D = vars['D']  
-    return np.repeat(np.pi*D**2/4, n)
+    return (np.repeat(np.pi*D*H/2/n, n+2), np.repeat(np.pi*D*H/2/n, n+2))
 
 def V(vars):
     n = vars['n']
     D = vars['D']
     H = vars['H']
-    return np.repeat(np.pi*(D**2/4)*H/n, n)
+    return (np.repeat(np.pi*(D**2/4)*H/n, n+2))
