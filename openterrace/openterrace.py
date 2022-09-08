@@ -85,10 +85,14 @@ class OpenTerrace:
         else:
             self.fluid.conv = conv
 
-    def set_initial_fields(self, Tf=None, Tb=None):
-        if not Tf:
-            raise Exception("Keyword 'Tf' not specified.")
-        if not Tb:
+    def set_field(self, field=None, Tf=None, Tb=None):
+        valid_fields = ['fluid_temperature','bed_temperature','porosity']
+        if not field:
+            raise Exception("Keyword 'field' not specified.")
+        if field not in valid_fields:
+            raise Exception("field \'"+field+"\' specified. Valid options for field are:", valid_fields)
+                raise Exception("Keyword 'Tf' not specified.")
+        if field == 'fluid_temperature':
             raise Exception("Keyword 'Tb' not specified.")
         self.fluid.T = np.tile(Tf,(self.fluid.domain.shape+2))
         self.bed.T = np.tile(Tb,(self.bed.domain.shape+2)) 
@@ -152,7 +156,7 @@ if __name__ == '__main__':
     ot.select_fluid_schemes(diff='central_difference_1d', conv='upwind_1d')
     ot.select_bed_schemes(diff='central_difference_1d')
 
-    ot.set_initial_fields(Tf=600+273.15, Tb=600+273.15)
+    ot.set_field(field='fluid_temperature', value=273.15+550)
 
     ot.set_boundary_condition(phase='fluid', bc_type='neumann', parameter='temperature', position=(0, 0), value=300)
 
