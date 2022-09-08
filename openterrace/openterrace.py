@@ -91,7 +91,6 @@ class OpenTerrace:
             raise Exception("Keyword 'field' not specified.")
         if field not in valid_fields:
             raise Exception("field \'"+field+"\' specified. Valid options for field are:", valid_fields)
-                raise Exception("Keyword 'Tf' not specified.")
         if field == 'fluid_temperature':
             raise Exception("Keyword 'Tb' not specified.")
         self.fluid.T = np.tile(Tf,(self.fluid.domain.shape+2))
