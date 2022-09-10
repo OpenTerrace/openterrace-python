@@ -1,48 +1,25 @@
 import numpy as np
 from scipy.optimize import brentq
-import matplotlib.pyplot as plt
-import sys
 
-def theta(Bi=None, Fo=None, r_r0=None, n=5):
+def theta_fcn(Bi=None, Fo=None, r_r0=None, n_terms=10):
     def lambda_fcn(Bi, i):
-        left = 0.0001#np.pi*i
-        right = left + np.pi/2 - 1e-12
-        return brentq(lambda x: 1-x*np.cos(x)/np.sin(x)-Bi, left, right)
+        left = np.pi*(i) + 1e-12
+        right = np.pi*(i+1) - 1e-12
+        return brentq(lambda x: 1-x/np.tan(x)-Bi, left, right)
 
     theta = 0
-    for i in range(0,n):
-        print(Bi,i)
+    for i in range(0,n_terms):
         lambda_i = lambda_fcn(Bi,i)
-        print(np.allclose(1-lambda_i*np.cos(lambda_i)/np.sin(lambda_i),Bi))
-
-        sys.exit()
-        print(lambda_i)
-
-        sys.exit()
-        print(lambda_i)
-        value = 4*(np.sin(lambda_i)-lambda_i*np.cos(lambda_i)) / (2*lambda_i - np.sin(2*lambda_i)) * np.exp(-lambda_i**2*Fo) * np.sin(lambda_i*r_r0)/(lambda_i*r_r0)
-        print(i, value)
+        print(np.isclose(1-lambda_i/np.tan(lambda_i), Bi))
+        if r_r0 == 0:
+            theta += 4*(np.sin(lambda_i)-lambda_i*np.cos(lambda_i)) / (2*lambda_i - np.sin(2*lambda_i)) * np.exp(-lambda_i**2*Fo)
+        else:
+            theta += 4*(np.sin(lambda_i)-lambda_i*np.cos(lambda_i)) / (2*lambda_i - np.sin(2*lambda_i)) * np.exp(-lambda_i**2*Fo) * np.sin(lambda_i*r_r0)/(lambda_i*r_r0)
     return theta
 
-theta(Bi=47.8, Fo=0.209, r_r0=0.0001, n=1)
+Bi = 1200*0.025/0.627
+Fo = 0.209
+r_r0 = 0
 
-# import unittest
-
-# class TestSum(unittest.TestCase):
-
-#     def test_sum(self):
-#         self.assertEqual(sum([1, 2, 3]), 6, "Should be 6")
-
-#     def test_sum_tuple(self):
-#         self.assertEqual(sum((1, 2, 2)), 6, "Should be 6")
-
-# if __name__ == '__main__':
-#     unittest.main()
-
-# class TestFunctions():
-
-#     def sphere_1d_diffusion(self, t_end=None, h=None, r=None, k=None, rho=None, cp=None, n_terms=5):
-#         def lambda(self, Bi, n):
-#             """Finds the first n solutions to the equation 1-lambda_n*cos(lambda_n)/sin(lambda_n) = Bi"""
-
-#             return
+theta = theta_fcn(Bi, Fo, r_r0)
+print(theta)
