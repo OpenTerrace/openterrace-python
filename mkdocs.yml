@@ -19,8 +19,8 @@ theme:
     - navigation.tabs.sticky
     - navigation.indexes
     - navigation.tracking
-    - navigation.sections
     - toc.integrate
+
   palette:
     scheme: default
     primary: green
