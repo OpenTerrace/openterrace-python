@@ -77,6 +77,9 @@ nav:
           - user-guide/bedmaterials/swedish_diabase.md
           - user-guide/bedmaterials/magnetite.md
           - user-guide/bedmaterials/ATS58.md
+      - Domain types:
+          - user-guide/domains/1d_cylinder.md
+          - user-guide/domains/1d_sphere.md
       - Validation and verification:
         - user-guide/verification-and-validation/verification.md
         - user-guide/verification-and-validation/validation.md
