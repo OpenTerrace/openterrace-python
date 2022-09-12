@@ -27,6 +27,7 @@ theme:
     scheme: default
     primary: green
   custom_dir: docs/overrides
+  logo: docs/_figures/logo-banner-paths-white.svg
 
 extra_css:
   - stylesheets/extra.css
