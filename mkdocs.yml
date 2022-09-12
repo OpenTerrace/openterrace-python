@@ -77,8 +77,11 @@ nav:
       - Domain types:
           - user-guide/domains/1d_cylinder.md
           - user-guide/domains/1d_sphere.md
-      - Discretisation schemes:
-          - user-guide/schemes.md
+      - Numerical schemes:
+        - Diffusion:
+          - user-guide/diffusion_schemes/central_difference_1d.md
+        - Convection:
+          - user-guide/convection_schemes/upwind_1d.md
       - Validation and verification:
         - user-guide/verification-and-validation/verification.md
         - user-guide/verification-and-validation/validation.md

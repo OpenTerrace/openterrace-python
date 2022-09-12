@@ -2,7 +2,8 @@
 import fluids
 import bedmaterials
 import domains
-import schemes
+import diffusion_schemes
+import convection_schemes
 
 # Import common Python modules
 import tqdm
@@ -58,30 +59,30 @@ class OpenTerrace:
         self.bed.domain.V = self.bed.domain.V(kwargs)
 
     def select_bed_schemes(self, diff=None):
-        """Imports the specified diffusion scheme from the available schemes in schemes.py."""
+        """Imports the specified diffusion scheme."""
         if diff:
             try:
-                self.bed.diff = getattr(schemes.Diffusion, diff)
+                self.bed.diff = getattr(globals()['diffusion_schemes'], diff)
             except:
-                raise Exception('Valid diffusion schemes are: '+str([method for method in dir(schemes.Diffusion) if method.startswith('__') is False]))
+                raise Exception("Diffusion scheme \'"+diff+"\' specified. Valid options for diffusion schemes are:", diffusion_schemes.__all__)
         else:
             self.bed.diff = diff
 
     def select_fluid_schemes(self, diff=None, conv=None):
-        """Imports the specified diffusion and convection schemes from the available schemes in schemes.py."""
+        """Imports the specified diffusion and convection schemes."""
         if diff:
             try:
-                self.fluid.diff = getattr(schemes.Diffusion, diff)
+                self.fluid.diff = getattr(globals()['diffusion_schemes'], diff)
             except:
-                raise Exception('Valid diffusion schemes are: '+str([method for method in dir(schemes.Diffusion) if method.startswith('__') is False]))
+                raise Exception("Diffusion scheme \'"+diff+"\' specified. Valid options for diffusion schemes are:", diffusion_schemes.__all__)
         else:
             self.fluid.diff = diff
-        
+
         if conv:
             try:
-                self.fluid.conv = getattr(schemes.Convection, conv)
+                self.fluid.conv = getattr(globals()['convection_schemes'], conv)
             except:
-                raise Exception('Valid convection schemes are: '+str([method for method in dir(schemes.Convection) if method.startswith('__') is False]))
+                raise Exception("Convection scheme \'"+conv+"\' specified. Valid options for convection schemes are:", convection_schemes.__all__)
         else:
             self.fluid.conv = conv
 
@@ -145,7 +146,6 @@ class OpenTerrace:
 
 if __name__ == '__main__':
     ot = OpenTerrace(t_end=7200, dt=0.1)
-    
     ot.define_fluid_phase(substance='air')
     ot.define_bed_phase(substance='swedish_diabase')
 
@@ -155,11 +155,11 @@ if __name__ == '__main__':
     ot.select_fluid_schemes(diff='central_difference_1d', conv='upwind_1d')
     ot.select_bed_schemes(diff='central_difference_1d')
 
-    ot.set_field(field='fluid_temperature', value=273.15+550)
+    # ot.set_field(field='fluid_temperature', value=273.15+550)
 
-    ot.set_boundary_condition(phase='fluid', bc_type='neumann', parameter='temperature', position=(0, 0), value=300)
+    # ot.set_boundary_condition(phase='fluid', bc_type='neumann', parameter='temperature', position=(0, 0), value=300)
 
-    ot.update_massflow()
-    ot.update_fluid_properties()
+    # ot.update_massflow()
+    # ot.update_fluid_properties()
 
-    ot.run_simulation()
+    # ot.run_simulation()
