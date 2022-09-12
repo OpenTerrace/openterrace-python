@@ -1,5 +1,6 @@
 def h(T: float) -> float:
     """Mass specific enthalpy as function of temperature at 1 atm (fit valid between 200 K to 2000 K).
+
     Reference: Eric W. Lemmon, Richard T. Jacobsen, Steven G. Penoncello, and Daniel G. Friend. Thermodynamic Properties of Air and Mixtures of Nitrogen, Argon, and Oxygen from 60 to 2000 K at Pressures to 2000 MPa. J. Phys. Chem. Ref. Data, 29(3):331–385, 2000. doi:10.1063/1.1285884.
 
     Args:
@@ -12,7 +13,8 @@ def h(T: float) -> float:
 
 def rho(T: float) -> float:
     """Density as function of temperature at 1 atm (fit valid between 200 K to 1000 K).
-    Eric W. Lemmon, Richard T. Jacobsen, Steven G. Penoncello, and Daniel G. Friend. Thermodynamic Properties of Air and Mixtures of Nitrogen, Argon, and Oxygen from 60 to 2000 K at Pressures to 2000 MPa. J. Phys. Chem. Ref. Data, 29(3):331–385, 2000. doi:10.1063/1.1285884.
+
+    Reference: Eric W. Lemmon, Richard T. Jacobsen, Steven G. Penoncello, and Daniel G. Friend. Thermodynamic Properties of Air and Mixtures of Nitrogen, Argon, and Oxygen from 60 to 2000 K at Pressures to 2000 MPa. J. Phys. Chem. Ref. Data, 29(3):331–385, 2000. doi:10.1063/1.1285884.
 
     Args:
         T (float): Temperature in kelvin
@@ -24,7 +26,8 @@ def rho(T: float) -> float:
 
 def k(T: float) -> float:
     """Thermal conductivity as function of temperature at 1 atm (valid between 200 K to 1000 K).
-    E. W. Lemmon and R. T Jacobsen. Viscosity and Thermal Conductivity Equations for Nitrogen, Oxygen, Argon, and Air. Int. J. Thermophys., 25(1):21–69, 2004. doi:10.1023/B:IJOT.0000022327.04529.f3.
+
+    Reference: E. W. Lemmon and R. T Jacobsen. Viscosity and Thermal Conductivity Equations for Nitrogen, Oxygen, Argon, and Air. Int. J. Thermophys., 25(1):21–69, 2004. doi:10.1023/B:IJOT.0000022327.04529.f3.
 
     Args:
         T: Temperature in kelvin
@@ -36,7 +39,8 @@ def k(T: float) -> float:
 
 def cp(T: float) -> float:
     """Specific heat capacity as function of temperature at 1 atm (valid between 250 K to 1000 K).
-    Eric W. Lemmon, Richard T. Jacobsen, Steven G. Penoncello, and Daniel G. Friend. Thermodynamic Properties of Air and Mixtures of Nitrogen, Argon, and Oxygen from 60 to 2000 K at Pressures to 2000 MPa. J. Phys. Chem. Ref. Data, 29(3):331–385, 2000. doi:10.1063/1.1285884.
+
+    Reference: Eric W. Lemmon, Richard T. Jacobsen, Steven G. Penoncello, and Daniel G. Friend. Thermodynamic Properties of Air and Mixtures of Nitrogen, Argon, and Oxygen from 60 to 2000 K at Pressures to 2000 MPa. J. Phys. Chem. Ref. Data, 29(3):331–385, 2000. doi:10.1063/1.1285884.
 
     Args:
         T: Temperature in kelvin
@@ -48,7 +52,8 @@ def cp(T: float) -> float:
 
 def mu(T: float) -> float:
     """Dynamic viscosity as function of temperature at 1 atm (valid between 250 K to 1000 K).
-    E. W. Lemmon and R. T Jacobsen. Viscosity and Thermal Conductivity Equations for Nitrogen, Oxygen, Argon, and Air. Int. J. Thermophys., 25(1):21–69, 2004. doi:10.1023/B:IJOT.0000022327.04529.f3.
+
+    Reference: E. W. Lemmon and R. T Jacobsen. Viscosity and Thermal Conductivity Equations for Nitrogen, Oxygen, Argon, and Air. Int. J. Thermophys., 25(1):21–69, 2004. doi:10.1023/B:IJOT.0000022327.04529.f3.
 
     Args:
         T: Temperature in kelvin
@@ -60,6 +65,8 @@ def mu(T: float) -> float:
 
 def Pr(T: float) -> float:
     """Prandtl number as function of temperature at 1 atm (valid between 250 K to 1000 K).
+
+    References:
     Eric W. Lemmon, Richard T. Jacobsen, Steven G. Penoncello, and Daniel G. Friend. Thermodynamic Properties of Air and Mixtures of Nitrogen, Argon, and Oxygen from 60 to 2000 K at Pressures to 2000 MPa. J. Phys. Chem. Ref. Data, 29(3):331–385, 2000. doi:10.1063/1.1285884.
     E. W. Lemmon and R. T Jacobsen. Viscosity and Thermal Conductivity Equations for Nitrogen, Oxygen, Argon, and Air. Int. J. Thermophys., 25(1):21–69, 2004. doi:10.1023/B:IJOT.0000022327.04529.f3.
 
