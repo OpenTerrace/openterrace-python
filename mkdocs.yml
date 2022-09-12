@@ -28,6 +28,7 @@ theme:
     primary: green
   custom_dir: docs/overrides
   logo: _figures/stone.png
+  favicon: _figures/stone.png
 
 extra_css:
   - stylesheets/extra.css
