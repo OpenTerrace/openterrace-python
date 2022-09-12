@@ -1,4 +1,4 @@
-# Getting started with Open Terrace
+# Getting started
 
 When openterrace is installed, you can start setting up your simulation.
 
