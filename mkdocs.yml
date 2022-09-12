@@ -82,8 +82,8 @@ nav:
   - Student projects:
     - student-projects/index.md
     - AAU:
-      - project-proposals/AAU/6-semester.md
-      - project-proposals/AAU/8-semester.md
-      - project-proposals/AAU/10-semester.md
-    - project-proposals/completed-projects.md
+      - student-projects/AAU/6-semester.md
+      - student-projects/AAU/8-semester.md
+      - student-projects/AAU/10-semester.md
+    - student-projects/completed-projects.md
   - Let's collaborate!: collaborate.md
