@@ -4,7 +4,10 @@ description = "titanic_ml example package"
 version = "0.0.1"
 authors = [
     { name = "Jakob Hærvig" }
+readme = "README.md"
+requires-python = ">=3.10"
 ]
 
 [build-system]
 requires = ["setuptools", "wheel"]  # PEP 508 specifications.
+build-backend = "setuptools.build_meta"
