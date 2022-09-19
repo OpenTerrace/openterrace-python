@@ -59,10 +59,7 @@ plugins:
 
 nav:
   - index.md
-  - Installation guide:
-      - installation/windows.md
-      - installation/macos.md
-      - installation/linux.md
+  - Installation guide: installation.md
   - User guide:
       - user-guide/get-started.md
       - Theory:
