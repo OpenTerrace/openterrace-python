@@ -1,6 +1,10 @@
-[build-system]
-# Minimum requirements for the build system to execute.
-requires = ["setuptools", "wheel"]  # PEP 508 specifications.
-
 [project]
 name = "OpenTerrace"
+description = "titanic_ml example package"
+version = "0.0.1"
+authors = [
+    { name = "Jakob Hærvig" }
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]  # PEP 508 specifications.
