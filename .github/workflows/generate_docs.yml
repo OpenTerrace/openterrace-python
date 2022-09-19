@@ -1,4 +1,4 @@
-name: ci 
+name: Generate and publish documentation from docstrings
 
 on:
   push:
