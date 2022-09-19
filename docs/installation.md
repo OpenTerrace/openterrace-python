@@ -7,4 +7,3 @@ First, make sure to have a working installation of Python. We recommend using do
 
 ## Install using PyPi
 ..
-

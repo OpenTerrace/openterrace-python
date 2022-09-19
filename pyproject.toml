@@ -7,10 +7,6 @@ authors = [
     ]
 readme = "README.md"
 requires-python = ">=3.10"
-documentation = "https://openterrace.github.io/openterrace-python/"
-repository = "https://github.com/OpenTerrace/openterrace-python"
-
-
 
 [build-system]
 requires = ["setuptools", "wheel"]  # PEP 508 specifications.
