@@ -1,12 +1,15 @@
 [project]
 name = "OpenTerrace"
-description = "titanic_ml example package"
+description = "Open Terrace is a pure Python framework for thermal energy storage packed bed simulations"
 version = "0.0.1"
 authors = [
     { name = "Jakob Hærvig" }
     ]
 readme = "README.md"
 requires-python = ">=3.10"
+documentation = "https://openterrace.github.io/openterrace-python/"
+repository = "https://github.com/OpenTerrace/openterrace-python"
+
 
 
 [build-system]
