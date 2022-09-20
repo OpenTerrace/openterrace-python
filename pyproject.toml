@@ -1,6 +1,6 @@
 [project]
-name = "OpenTerrace"
-description = "Open Terrace is a pure Python framework for thermal energy storage packed bed simulations"
+name = "openterrace"
+description = "OpenTerrace is a pure Python framework for thermal energy storage packed bed simulations"
 version = "0.0.1"
 authors = [
     { name = "Jakob Hærvig" }
