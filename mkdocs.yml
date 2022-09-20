@@ -1,7 +1,7 @@
 site_name: Documentation
 site_author: Jakob Hærvig
 site_description: >-
-  Open Terrace Documentation
+  OpenTerrace Documentation
 
 repo_url: https://github.com/OpenTerrace/openterrace-python
 edit_uri: blob/main/docs/
