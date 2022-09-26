@@ -11,6 +11,20 @@ def h(T: float) -> float:
     """
     return 9.94069026e-02**T**2 + 9.36245621e+02*T + 1.36134443e+05
 
+def T(h: float) -> float:
+    """Temperature as function of enthalpy at 1 atm (fit valid between 200 K to 2000 K).
+
+    Reference: Eric W. Lemmon, Richard T. Jacobsen, Steven G. Penoncello, and Daniel G. Friend. Thermodynamic Properties of Air and Mixtures of Nitrogen, Argon, and Oxygen from 60 to 2000 K at Pressures to 2000 MPa. J. Phys. Chem. Ref. Data, 29(3):331–385, 2000. doi:10.1063/1.1285884.
+
+    Args:
+        h (float): Specific enthalpy in J/kg
+
+    Returns:
+        Temperature in kelvin
+    """
+    return -8.46672403e-11**h**2 + 1.07323754e-03*h - 1.41828256e+02
+       
+
 def rho(T: float) -> float:
     """Density as function of temperature at 1 atm (fit valid between 200 K to 1000 K).
 
