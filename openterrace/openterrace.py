@@ -118,6 +118,7 @@ class OpenTerrace:
             raise Exception("Keyword 'value' not specified.")
     
     def update_fluid_properties(self):
+        self.fluid.T = self.fluid.T(self.fluid.h)
         self.fluid.rho = self.fluid.rho(self.fluid.T)
         self.fluid.cp = self.fluid.cp(self.fluid.T)
         self.fluid.k = self.fluid.k(self.fluid.T)
@@ -155,6 +156,7 @@ if __name__ == '__main__':
     ot.select_fluid_schemes(diff='central_difference_1d', conv='upwind_1d')
     ot.select_bed_schemes(diff='central_difference_1d')
 
+    ot.set_boundary_condition(phase='fluid', bc_type='neumann', parameter='temperature', position=(0, 0), value=300)
     # ot.set_field(field='fluid_temperature', value=273.15+550)
 
     # ot.set_boundary_condition(phase='fluid', bc_type='neumann', parameter='temperature', position=(0, 0), value=300)

@@ -4,10 +4,8 @@ import CoolProp.CoolProp as CP
 
 fluid = 'Water'
 
-
 T1 = CP.PropsSI('T','P',101325,'Q',0,fluid)
 T2 = CP.PropsSI('T','P',101325,'Q',1,fluid)
-print(T1,T2)
 
 T = np.arange(200, 1000, 10)
 V = CP.PropsSI('V','P',101325,'T',T,fluid)
