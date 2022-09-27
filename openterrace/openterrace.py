@@ -10,6 +10,7 @@ import tqdm
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import timeit
 
 class OpenTerrace:
     def __init__(self, t_end=3600, dt=1):
@@ -118,7 +119,7 @@ class OpenTerrace:
             raise Exception("Keyword 'value' not specified.")
     
     def update_fluid_properties(self):
-        self.fluid.T = self.fluid.T(self.fluid.h)
+        self.fluid.T = self.fluid.T(self.fluid.h, self.fluid.p)
         self.fluid.rho = self.fluid.rho(self.fluid.T)
         self.fluid.cp = self.fluid.cp(self.fluid.T)
         self.fluid.k = self.fluid.k(self.fluid.T)
@@ -148,6 +149,7 @@ class OpenTerrace:
 if __name__ == '__main__':
     ot = OpenTerrace(t_end=7200, dt=0.1)
     ot.define_fluid_phase(substance='air')
+    sys.exit()
     ot.define_bed_phase(substance='swedish_diabase')
 
     ot.select_fluid_domain(domain='1d_cylinder', D=0.3, H=5, n=5)
