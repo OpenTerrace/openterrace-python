@@ -14,10 +14,10 @@ def A(vars):
     n = vars['n']
     D = vars['D']
     H = vars['H']
-    return (np.repeat(np.pi*D*H/2/n, n+2), np.repeat(np.pi*D*H/2/n, n+2))
+    return (np.repeat(np.pi*(D/2)**2, n+2), np.repeat(np.pi*(D/2)**2, n+2))
 
 def V(vars):
     n = vars['n']
     D = vars['D']
     H = vars['H']
-    return (np.repeat(np.pi*(D**2/4)*H/n, n+2))
+    return (np.repeat(np.pi*(D/2)**2*H/n, n+2))
