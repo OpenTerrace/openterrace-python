@@ -1,6 +1,3 @@
-"""Data for Magnetite
-"""
-
 def rho(T):
     """Dummy function for constant density.
 

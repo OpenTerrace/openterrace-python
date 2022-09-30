@@ -10,6 +10,11 @@ def shape(vars):
     n = vars['n']
     return np.array([n])
 
+def dx(vars):
+    n = vars['n']
+    D = vars['D']
+    return (np.repeat(D/2/n, n+2), np.repeat(D/2/n, n+2))
+
 def A(vars):
     n = vars['n']
     D = vars['D']
