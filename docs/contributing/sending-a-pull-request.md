@@ -1,2 +1,0 @@
-## Contributing with new fluids or bed materials
-Adding new fluids or bed materials is easy. You may copy one of the existing types from either [`openterrace/fluids`](https://github.com/OpenTerrace/openterrace-python/tree/main/openterrace/fluids) or [`/openterrace/bedmaterials`](https://github.com/OpenTerrace/openterrace-python/tree/main/openterrace/bedmaterials) and modify as you like. Please remember to provide a header section with the relevant information similar to the already existing ones. When it's ready send a pull request.

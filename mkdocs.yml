@@ -39,7 +39,6 @@ markdown_extensions:
       insert_fonts_css: True
       #macro-file: macros.tex
 
-
 extra_javascript:
   - javascripts/mathjax.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
@@ -55,8 +54,11 @@ plugins:
     default_handler: python
     handlers:
       python:
-        paths: [openterrace]  # search packages in the src folder
-
+        setup_commands:
+          - import sys
+          - sys.path.append('openterrace')
+        selection:
+          new_path_syntax: true
 nav:
   - index.md
   - Installation guide: installation.md
@@ -83,11 +85,5 @@ nav:
       - Validation and verification:
         - user-guide/verification-and-validation/verification.md
         - user-guide/verification-and-validation/validation.md
-  - Student projects:
-    - student-projects/index.md
-    - AAU:
-      - student-projects/AAU/6-semester.md
-      - student-projects/AAU/8-semester.md
-      - student-projects/AAU/10-semester.md
-    - student-projects/completed-projects.md
-  - Contributing to OpenTerrace: contributing.md
+  - contributing.md
+  - contact.md

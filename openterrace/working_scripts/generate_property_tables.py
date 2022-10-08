@@ -13,10 +13,10 @@ C = CP.PropsSI('C','P',101325,'H',H,fluid)
 V = CP.PropsSI('V','P',101325,'H',H,fluid)
 Pr = C*V/L
 
-par = C
+par = T
 
 # calculate polynomial
-z = np.polyfit(H, par, 4)
+z = np.polyfit(H, par, 2)
 f = np.poly1d(z)
 
 # # calculate new x's and y's

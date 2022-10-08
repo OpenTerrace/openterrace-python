@@ -1,9 +1,11 @@
-OpenTerrace is all open-source and contributions are most welcome. There are different ways to contribute to OpenTerrace:
+# Contributing to OpenTerrace
 
-- Smaller contributions fitting into the existing modelling framework (e.g. a new fluid or bed material) can be created as pull request directly.
-- For larger contributions requiring revision of existing classes please get in touch before you start rewriting code..
-- If you intend to use the modelling framework and require any assistance please also get in touch.
+OpenTerrace is all open-source and contributions are most welcome.
 
-Jakob Hærvig, Associate Proffesor, AAU Energy, Aalborg University
+## Code development
+- Smaller contributions fitting nicely into the existing modelling framework (e.g. a new fluid or bed material). These can be included by a simple pull request to the development branch.
+- Larger contributions requiring revision of existing classes or core functionality. Please reach out beforehand to discuss.
+- If you intend to use OpenTerrace in product development or research and require any assistance you are also most welcome to [get in touch](contact.md).
 
-<jah@energy.aau.dk>
+## Collaborations
+OpenTerrace welcomes collaborations within packed bed thermal storage systems. Please [get in touch](contact.md) to discuss further.

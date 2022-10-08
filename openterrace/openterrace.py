@@ -1,4 +1,4 @@
-# Import Open Terrace modules
+# Import OpenTerrace modules
 import fluids
 import bedmaterials
 import domains
@@ -13,7 +13,7 @@ import sys
 
 class OpenTerrace:
     def __init__(self, t_end=3600, dt=1):
-        """Initialise Open Terrace with control parameters"""
+        """Initialise OpenTerrace with control parameters"""
         self.t = 0
         self.t_end = t_end
         self.dt = dt
@@ -23,6 +23,7 @@ class OpenTerrace:
     class Phase:
         def __init__(self, options):
             self.options = options
+            self._bcs = []
 
         def select_substance(self, substance=None):
             if not substance:
@@ -48,7 +49,7 @@ class OpenTerrace:
             """Imports the specified diffusion and convection schemes."""
             if diff:
                 try:
-                    self.diff = getattr(globals()['diffusion_schemes'], diff)
+                    self.diff = getattr(getattr(globals()['diffusion_schemes'], diff), diff)
                 except:
                     raise Exception("Diffusion scheme \'"+diff+"\' specified. Valid options for diffusion schemes are:", diffusion_schemes.__all__)
             else:
@@ -56,7 +57,7 @@ class OpenTerrace:
 
             if conv:
                 try:
-                    self.conv = getattr(globals()['convection_schemes'], conv)
+                    self.conv = getattr(getattr(globals()['convection_schemes'], conv), conv)
                 except:
                     raise Exception("Convection scheme \'"+conv+"\' specified. Valid options for convection schemes are:", convection_schemes.__all__)
             else:
@@ -81,9 +82,9 @@ class OpenTerrace:
             if self.conv:
                 self.F = self.mdot*self.cp
 
-        def update_bc(self, bc_type=None, parameter=None, position=None, value=None):
+        def define_bc(self, bc_type=None, parameter=None, position=None, value=None):
             """Specify a boundary condition of type Neumann (specified gradient) or Dirichlet (specified value)"""
-            valid_bc_types = ['neumann','dirichlet']
+            valid_bc_types = ['neumann','dirichlet','robin']
             if bc_type not in valid_bc_types:
                 raise Exception("bc_type \'"+bc_type+"\' specified. Valid options for bc_type are:", valid_bc_types)
             valid_parameters = ['T','mdot']
@@ -91,35 +92,60 @@ class OpenTerrace:
                 raise Exception("parameter \'"+parameter+"\' specified. Valid options for parameter are:", valid_parameters)
             if not position:
                 raise Exception("Keyword 'position' not specified.")
-            if not value:
-                raise Exception("Keyword 'value' not specified.")
+            if not value and bc_type=='dirichlet':
+                raise Exception("Keyword 'value' is needed for dirichlet type bc.")
+            self._bcs.append({'type': bc_type, 'parameter': parameter, 'position': position, 'value': value})
 
-        def advance_time(self):
-            print(dir(self.diff))
+        def enforce_bcs(self):
+            for bc in self._bcs:
+                if bc['type'] == 'dirichlet':
+                    self.h[bc['position'][1]] = self.fcns.h(bc['value'])
+                if bc['type'] == 'neumann':
+                    if bc['position'][1] == 0:
+                        self.h[0] = self.h[1]
+                    if bc['position'][1] == 1:
+                        self.h[-1] = self.h[-2]
+                if bc['type'] == 'robin':
+                    pass
 
+        def solve_equations(self, dt):
+            if self.diff:
+                self.h = self.h - self.diff(self.T, self.D)/(self.rho*self.domain.V)*dt
+            if self.conv:
+                self.h = self.h + self.conv(self.T, self.F)/(self.rho*self.domain.V)*dt
 
     def run_simulation(self):
         """This is the function full of magic."""
-        pass
-        #for i in tqdm.tqdm(np.arange(0, self.t_end, self.dt)):
-            
-
+        _arr_out = np.zeros_like(self.fluid.T)
+        for i in tqdm.tqdm(np.arange(0, self.t_end, self.dt)):
+            self.fluid.solve_equations(self.dt)
+            self.fluid.enforce_bcs()
+            self.fluid.update_properties()
+        
     def phase_coupling(self):
         pass
 
 if __name__ == '__main__':
-    ot = OpenTerrace(t_end=7200, dt=0.1)
+    ot = OpenTerrace(t_end=1800, dt=0.1)
 
-    ot.fluid.select_substance(substance='air')
-    ot.fluid.select_domain(domain='1d_cylinder', D=0.3, H=5, n=5)
-    ot.fluid.select_scheme(diff='central_difference_1d', conv='upwind_1d')
-    ot.fluid.initialise(T=300, mdot=0.01)
-    ot.fluid.update_properties()
-    # ot.fluid.update_bc(bc_type='dirichlet', parameter='T', position=(0, 0), value=400)
-    ot.fluid.T[0] = 800
+    # ot.fluid.select_substance(substance='water')
+    # ot.fluid.select_domain(domain='1d_cylinder', D=1, H=5, n=100)
+    # ot.fluid.select_scheme(conv='upwind_1d') #diff='central_difference_1d')
+    # ot.fluid.initialise(T=20+273.15, mdot=1)
+    # ot.fluid.define_bc(bc_type='dirichlet', parameter='T', position=(0,0), value=80+273.15)
+    # ot.fluid.define_bc(bc_type='neumann', parameter='T', position=(0,1))
+    # ot.fluid.update_properties()
+
+    ot.bed.select_substance(substance='magnetite')
+    ot.bed.select_domain(domain='1d_sphere', D=0.05, n=50)
+    ot.bed.select_scheme(diff='central_difference_1d')
+    ot.bed.initialise(T=50+273.15)
+    ot.bed.define_bc(bc_type='neumann', parameter='T', position=(0,0))
+    ot.bed.define_bc(bc_type='neumann', parameter='T', position=(0,1))
+    ot.bed.update_properties()
+
+    ot.run_simulation()
 
     # ot.bed.select_substance(substance='swedish_diabase')
     # ot.bed.select_domain(domain='1d_sphere', n=5, D=0.01)
     # ot.bed.select_scheme(diff='central_difference_1d')
-   
-    ot.fluid.advance_time()
