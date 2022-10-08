@@ -1,4 +1,4 @@
-site_name: Documentation
+site_name: OpenTerrace Documentation
 site_author: Jakob Hærvig
 site_description: >-
   OpenTerrace Documentation
@@ -28,16 +28,12 @@ theme:
   logo: _figures/logo-text-icon.svg
   favicon: _figures/stone.png
 
-extra_css:
-  - stylesheets/extra.css
-
 markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
   - markdown_katex:
       no_inline_svg: True
       insert_fonts_css: True
-      #macro-file: macros.tex
 
 extra_javascript:
   - javascripts/mathjax.js
@@ -58,9 +54,7 @@ plugins:
         setup_commands:
           - import sys
           - sys.path.append('openterrace')
-        selection:
-          new_path_syntax: true
-        
+
 nav:
   - index.md
   - Installation guide: installation.md
