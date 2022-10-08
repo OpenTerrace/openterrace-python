@@ -54,11 +54,13 @@ plugins:
     default_handler: python
     handlers:
       python:
+        paths: [openterrace]  # search packages in the src folder
         setup_commands:
           - import sys
           - sys.path.append('openterrace')
         selection:
           new_path_syntax: true
+        
 nav:
   - index.md
   - Installation guide: installation.md
