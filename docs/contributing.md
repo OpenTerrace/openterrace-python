@@ -1,4 +1,4 @@
-# Contributing to OpenTerrace
+# Contributing
 
 OpenTerrace is all open-source and contributions are most welcome.
 
