@@ -1,7 +1,4 @@
-"""Data for Swedish Diabase
-"""
-
-def rho(T):
+def fcn_rho(T):
     """Dummy function for constant density.
 
     Args:
@@ -12,7 +9,7 @@ def rho(T):
     """
     return 3007*T**0
 
-def k(T):
+def fcn_k(T):
     """Dummy function for constant thermal conductivity.
 
     Args:
@@ -23,7 +20,7 @@ def k(T):
     """
     return 1.75*T**0
 
-def cp(T):
+def fcn_cp(T):
     """Dummy function for constant specific heat capacity.
 
     Args:

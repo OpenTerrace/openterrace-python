@@ -25,7 +25,7 @@ def T(h: float, p:float=None) -> float:
     """
     return -8.46672403e-11*h**2 + 1.07323754e-03*h - 1.41828256e+02
 
-def rho(T: float, p:float=None) -> float:
+def rho(h: float, p:float=None) -> float:
     """Density as function of mass specific enthalpy at 1 atm (fit valid between 273.15 K to 1000 K).
 
     Reference: Eric W. Lemmon, Richard T. Jacobsen, Steven G. Penoncello, and Daniel G. Friend. Thermodynamic Properties of Air and Mixtures of Nitrogen, Argon, and Oxygen from 60 to 2000 K at Pressures to 2000 MPa. J. Phys. Chem. Ref. Data, 29(3):331–385, 2000. doi:10.1063/1.1285884.

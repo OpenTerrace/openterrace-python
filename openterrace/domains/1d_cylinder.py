@@ -10,14 +10,19 @@ def shape(vars):
     n = vars['n']
     return np.array([n])
 
+def dx(vars):
+    n = vars['n']
+    H = vars['H']
+    return (np.repeat(H/n, n+2), np.repeat(H/n, n+2))
+
 def A(vars):
     n = vars['n']
     D = vars['D']
     H = vars['H']
-    return (np.repeat(np.pi*D*H/2/n, n+2), np.repeat(np.pi*D*H/2/n, n+2))
+    return (np.repeat(np.pi*(D/2)**2, n+2), np.repeat(np.pi*(D/2)**2, n+2))
 
 def V(vars):
     n = vars['n']
     D = vars['D']
     H = vars['H']
-    return (np.repeat(np.pi*(D**2/4)*H/n, n+2))
+    return (np.repeat(np.pi*(D/2)**2*H/n, n+2))
