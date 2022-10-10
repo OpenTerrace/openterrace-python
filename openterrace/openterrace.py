@@ -12,16 +12,18 @@ import matplotlib.pyplot as plt
 import sys
 
 class OpenTerrace:
-    def __init__(self, t_end=3600, dt=1):
+    def __init__(self, t_end=3600, dt=1, n_fluid=None, n_bed=None):
         """Initialise OpenTerrace with control parameters"""
         self.t = 0
         self.t_end = t_end
         self.dt = dt
-        self.fluid = self.Phase(options='fluids')
-        self.bed = self.Phase(options='bedmaterials')
+        self.fluid = self.Phase(n_fluid, _type='fluid', options='fluids')
+        self.bed = self.Phase(n_bed, _type='bed', options='bedmaterials')
 
     class Phase:
-        def __init__(self, options):
+        def __init__(self, n, _type, options):
+            self.n = n
+            self._type = _type
             self.options = options
             self._bcs = []
 
@@ -29,11 +31,12 @@ class OpenTerrace:
             if not substance:
                 raise Exception("Keyword 'substance' not specified.")
             if not substance in globals()[self.options].__all__:
-                raise Exception("Substance "+substance+" specified. Valid fluid substances are:", globals()[self.options].__all__)
+                raise Exception(substance+" specified as "+self._type+" substance. Valid "+self._type+" substances are:", globals()[self.options].__all__)
             self.fcns = getattr(globals()[self.options], substance)
 
         def select_domain(self, domain=None, **kwargs):
             """Select domain shape and type and initialise constants"""
+            kwargs['n'] = self.n
             if not domain:
                 raise Exception("Keyword 'domain' not specified.")
             if not domain in globals()['domains'].__all__:
@@ -63,13 +66,14 @@ class OpenTerrace:
             else:
                 self.conv = None
 
-        def initialise(self, T=None, mdot=None):
+        def initialise(self, T=None, mdot=None, nFluidPhase=1):
             """Initialises temperature and massflow fields"""
             if T:
-                self.T = np.tile(T,(self.domain.shape+2))
+                self.T = np.tile(T,(np.append(self.domain.shape+2,nFluidPhase)))
                 self.h = self.fcns.h(self.T)
             if mdot:
-                self.mdot = (np.repeat(mdot, self.domain.shape+2), np.repeat(mdot, self.domain.shape+2))
+                self.mdot = np.tile(mdot,(np.append(self.domain.shape+2,nFluidPhase)))
+                #self.mdot = np.repeat(mdot, self.domain.shape+2), np.repeat(mdot, self.domain.shape+2)
 
         def update_properties(self):
             """Updates properties based on specific enthalpy"""
@@ -126,25 +130,25 @@ class OpenTerrace:
         pass
 
 if __name__ == '__main__':
-    ot = OpenTerrace(t_end=1800, dt=0.1)
+    ot = OpenTerrace(t_end=1800, dt=0.1, n_fluid=10, n_bed=5)
 
-    # ot.fluid.select_substance(substance='water')
-    # ot.fluid.select_domain(domain='1d_cylinder', D=1, H=5, n=100)
-    # ot.fluid.select_scheme(conv='upwind_1d') #diff='central_difference_1d')
-    # ot.fluid.initialise(T=20+273.15, mdot=1)
-    # ot.fluid.define_bc(bc_type='dirichlet', parameter='T', position=(0,0), value=80+273.15)
-    # ot.fluid.define_bc(bc_type='neumann', parameter='T', position=(0,1))
-    # ot.fluid.update_properties()
+    ot.fluid.select_substance(substance='water')
+    ot.fluid.select_domain(domain='1d_cylinder', D=1, H=5)
+    ot.fluid.select_scheme(conv='upwind_1d') #diff='central_difference_1d')
+    ot.fluid.initialise(T=20+273.15, mdot=1)
+    ot.fluid.define_bc(bc_type='dirichlet', parameter='T', position=(0,0), value=80+273.15)
+    ot.fluid.define_bc(bc_type='neumann', parameter='T', position=(0,1))
+    ot.fluid.update_properties()
 
-    ot.bed.select_substance(substance='magnetite')
-    ot.bed.select_domain(domain='1d_sphere', D=0.05, n=50)
-    ot.bed.select_scheme(diff='central_difference_1d')
-    ot.bed.initialise(T=50+273.15)
-    ot.bed.define_bc(bc_type='neumann', parameter='T', position=(0,0))
-    ot.bed.define_bc(bc_type='neumann', parameter='T', position=(0,1))
-    ot.bed.update_properties()
+    # ot.bed.select_substance(substance='magnetite')
+    # ot.bed.select_domain(domain='1d_sphere', D=0.05, n=7)
+    # ot.bed.select_scheme(diff='central_difference_1d')
+    # ot.bed.initialise(T=50+273.15)
+    # ot.bed.define_bc(bc_type='neumann', parameter='T', position=(0,0))
+    # ot.bed.define_bc(bc_type='neumann', parameter='T', position=(0,1))
+    # ot.bed.update_properties()
 
-    ot.run_simulation()
+    # ot.run_simulation()
 
     # ot.bed.select_substance(substance='swedish_diabase')
     # ot.bed.select_domain(domain='1d_sphere', n=5, D=0.01)

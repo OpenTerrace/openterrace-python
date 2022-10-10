@@ -1,3 +1,14 @@
+def h(T: float) -> float:
+    """Mass specific enthalpy as function of temperature at 1 atm (fit assumed constant cp).
+
+    Args:
+        T (float): Temperature in K
+
+    Returns:
+        Specific enthalpy in J/kg
+    """
+    return 1130*T
+
 def rho(T):
     """Dummy function for constant density.
 
