@@ -1,7 +1,7 @@
 import numpy as np
 import numba as nb
 
-#@nb.njit
+@nb.njit
 def central_difference_1d(x, D):
     """Second-order accurate central diffence scheme.
     """
