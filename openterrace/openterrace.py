@@ -120,11 +120,11 @@ class OpenTerrace:
         def enforce_bcs(self):
             for bc in self._bcs:
                 if bc['type'] == 'dirichlet':
-                    self.h[:,bc['position'][1]] = self.fcns.h(bc['value'])
+                    self.h[:,bc['position']] = self.fcns.h(bc['value'])
                 if bc['type'] == 'neumann':
-                    if bc['position'][1] == 0:
+                    if bc['position'] == [0]:
                         self.h[:,0] = self.h[:,1]
-                    if bc['position'][1] == 1:
+                    if bc['position'] == [1]:
                         self.h[:,-1] = self.h[:,-2]
                 if bc['type'] == 'robin':
                     pass
@@ -138,9 +138,9 @@ class OpenTerrace:
     def run_simulation(self):
         """This is the function full of magic."""
         for i in tqdm.tqdm(np.arange(0, self.t_end, self.dt)):
-            # self.fluid.solve_equations(self.dt)
-            # self.fluid.enforce_bcs()
-            # self.fluid.update_properties()
+            self.fluid.solve_equations(self.dt)
+            self.fluid.enforce_bcs()
+            self.fluid.update_properties()
             self.bed.solve_equations(self.dt)
             self.bed.enforce_bcs()
             self.bed.update_properties()
@@ -149,32 +149,22 @@ class OpenTerrace:
         pass
 
 if __name__ == '__main__':
-    ot = OpenTerrace(t_end=60, dt=1, n_fluid=100, n_bed=20)
+    ot = OpenTerrace(t_end=36000, dt=1, n_fluid=10, n_bed=10)
 
-    # ot.fluid.select_substance(substance='water')
-    # ot.fluid.select_domain(domain='1d_cylinder', D=1, H=5)
-    # ot.fluid.select_scheme(conv='upwind_1d', diff='central_difference_1d')
-    # ot.fluid.initialise(T=20+273.15, mdot=1)
-    # ot.fluid.define_bc(bc_type='dirichlet', parameter='T', position=(0,0), value=80+273.15)
-    # ot.fluid.define_bc(bc_type='neumann', parameter='T', position=(0,1))
-    # ot.fluid.enforce_bcs()
-    # ot.fluid.update_properties()
+    ot.fluid.select_substance(substance='water')
+    ot.fluid.select_domain(domain='1d_cylinder', D=1, H=5)
+    ot.fluid.select_scheme(conv='upwind_1d', diff='central_difference_1d')
+    ot.fluid.initialise(T=20+273.15, mdot=1)
+    ot.fluid.define_bc(bc_type='dirichlet', parameter='T', position=[0], value=80+273.15)
+    ot.fluid.define_bc(bc_type='neumann', parameter='T', position=[-1])
+    ot.fluid.enforce_bcs()
 
     ot.bed.select_substance(substance='magnetite')
     ot.bed.select_domain(domain='1d_sphere', D=0.05)
     ot.bed.select_scheme(diff='central_difference_1d')
     ot.bed.initialise(T=50+273.15)
-    ot.bed.define_bc(bc_type='neumann', parameter='T', position=(0,0))
-    ot.bed.define_bc(bc_type='neumann', parameter='T', position=(0,1))
-    ot.bed.update_properties()
+    ot.bed.define_bc(bc_type='neumann', parameter='T', position=[0])
+    ot.bed.define_bc(bc_type='neumann', parameter='T', position=[-1])
+    ot.bed.enforce_bcs()
 
     ot.run_simulation()
-
-    #print(ot.fluid.T[:,:])
-    plt.plot(ot.bed.T[0,:])
-    plt.grid()
-    plt.show()
-
-    # ot.bed.select_substance(substance='swedish_diabase')
-    # ot.bed.select_domain(domain='1d_sphere', n=5, D=0.01)
-    # ot.bed.select_scheme(diff='central_difference_1d')
