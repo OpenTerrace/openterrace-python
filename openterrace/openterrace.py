@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import sys
 
 class OpenTerrace:
-    def __init__(self, t_end=3600, dt=1, n_fluid=None, n_bed=None):
+    def __init__(self, t_end=3600, dt=1, n_fluid=1, n_bed=10):
         """Initialise OpenTerrace with control parameters"""
         self.t = 0
         self.t_end = t_end
@@ -69,10 +69,10 @@ class OpenTerrace:
 
         def initialise(self, T=None, mdot=None):
             """Initialises temperature and massflow fields"""
-            if T:
+            if T is not None:
                 self.T = np.tile(T,(np.append(self.n2,self.domain.shape+2)))
                 self.h = self.fcns.h(self.T)
-            if mdot:
+            if mdot is not None:
                 self.mdot = np.tile(mdot,(np.append(self.n2,self.domain.shape+2)))
 
             self.T = self.fcns.T(self.h)
@@ -104,7 +104,7 @@ class OpenTerrace:
                 self.F[1,:,:] = self.mdot*self.cp
 
         def define_bc(self, bc_type=None, parameter=None, position=None, value=None):
-            """Specify a boundary condition of type Neumann (specified gradient) or Dirichlet (specified value)"""
+            """Specify boundary condition type"""
             valid_bc_types = ['neumann','dirichlet','robin']
             if bc_type not in valid_bc_types:
                 raise Exception("bc_type \'"+bc_type+"\' specified. Valid options for bc_type are:", valid_bc_types)
@@ -121,7 +121,7 @@ class OpenTerrace:
             for bc in self._bcs:
                 if bc['type'] == 'dirichlet':
                     self.h[:,bc['position']] = self.fcns.h(bc['value'])
-                if bc['type'] == 'neumann':
+                if bc['type'] == 'neumann': 
                     if bc['position'] == [0]:
                         self.h[:,0] = self.h[:,1]
                     if bc['position'] == [1]:
@@ -134,13 +134,23 @@ class OpenTerrace:
                 self.h = self.h + self.diff(self.T, self.D)/(self.rho*self.domain.V)*dt
             if self.conv:
                 self.h = self.h + self.conv(self.T, self.F)/(self.rho*self.domain.V)*dt
-
+                
+    def add_coupling(self, coupling_type=None, h=None, value=None):
+        """Specify coupling type between the two phases"""
+        valid_coupling_types = ['forced_convection']
+        valid_h = ['constant']
+        if coupling_type not in valid_coupling_types:
+            raise Exception("coupling_type \'"+coupling_type+"\' specified. Valid options for coupling_type are:", valid_coupling_types)
+        if h not in valid_h:
+            raise Exception("h \'"+h+"\' specified. Valid options for h are:", valid_h)
+            
     def run_simulation(self):
         """This is the function full of magic."""
         for i in tqdm.tqdm(np.arange(0, self.t_end, self.dt)):
-            self.fluid.solve_equations(self.dt)
-            self.fluid.enforce_bcs()
-            self.fluid.update_properties()
+            # self.fluid.solve_equations(self.dt)
+            # self.fluid.enforce_bcs()  
+            # self.fluid.update_properties()
+
             self.bed.solve_equations(self.dt)
             self.bed.enforce_bcs()
             self.bed.update_properties()
@@ -149,22 +159,28 @@ class OpenTerrace:
         pass
 
 if __name__ == '__main__':
-    ot = OpenTerrace(t_end=36000, dt=1, n_fluid=10, n_bed=10)
+    #ot = OpenTerrace(t_end=36000, dt=1, n_fluid=1, n_bed=10)
+    ot = OpenTerrace(t_end=600, dt=0.1, n_bed=10)
 
-    ot.fluid.select_substance(substance='water')
-    ot.fluid.select_domain(domain='1d_cylinder', D=1, H=5)
-    ot.fluid.select_scheme(conv='upwind_1d', diff='central_difference_1d')
-    ot.fluid.initialise(T=20+273.15, mdot=1)
-    ot.fluid.define_bc(bc_type='dirichlet', parameter='T', position=[0], value=80+273.15)
-    ot.fluid.define_bc(bc_type='neumann', parameter='T', position=[-1])
-    ot.fluid.enforce_bcs()
+    # ot.fluid.select_substance(substance='water')
+    # ot.fluid.select_domain(domain='1d_cylinder', D=1, H=5)
+    # ot.fluid.select_scheme(conv='upwind_1d', diff='central_difference_1d')
+    # ot.fluid.initialise(T=20+273.15, mdot=1)
+    # ot.fluid.define_bc(bc_type='dirichlet', parameter='T', position=[0], value=80+273.15)
+    # ot.fluid.define_bc(bc_type='neumann', parameter='T', position=[-1])
+    # ot.fluid.enforce_bcs()
 
     ot.bed.select_substance(substance='magnetite')
     ot.bed.select_domain(domain='1d_sphere', D=0.05)
     ot.bed.select_scheme(diff='central_difference_1d')
-    ot.bed.initialise(T=50+273.15)
+    ot.bed.initialise(T=0)
+    ot.bed.define_bc(bc_type='dirichlet', parameter='T', position=[-1], value=100)
     ot.bed.define_bc(bc_type='neumann', parameter='T', position=[0])
-    ot.bed.define_bc(bc_type='neumann', parameter='T', position=[-1])
     ot.bed.enforce_bcs()
 
+    ot.add_coupling(coupling_type='forced_convection', h='constant', value=1200)
     ot.run_simulation()
+
+    plt.plot(ot.bed.T[0,:])
+    plt.grid()
+    plt.show()
