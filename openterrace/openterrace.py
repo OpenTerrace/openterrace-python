@@ -1,6 +1,6 @@
 # Import OpenTerrace modules
-import fluids
-import bedmaterials
+import fluid_substances
+import bed_substances
 import domains
 import diffusion_schemes
 import convection_schemes
@@ -17,8 +17,8 @@ class OpenTerrace:
         self.t = 0
         self.t_end = t_end
         self.dt = dt
-        self.fluid = self.Phase(n=n_fluid, _type='fluid', options='fluids')
-        self.bed = self.Phase(n=n_bed, n2=n_fluid, _type='bed', options='bedmaterials')
+        self.fluid = self.Phase(n=n_fluid, _type='fluid', options='fluid_substances')
+        self.bed = self.Phase(n=n_bed, n2=n_fluid, _type='bed', options='bed_substances')
 
     class Phase:
         def __init__(self, n=None, n2=1, _type=None, options=None):
