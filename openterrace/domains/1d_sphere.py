@@ -18,7 +18,7 @@ def dx(vars):
 def A(vars):
     n = vars['n']
     D = vars['D']
-    r_vec = np.arange(-(D/2)/n, D/2+2*(D/2)/n, (D/2)/n)
+    r_vec = np.linspace(0-(D/2/n), D/2+(D/2/n), n+3)
     return np.array([(4*np.pi*r_vec**2)[:-1], (4*np.pi*r_vec**2)[1:]])
 
 def V(vars):

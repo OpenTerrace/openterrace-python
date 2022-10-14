@@ -45,6 +45,7 @@ class OpenTerrace:
             self.domain = getattr(globals()['domains'], domain)
             self.domain.validate_input(kwargs, domain)
             self.domain.shape = self.domain.shape(kwargs)
+            self.domain.node_pos = self.domain.node_pos(kwargs)
             self.domain.dx = self.domain.dx(kwargs)
             self.domain.A = self.domain.A(kwargs)
             self.domain.V = self.domain.V(kwargs)
@@ -70,10 +71,10 @@ class OpenTerrace:
         def initialise(self, T=None, mdot=None):
             """Initialises temperature and massflow fields"""
             if T is not None:
-                self.T = np.tile(T,(np.append(self.n2,self.domain.shape+2)))
+                self.T = np.tile(T,(np.append(self.n2,self.domain.shape)))
                 self.h = self.fcns.h(self.T)
             if mdot is not None:
-                self.mdot = np.tile(mdot,(np.append(self.n2,self.domain.shape+2)))
+                self.mdot = np.tile(mdot,(np.append(self.n2,self.domain.shape)))
 
             self.T = self.fcns.T(self.h)
             self.rho = self.fcns.rho(self.h)
@@ -82,7 +83,6 @@ class OpenTerrace:
 
             if self.diff:
                 self.D = np.zeros(((2,)+(self.T.shape)))
-
             if self.conv:
                 self.F = np.zeros(((2,)+(self.T.shape)))
 
@@ -95,8 +95,8 @@ class OpenTerrace:
 
             if self.diff:
                 self.D = np.zeros(((2,)+(self.T.shape)))
-                self.D[0,:,:] = self.k*self.domain.A[0]/self.domain.dx[0]
-                self.D[1,:,:] = self.k*self.domain.A[1]/self.domain.dx[1]
+                self.D[0,:,:] = self.k*self.domain.A[0]/self.domain.dx
+                self.D[1,:,:] = self.k*self.domain.A[1]/self.domain.dx
 
             if self.conv:
                 self.F = np.zeros(((2,)+(self.T.shape)))
@@ -126,8 +126,10 @@ class OpenTerrace:
                         self.h[:,0] = self.h[:,1]
                     if bc['position'] == [1]:
                         self.h[:,-1] = self.h[:,-2]
-                if bc['type'] == 'robin':
-                    pass
+
+        def update_boundary_nodes(self):
+            """Update the nodes at the domain boundary"""
+            pass
 
         def solve_equations(self, dt):
             if self.diff:
@@ -135,32 +137,21 @@ class OpenTerrace:
             if self.conv:
                 self.h = self.h + self.conv(self.T, self.F)/(self.rho*self.domain.V)*dt
                 
-    def add_coupling(self, coupling_type=None, h=None, value=None):
+    def add_source_term(self, source_term=None, h=None, value=None):
         """Specify coupling type between the two phases"""
-        valid_coupling_types = ['forced_convection']
-        valid_h = ['constant']
-        if coupling_type not in valid_coupling_types:
-            raise Exception("coupling_type \'"+coupling_type+"\' specified. Valid options for coupling_type are:", valid_coupling_types)
-        if h not in valid_h:
-            raise Exception("h \'"+h+"\' specified. Valid options for h are:", valid_h)
-            
+
     def run_simulation(self):
         """This is the function full of magic."""
         for i in tqdm.tqdm(np.arange(0, self.t_end, self.dt)):
-            # self.fluid.solve_equations(self.dt)
-            # self.fluid.enforce_bcs()  
-            # self.fluid.update_properties()
-
+            self.bed.update_boundary_nodes()
             self.bed.solve_equations(self.dt)
-            self.bed.enforce_bcs()
             self.bed.update_properties()
 
     def phase_coupling(self):
         pass
 
 if __name__ == '__main__':
-    #ot = OpenTerrace(t_end=36000, dt=1, n_fluid=1, n_bed=10)
-    ot = OpenTerrace(t_end=600, dt=0.1, n_bed=10)
+    ot = OpenTerrace(t_end=600, dt=0.01, n_bed=100)
 
     # ot.fluid.select_substance(substance='water')
     # ot.fluid.select_domain(domain='1d_cylinder', D=1, H=5)
@@ -171,16 +162,16 @@ if __name__ == '__main__':
     # ot.fluid.enforce_bcs()
 
     ot.bed.select_substance(substance='magnetite')
-    ot.bed.select_domain(domain='1d_sphere', D=0.05)
+    ot.bed.select_domain(domain='1d_sphere_2', D=0.05)
     ot.bed.select_scheme(diff='central_difference_1d')
     ot.bed.initialise(T=0)
-    ot.bed.define_bc(bc_type='dirichlet', parameter='T', position=[-1], value=100)
-    ot.bed.define_bc(bc_type='neumann', parameter='T', position=[0])
+    ot.bed.define_bc(bc_type='dirichlet', parameter='T', position=[0], value=100)
+    ot.bed.define_bc(bc_type='neumann', parameter='T', position=[-1])
     ot.bed.enforce_bcs()
-
-    ot.add_coupling(coupling_type='forced_convection', h='constant', value=1200)
+    
+    ot.phase_coupling(source_term='forced_convection', h='constant', value=1200, position=[-1])
     ot.run_simulation()
 
-    plt.plot(ot.bed.T[0,:])
+    plt.plot(ot.bed.domain.node_pos, ot.bed.T[0,:],'-sk')
     plt.grid()
     plt.show()
