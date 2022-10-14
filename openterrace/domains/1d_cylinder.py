@@ -25,4 +25,4 @@ def V(vars):
     n = vars['n']
     D = vars['D']
     H = vars['H']
-    return (np.repeat(np.pi*(D/2)**2*H/n, n+2))
+    return np.repeat(np.pi*(D/2)**2*H/n, n+2)

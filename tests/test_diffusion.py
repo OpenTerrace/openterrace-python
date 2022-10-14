@@ -3,7 +3,7 @@ import numpy as np
 from scipy.optimize import brentq
 
 def test_sphere():
-    def theta_fcn(Bi=None, Fo=None, r_r0=None, n_terms=10):
+    def theta_fcn(Bi=None, Fo=None, r_r0=None, n_terms=5):
         def lambda_fcn(Bi, i):
             left = np.pi*(i) + 1e-12
             right = np.pi*(i+1) - 1e-12
@@ -20,8 +20,16 @@ def test_sphere():
                 theta += 4*(np.sin(lambda_i)-lambda_i*np.cos(lambda_i)) / (2*lambda_i - np.sin(2*lambda_i)) * np.exp(-lambda_i**2*Fo) * np.sin(lambda_i*r_r0)/(lambda_i*r_r0)
         return theta
 
-    Bi = 10000*1200*0.025/0.627
-    Fo = 0.209
+    h = 1200
+    Lc = 0.025
+    k = 0.627
+    Bi = h*Lc/k
+    Fo = 0.2085
     r_r0 = 0
 
     theta = theta_fcn(Bi, Fo, r_r0)
+    Ti = 5
+    Tinf = 95
+    T = theta*(Ti-Tinf)+Tinf
+    print(theta, T)
+    assert 1 == 1
