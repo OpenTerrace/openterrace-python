@@ -72,12 +72,12 @@ nav:
         - user-guide/theory/governing.md
       - Fluids and materials:
         - Fluids:
-          - user-guide/fluids/air.md
-          - user-guide/fluids/water.md
+          - user-guide/fluid_substances/air.md
+          - user-guide/ffluid_substances/water.md
         - Bed materials:
-          - user-guide/bedmaterials/swedish_diabase.md
-          - user-guide/bedmaterials/magnetite.md
-          - user-guide/bedmaterials/ATS58.md
+          - user-guide/bed_substances/swedish_diabase.md
+          - user-guide/bed_substances/magnetite.md
+          - user-guide/bed_substances/ATS58.md
       - Domain types:
           - user-guide/domains/1d_cylinder.md
           - user-guide/domains/1d_sphere.md
