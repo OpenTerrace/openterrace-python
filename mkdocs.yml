@@ -73,7 +73,7 @@ nav:
       - Fluids and materials:
         - Fluids:
           - user-guide/fluid_substances/air.md
-          - user-guide/ffluid_substances/water.md
+          - user-guide/fluid_substances/water.md
         - Bed materials:
           - user-guide/bed_substances/swedish_diabase.md
           - user-guide/bed_substances/magnetite.md
