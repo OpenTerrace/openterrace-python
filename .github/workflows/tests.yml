@@ -1,0 +1,48 @@
+name: Run tests
+
+on:
+  pull_request:
+
+  push:
+    branches:
+    - main
+    - development
+
+jobs:
+  test-pip:
+    name: Run tests (with pip)
+
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.x]
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: git fetch --prune --unshallow --tags
+
+    - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Setup Python environment
+      run: |
+        python -m pip install --upgrade pip setuptools whell
+        pip install pytest numpy scipy
+
+    - name: Install OpenTerrace
+      run: |
+        python install -e .[test]
+        pip freeze
+
+    - name: Run tests
+      run: |
+        python -m pytest
