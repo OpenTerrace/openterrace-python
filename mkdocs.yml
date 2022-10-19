@@ -39,9 +39,14 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
   - markdown_katex:
       no_inline_svg: True
       insert_fonts_css: True
+  - toc:
+      toc_depth: 4
 
 extra_javascript:
   - javascripts/mathjax.js
@@ -70,11 +75,11 @@ nav:
       - user-guide/get-started.md
       - Theory:
         - user-guide/theory/governing.md
-      - Fluids and materials:
-        - Fluids:
+      - Substances:
+        - Fluid:
           - user-guide/fluid_substances/air.md
           - user-guide/fluid_substances/water.md
-        - Bed materials:
+        - Bed:
           - user-guide/bed_substances/swedish_diabase.md
           - user-guide/bed_substances/magnetite.md
           - user-guide/bed_substances/ATS58.md
@@ -89,5 +94,6 @@ nav:
       - Validation and verification:
         - user-guide/verification-and-validation/verification.md
         - user-guide/verification-and-validation/validation.md
+  - source_code.md
   - contributing.md
   - contact.md
