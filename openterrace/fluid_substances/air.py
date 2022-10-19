@@ -78,7 +78,7 @@ def mu(h: float, p:float=None) -> float:
         p (float): Pressure in Pa
 
     Returns:
-        Dynamic viscosity in kg/(m*s)
+        Dynamic viscosity in kg/(m s)
     """
     return -1.50291961e-17*h**2 + 5.66505123e-11*h - 2.72708492e-06
 
