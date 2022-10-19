@@ -35,14 +35,14 @@ jobs:
     
     - name: Setup Python environment
       run: |
-        python -m pip install --upgrade pip setuptools
-        pip install pytest numpy scipy
+        python3 -m pip install --upgrade pip setuptools
+        pip3 install pytest numpy scipy
 
     - name: Install OpenTerrace
       run: |
-        python -m pip install -e .
-        pip freeze
+        python3 -m pip install -e .
+        pip3 freeze
 
     - name: Run tests
       run: |
-        python -m pytest
+        python3 -m pytest
