@@ -13,16 +13,24 @@ def shape(vars):
 def dx(vars):
     n = vars['n']
     H = vars['H']
-    return (np.repeat(H/n, n+2), np.repeat(H/n, n+2))
+    dx = H/(n-1)
+    return np.repeat(dx, n)
+
+def node_pos(vars):
+    n = vars['n']
+    H = vars['D']
+    return np.array(np.linspace(0,H,n))
 
 def A(vars):
     n = vars['n']
     D = vars['D']
     H = vars['H']
-    return (np.repeat(np.pi*(D/2)**2, n+2), np.repeat(np.pi*(D/2)**2, n+2))
+    return (np.repeat(np.pi*(D/2)**2, n), np.repeat(np.pi*(D/2)**2, n))
 
 def V(vars):
     n = vars['n']
     D = vars['D']
     H = vars['H']
-    return np.repeat(np.pi*(D/2)**2*H/n, n+2)
+    dx = H/(n-1)
+    face_pos_vec = np.concatenate(([0],np.linspace(dx/2,H-dx/2,n-1),[H]))
+    return np.diff(np.pi*(D/2)**2*face_pos_vec)
