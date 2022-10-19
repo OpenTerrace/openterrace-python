@@ -6,7 +6,7 @@ authors = [
     { name = "Jakob Hærvig" }
     ]
 readme = "README.md"
-requires-python = ">=3.09"
+requires-python = ">=3.9"
 dynamic = ["dependencies"]
 
 [tool.setuptools]
