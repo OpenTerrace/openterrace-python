@@ -1,9 +1,9 @@
 # Import OpenTerrace modules
 import openterrace.fluid_substances
-import bed_substances
-import domains
-import diffusion_schemes
-import convection_schemes
+import openterrace.bed_substances
+import openterrace.domains
+import openterrace.diffusion_schemes
+import openterrace.convection_schemes
 
 # Import common Python modules
 import tqdm
