@@ -40,7 +40,7 @@ jobs:
 
     - name: Install OpenTerrace
       run: |
-        python3 -m pip install -e .
+        python3 -m pip install .
         pip3 freeze
 
     - name: Run tests
