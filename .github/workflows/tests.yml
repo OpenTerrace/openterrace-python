@@ -1,12 +1,6 @@
 name: Run tests
 
-on:
-  pull_request:
-
-  push:
-    branches:
-    - main
-    - development
+on: [workflow_dispatch]
 
 jobs:
   test-pip:
@@ -35,13 +29,14 @@ jobs:
     
     - name: Setup Python environment
       run: |
-        python3 -m pip install --upgrade pip setuptools
+        python3 -m pip install --upgrade build pip setuptools
         pip3 install pytest numpy scipy
 
     - name: Install OpenTerrace
       run: |
-        python3 -m pip install .
+        python3 -m build
         pip3 freeze
+        pip3 install some-package.whl
 
     - name: Run tests
       run: |
