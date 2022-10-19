@@ -1,5 +1,5 @@
 # Import OpenTerrace modules
-import fluid_substances
+import openterrace.fluid_substances
 import bed_substances
 import domains
 import diffusion_schemes
