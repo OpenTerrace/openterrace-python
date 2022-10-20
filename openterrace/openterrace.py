@@ -1,9 +1,9 @@
 # Import OpenTerrace modules
-import openterrace.fluid_substances
-import openterrace.bed_substances
-import openterrace.domains
-import openterrace.diffusion_schemes
-import openterrace.convection_schemes
+import fluid_substances
+import bed_substances
+import domains
+import diffusion_schemes
+import convection_schemes
 
 # Import common Python modules
 import tqdm
@@ -169,8 +169,9 @@ class OpenTerrace:
             """Define source terms"""
             self._sources.append(kwargs)
 
-    def add_source_terms(self):
-        self.bed.h[bed_s] = self.bed.h[bed_s] + h_coeff*self.bed.domain.A[0,-1]*(self.fluid.T[fluid_s]-self.bed.T[bed_s])
+        def add_source_terms(self, dt, Tother):
+            pass
+            #self.bed.h[bed_s] = self.bed.h[bed_s] + h_coeff*self.bed.domain.A[0,-1]*(self.fluid.T[fluid_s]-self.bed.T[bed_s])
 
     def run_simulation(self):
         """This is the function full of magic."""
@@ -179,14 +180,15 @@ class OpenTerrace:
                 self.bed.solve_equations(self.dt)
                 self.bed.update_properties()
                 self.bed.update_boundary_nodes(self.dt)
+                self.bed.add_source_terms(self.dt, self.fluid.T)
             if hasattr(self.fluid, 'T'):
                 self.fluid.solve_equations(self.dt)
                 self.fluid.update_properties()
                 self.fluid.update_boundary_nodes(self.dt)
+                self.fluid.add_source_terms(self.dt)
             
             print(self.fluid._sources)
             sys.exit()
-            self.phase_coupling(self.dt)
 
 if __name__ == '__main__':
     ot = OpenTerrace(t_end=1800, dt=0.1, n_bed=5, n_fluid=20)
@@ -198,7 +200,7 @@ if __name__ == '__main__':
     ot.fluid.define_bc(bc_type='dirichlet', parameter='T', position=np.s_[:,0], value=323.15)
     ot.fluid.define_bc(bc_type='neumann', parameter='T', position=np.s_[:,-1])
     ot.fluid.define_source_term(source_type='forced_convection_couple', h_type='constant', h_coeff=1200, slice=np.s_[0])
-    ot.fluid.define_source_term(source_type='thermal_resistance', R=0.001, Tinf=273.15+20, slice=np.s_[0])
+    #ot.fluid.define_source_term(source_type='thermal_resistance', R=0.001, Tinf=273.15+20, slice=np.s_[0])
 
     ot.bed.select_substance(substance='magnetite')
     ot.bed.select_domain(domain='1d_sphere', D=0.05)
