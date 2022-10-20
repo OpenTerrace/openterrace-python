@@ -1,4 +1,4 @@
-name: Generate and publish documentation from docstrings
+name: Docs Publish
 
 on:
   push:

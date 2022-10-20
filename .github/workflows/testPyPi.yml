@@ -1,4 +1,4 @@
-name: Build and publish Python distribution to TestPyPI
+name: TestPyPI Publish
 
 on: [workflow_dispatch]
 

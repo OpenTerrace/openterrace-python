@@ -1,4 +1,4 @@
-name: Build and publish Python distribution to PyPI
+name: PyPI Publish
 
 on: [workflow_dispatch]
 
