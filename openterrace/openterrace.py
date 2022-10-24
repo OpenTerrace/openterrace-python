@@ -13,7 +13,7 @@ import sys
 
 class OpenTerrace:
     """OpenTerrace class."""
-    def __init__(self, t_end:float=3600, dt:float=1, n_fluid:float=1, n_bed:float=10):
+    def __init__(self, t_end:float=3600, dt:float=1, n_fluid:float=1, n_bed:float=2):
         """Initialise with various control parameters.
 
         Args:
@@ -27,6 +27,7 @@ class OpenTerrace:
         self.dt = dt
         self.fluid = self.Phase(n=n_fluid, _type='fluid', options='fluid_substances')
         self.bed = self.Phase(n=n_bed, n2=n_fluid, _type='bed', options='bed_substances')
+        self.sources = []
 
     class Phase:
         """Main class to define to define either the fluid or bed phase."""
@@ -34,9 +35,9 @@ class OpenTerrace:
             self.n = n
             self.n2 = n2
             self.options = options
+            self.bcs = []
+            self.sources = []
             self._type = _type
-            self._bcs = []
-            self._sources = []
 
         def define_substance_on_the_fly(self, cp:float=None, rho:float=None, k:float=None, mu:float=None):
             """Defines a new substance on-the-fly. This is useful for defining a substance for testing purposes with temperature independent properties.
@@ -83,6 +84,9 @@ class OpenTerrace:
             self.domain.dx = self.domain.dx(kwargs)
             self.domain.A = self.domain.A(kwargs)
             self.domain.V = self.domain.V(kwargs)
+
+        def add_porosity(self, phi=1):
+            self.domain.V = self.domain.V*phi
 
         def select_schemes(self, diff=None, conv=None):
             """Imports the specified diffusion and convection schemes."""
@@ -146,18 +150,18 @@ class OpenTerrace:
                 raise Exception("Keyword 'position' not specified.")
             if value is None and bc_type=='dirichlet':
                 raise Exception("Keyword 'value' is needed for dirichlet type bc.")
-            self._bcs.append({'type': bc_type, 'parameter': parameter, 'position': position, 'value': value})
+            self.bcs.append({'type': bc_type, 'parameter': parameter, 'position': position, 'value': value})
 
         def update_boundary_nodes(self, dt):
             """Update boundary nodes"""
-            for bc in self._bcs:
+            for bc in self.bcs:
                 if bc['type'] == 'dirichlet':
                     self.h[bc['position']] = self.fcns.h(bc['value'])
                 if bc['type'] == 'neumann':
                     if bc['position'] == np.s_[:,0]:
-                        self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,1]*self.D[0,:,1] - 2*self.T[:,0]*self.D[1,:,0])/(self.rho[:,0]*self.domain.V[0])*dt
+                        self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,1]*self.D[1,:,0] - 2*self.T[:,0]*self.D[1,:,0])/(self.rho[:,0]*self.domain.V[0])*dt
                     if bc['position'] == np.s_[:,-1]:
-                        self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,-2]*self.D[0,:,-1] - 2*self.T[:,-1]*self.D[1,:,-1])/(self.rho[:,-1]*self.domain.V[-1])*dt
+                        self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,-2]*self.D[0,:,-1] - 2*self.T[:,-1]*self.D[0,:,-1])/(self.rho[:,-1]*self.domain.V[-1])*dt
 
         def solve_equations(self, dt):
             if self.diff is not None:
@@ -165,53 +169,55 @@ class OpenTerrace:
             if self.conv is not None:
                 self.h = self.h + self.conv(self.T, self.F)/(self.rho*self.domain.V)*dt
 
-        def define_source_term(self, **kwargs):#source_type:str=None, h_type:str=None, h_coeff:float=None, slice=None):
-            """Define source terms"""
-            self._sources.append(kwargs)
+    def couple(self, h_type=None, h_fcn=None, h_coeff=None):
 
-        def add_source_terms(self, dt, Tother):
-            pass
-            #self.bed.h[bed_s] = self.bed.h[bed_s] + h_coeff*self.bed.domain.A[0,-1]*(self.fluid.T[fluid_s]-self.bed.T[bed_s])
+        Qdot = h_coeff*self.bed.domain.A[0,-1]*(self.fluid.T[0]-self.bed.T[:,-1])
+
+        self.bed.h[:,-1] = self.bed.h[:,-1] + Qdot/(self.bed.rho[:,-1]*self.bed.domain.V[-1])*self.dt
+        self.fluid.h[0] = self.fluid.h[0] - self.fluid.domain.V/np.sum(self.bed.domain.V)*Qdot/(self.fluid.rho*self.fluid.domain.V)*self.dt ###CHECK
 
     def run_simulation(self):
         """This is the function full of magic."""
+
         for i in tqdm.tqdm(np.arange(0, self.t_end, self.dt)):
             if hasattr(self.bed, 'T'):
+                self.bed.update_boundary_nodes(self.dt)
                 self.bed.solve_equations(self.dt)
                 self.bed.update_properties()
-                self.bed.update_boundary_nodes(self.dt)
-                self.bed.add_source_terms(self.dt, self.fluid.T)
+                
+
             if hasattr(self.fluid, 'T'):
+                self.fluid.update_boundary_nodes(self.dt)
                 self.fluid.solve_equations(self.dt)
                 self.fluid.update_properties()
-                self.fluid.update_boundary_nodes(self.dt)
-                self.fluid.add_source_terms(self.dt)
-            
-            print(self.fluid._sources)
-            sys.exit()
+                
+            #self.couple(h_type='constant', h_coeff=1200)
 
 if __name__ == '__main__':
-    ot = OpenTerrace(t_end=1800, dt=0.1, n_bed=5, n_fluid=20)
+    ot = OpenTerrace(t_end=0.2, dt=0.1, n_fluid=100)
 
-    ot.fluid.select_substance(substance='water')
+    ot.fluid.select_substance(substance='air')
     ot.fluid.select_domain(domain='1d_cylinder', D=1, H=5)
-    ot.fluid.select_schemes(conv='upwind_1d', diff='central_difference_1d')
-    ot.fluid.initialise(T=273.15, mdot=1)
-    ot.fluid.define_bc(bc_type='dirichlet', parameter='T', position=np.s_[:,0], value=323.15)
+    ot.fluid.add_porosity(phi=1)
+    ot.fluid.select_schemes(diff='central_difference_1d')
+    ot.fluid.initialise(T=300, mdot=0)
+    ot.fluid.define_bc(bc_type='dirichlet', parameter='T', position=np.s_[:,0], value=350)
     ot.fluid.define_bc(bc_type='neumann', parameter='T', position=np.s_[:,-1])
-    ot.fluid.define_source_term(source_type='forced_convection_couple', h_type='constant', h_coeff=1200, slice=np.s_[0])
-    #ot.fluid.define_source_term(source_type='thermal_resistance', R=0.001, Tinf=273.15+20, slice=np.s_[0])
 
     ot.bed.select_substance(substance='magnetite')
     ot.bed.select_domain(domain='1d_sphere', D=0.05)
     ot.bed.select_schemes(diff='central_difference_1d')
-    ot.bed.initialise(T=273.15)
+    ot.bed.initialise(T=800)
     ot.bed.define_bc(bc_type='neumann', parameter='T', position=np.s_[:,-1])
     ot.bed.define_bc(bc_type='neumann', parameter='T', position=np.s_[:,0])
-    ot.bed.define_source_term(source_type='forced_convection_couple', h_type='constant', h_coeff=1200, slice=np.s_[:,-1])
-    
+
     ot.run_simulation()
 
-    plt.plot(ot.fluid.domain.node_pos/(ot.fluid.domain.node_pos[-1]-ot.fluid.domain.node_pos[0]), ot.fluid.T[0,:], '-sb')
-    plt.grid()
+    fig, axs = plt.subplots(2)
+    axs[0].plot(ot.fluid.domain.node_pos, ot.fluid.T[0,:], '-k')
+    axs[0].grid()
+    axs[1].plot(ot.bed.domain.node_pos, ot.bed.T.transpose(), '-sk')
+    axs[1].grid()
     plt.show()
+
+    print(ot.fluid.T)

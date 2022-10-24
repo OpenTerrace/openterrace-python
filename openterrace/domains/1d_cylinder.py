@@ -18,7 +18,7 @@ def dx(vars):
 
 def node_pos(vars):
     n = vars['n']
-    H = vars['D']
+    H = vars['H']
     return np.array(np.linspace(0,H,n))
 
 def A(vars):
