@@ -1,19 +1,18 @@
-# Import OpenTerrace modules
-import fluid_substances
-import bed_substances
-import domains
-import diffusion_schemes
-import convection_schemes
+# # Import OpenTerrace modules
+from . import fluid_substances
+from . import bed_substances
+from . import domains
+from . import diffusion_schemes
+from . import convection_schemes
 
 # Import common Python modules
 import tqdm
 import numpy as np
-import matplotlib.pyplot as plt
 import sys
 
-class OpenTerrace:
+class GlobalParameters:
     """OpenTerrace class."""
-    def __init__(self, t_end:float=3600, dt:float=1, n_fluid:float=1, n_bed:float=2):
+    def __init__(self, t_end:float=None, dt:float=None, n_fluid:float=1, n_bed:float=2):
         """Initialise with various control parameters.
 
         Args:
@@ -152,6 +151,18 @@ class OpenTerrace:
                 raise Exception("Keyword 'value' is needed for dirichlet type bc.")
             self.bcs.append({'type': bc_type, 'parameter': parameter, 'position': position, 'value': value})
 
+        def define_source_term(self, **kwargs):
+            valid_source_types = ['thermal_resistance']
+            if kwargs['source_type'] not in valid_source_types:
+                raise Exception("source_type \'"+kwargs['source_type']+"\' specified. Valid options for source_type are:", valid_source_types)
+            if kwargs['source_type'] == 'thermal_resistance':
+                required = ['R','T_inf', 'position']
+                for var in required:
+                    if not var in kwargs:
+                        raise Exception("Keyword \'"+var+"\' not specified for source of type \'"+kwargs['source_type']+"\'")
+
+            self.sources.append(kwargs)
+
         def update_boundary_nodes(self, dt):
             """Update boundary nodes"""
             for bc in self.bcs:
@@ -159,22 +170,35 @@ class OpenTerrace:
                     self.h[bc['position']] = self.fcns.h(bc['value'])
                 if bc['type'] == 'neumann':
                     if bc['position'] == np.s_[:,0]:
-                        self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,1]*self.D[1,:,0] - 2*self.T[:,0]*self.D[1,:,0])/(self.rho[:,0]*self.domain.V[0])*dt
+                        self.h[bc['position']] = self.h[bc['position']] + (self.T[:,1]*self.D[0,:,1] - self.T[:,0]*self.D[1,:,0]) / (self.rho[:,0]*self.domain.V[0])*dt
                     if bc['position'] == np.s_[:,-1]:
-                        self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,-2]*self.D[0,:,-1] - 2*self.T[:,-1]*self.D[0,:,-1])/(self.rho[:,-1]*self.domain.V[-1])*dt
+                        self.h[bc['position']] = self.h[bc['position']] + (self.T[:,-2]*self.D[1,:,-2] - self.T[:,-1]*self.D[0,:,-1]) / (self.rho[:,-1]*self.domain.V[-1])*dt
+
+        def add_sources(self, dt):
+            for source in self.sources:
+                if source['source_type'] == 'thermal_resistance':
+                    self.h[source['position']] = self.h[source['position']] + (1/source['R'] * (source['T_inf']-self.T[source['position']])) / (self.rho[source['position']]*self.domain.V[source['position'][1]])*dt
 
         def solve_equations(self, dt):
             if self.diff is not None:
                 self.h = self.h + self.diff(self.T, self.D)/(self.rho*self.domain.V)*dt
             if self.conv is not None:
                 self.h = self.h + self.conv(self.T, self.F)/(self.rho*self.domain.V)*dt
+            if self.sources is not None:
+                self.add_sources(dt)
 
-    def couple(self, h_type=None, h_fcn=None, h_coeff=None):
+    def define_coupling(self, h_coeff='constant', h_value=None):
+        self.coupling = True
+        valid_h_coeff = ['constant']
+        if h_coeff not in valid_h_coeff:
+            raise Exception("h_coeff \'"+h_coeff+"\' specified. Valid options for h_coeff are:", valid_h_coeff)
+        if h_coeff == 'constant':
+            self.h_value = h_value
 
-        Qdot = h_coeff*self.bed.domain.A[0,-1]*(self.fluid.T[0]-self.bed.T[:,-1])
-
+    def couple(self):
+        Qdot = self.h_value*self.bed.domain.A[0,-1]*(self.fluid.T[0]-self.bed.T[:,-1])
         self.bed.h[:,-1] = self.bed.h[:,-1] + Qdot/(self.bed.rho[:,-1]*self.bed.domain.V[-1])*self.dt
-        self.fluid.h[0] = self.fluid.h[0] - self.fluid.domain.V/np.sum(self.bed.domain.V)*Qdot/(self.fluid.rho*self.fluid.domain.V)*self.dt ###CHECK
+        self.fluid.h[0] = self.fluid.h[0] - self.fluid.domain.V/np.sum(self.bed.domain.V)*Qdot/(self.fluid.rho*self.fluid.domain.V)*self.dt
 
     def run_simulation(self):
         """This is the function full of magic."""
@@ -185,39 +209,10 @@ class OpenTerrace:
                 self.bed.solve_equations(self.dt)
                 self.bed.update_properties()
                 
-
             if hasattr(self.fluid, 'T'):
                 self.fluid.update_boundary_nodes(self.dt)
                 self.fluid.solve_equations(self.dt)
                 self.fluid.update_properties()
-                
-            #self.couple(h_type='constant', h_coeff=1200)
 
-if __name__ == '__main__':
-    ot = OpenTerrace(t_end=0.2, dt=0.1, n_fluid=100)
-
-    ot.fluid.select_substance(substance='air')
-    ot.fluid.select_domain(domain='1d_cylinder', D=1, H=5)
-    ot.fluid.add_porosity(phi=1)
-    ot.fluid.select_schemes(diff='central_difference_1d')
-    ot.fluid.initialise(T=300, mdot=0)
-    ot.fluid.define_bc(bc_type='dirichlet', parameter='T', position=np.s_[:,0], value=350)
-    ot.fluid.define_bc(bc_type='neumann', parameter='T', position=np.s_[:,-1])
-
-    ot.bed.select_substance(substance='magnetite')
-    ot.bed.select_domain(domain='1d_sphere', D=0.05)
-    ot.bed.select_schemes(diff='central_difference_1d')
-    ot.bed.initialise(T=800)
-    ot.bed.define_bc(bc_type='neumann', parameter='T', position=np.s_[:,-1])
-    ot.bed.define_bc(bc_type='neumann', parameter='T', position=np.s_[:,0])
-
-    ot.run_simulation()
-
-    fig, axs = plt.subplots(2)
-    axs[0].plot(ot.fluid.domain.node_pos, ot.fluid.T[0,:], '-k')
-    axs[0].grid()
-    axs[1].plot(ot.bed.domain.node_pos, ot.bed.T.transpose(), '-sk')
-    axs[1].grid()
-    plt.show()
-
-    print(ot.fluid.T)
+            # if self.coupling:
+            #     self.couple()
