@@ -30,7 +30,7 @@ jobs:
     - name: Setup Python environment
       run: |
         python3 -m pip install --upgrade build pip setuptools
-        pip3 install pytest numpy scipy numba matplotlib
+        pip3 install numpy numba scipy matplotlib tqdm pytest
 
     - name: Install OpenTerrace
       run: |
