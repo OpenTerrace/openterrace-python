@@ -36,7 +36,6 @@ jobs:
       run: |
         python3 -m build
         pip3 freeze
-        pip3 install some-package.whl
 
     - name: Run tests
       run: |
