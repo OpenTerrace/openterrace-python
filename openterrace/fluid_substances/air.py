@@ -9,7 +9,7 @@ def h(T: float) -> float:
     Returns:
         Mass specific enthalpy in J/kg
     """
-    return 1.06401974e-01*T**2 + 9.26624243e+02*T + 1.39199143e+05
+    return 1062.3436205*T + 100613.952812
   
 def T(h: float, p:float=None) -> float:
     """Temperature as function of mass specific enthalpy at 1 atm (fit valid between 273.15 K to 1000 K).
@@ -23,7 +23,7 @@ def T(h: float, p:float=None) -> float:
     Returns:
         Temperature in kelvin
     """
-    return -8.46672403e-11*h**2 + 1.07323754e-03*h - 1.41828256e+02
+    return 9.41315014e-04*h - 9.47094244e+01
 
 def rho(h: float, p:float=None) -> float:
     """Density as function of mass specific enthalpy at 1 atm (fit valid between 273.15 K to 1000 K).
@@ -37,7 +37,7 @@ def rho(h: float, p:float=None) -> float:
     Returns:
         Density in kg/m^3
     """
-    return -3.07491951e-18*h**3 - 8.99511511e-12*h**2 - 9.18059393e-06*h + 3.68623992e+00
+    return -2.99101902e-18*h**3 + 8.99511511e-12*h**2 - 9.18059393e-06*h + 3.68623992e+00
 
 def k(h: float, p:float=None) -> float:
     """Thermal conductivity as function of mass specific enthalpy at 1 atm (fit valid between 273.15 K to 1000 K).
@@ -51,7 +51,7 @@ def k(h: float, p:float=None) -> float:
     Returns:
         Thermal conductivity in W/(m K)
     """
-    return -1.93368179e-14*h**2 + 8.56084207e-08*h - 6.41427790e-03
+    return -1.91985865e-14*h**2 + 8.53813872e-08*h - 6.32545058e-03
     
 
 def cp(h: float, p:float=None) -> float:
@@ -66,7 +66,7 @@ def cp(h: float, p:float=None) -> float:
     Returns:
         Specific heat capacity in J/(kg K)
     """
-    return -3.34421271e-16*h**3 + 8.54646323e-10*h**2 - 4.99992844e-04*h + 1.08968460e+03
+    return -3.31926950e-16*h**3 + 8.48767643e-10*h**2 - 4.95535470e-04*h + 1.08860162e+03
 
 def mu(h: float, p:float=None) -> float:
     """Dynamic viscosity as function of mass specific enthalpy at 1 atm (fit valid between 273.15 K to 1000 K).
@@ -80,7 +80,7 @@ def mu(h: float, p:float=None) -> float:
     Returns:
         Dynamic viscosity in kg/(m s)
     """
-    return -1.50291961e-17*h**2 + 5.66505123e-11*h - 2.72708492e-06
+    return -1.49118910e-17*h**2 + 5.64575734e-11*h - 2.65149023e-06
 
 def Pr(h: float, p:float=None) -> float:
     """Dynamic viscosity as function of mass specific enthalpy at 1 atm (fit valid between 273.15 K to 1000 K).

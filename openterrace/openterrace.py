@@ -8,7 +8,6 @@ from . import convection_schemes
 # Import common Python modules
 import tqdm
 import numpy as np
-import sys
 
 class GlobalParameters:
     """OpenTerrace class."""
@@ -27,6 +26,8 @@ class GlobalParameters:
         self.fluid = self.Phase(n=n_fluid, _type='fluid', options='fluid_substances')
         self.bed = self.Phase(n=n_bed, n2=n_fluid, _type='bed', options='bed_substances')
         self.sources = []
+        self.phi = 1
+        self.coupling = False
 
     class Phase:
         """Main class to define to define either the fluid or bed phase."""
@@ -37,6 +38,7 @@ class GlobalParameters:
             self.bcs = []
             self.sources = []
             self._type = _type
+            self.phi = 1
 
         def define_substance_on_the_fly(self, cp:float=None, rho:float=None, k:float=None, mu:float=None):
             """Defines a new substance on-the-fly. This is useful for defining a substance for testing purposes with temperature independent properties.
@@ -86,6 +88,7 @@ class GlobalParameters:
 
         def add_porosity(self, phi=1):
             self.domain.V = self.domain.V*phi
+            self.phi = phi
 
         def select_schemes(self, diff=None, conv=None):
             """Imports the specified diffusion and convection schemes."""
@@ -112,12 +115,10 @@ class GlobalParameters:
                 self.h = self.fcns.h(self.T)
             if mdot is not None:
                 self.mdot = np.tile(mdot,(np.append(self.n2,self.domain.shape)))
-
             self.T = self.fcns.T(self.h)
             self.rho = self.fcns.rho(self.h)
             self.cp = self.fcns.cp(self.h)
             self.k = self.fcns.k(self.h)
-
             self.D = np.zeros(((2,)+(self.T.shape)))
             self.F = np.zeros(((2,)+(self.T.shape)))
             self.S = np.zeros(self.T.shape)
@@ -160,7 +161,6 @@ class GlobalParameters:
                 for var in required:
                     if not var in kwargs:
                         raise Exception("Keyword \'"+var+"\' not specified for source of type \'"+kwargs['source_type']+"\'")
-
             self.sources.append(kwargs)
 
         def update_boundary_nodes(self, dt):
@@ -170,14 +170,14 @@ class GlobalParameters:
                     self.h[bc['position']] = self.fcns.h(bc['value'])
                 if bc['type'] == 'neumann':
                     if bc['position'] == np.s_[:,0]:
-                        self.h[bc['position']] = self.h[bc['position']] + (self.T[:,1]*self.D[0,:,1] - self.T[:,0]*self.D[1,:,0]) / (self.rho[:,0]*self.domain.V[0])*dt
+                        self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,1]*self.D[0,:,1] - 2*self.T[:,0]*self.D[1,:,0]) / (self.rho[:,0]*self.domain.V[0])*dt
                     if bc['position'] == np.s_[:,-1]:
-                        self.h[bc['position']] = self.h[bc['position']] + (self.T[:,-2]*self.D[1,:,-2] - self.T[:,-1]*self.D[0,:,-1]) / (self.rho[:,-1]*self.domain.V[-1])*dt
+                        self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,-2]*self.D[1,:,-2] - 2*self.T[:,-1]*self.D[0,:,-1]) / (self.rho[:,-1]*self.domain.V[-1])*dt
 
         def add_sources(self, dt):
             for source in self.sources:
                 if source['source_type'] == 'thermal_resistance':
-                    self.h[source['position']] = self.h[source['position']] + (1/source['R'] * (source['T_inf']-self.T[source['position']])) / (self.rho[source['position']]*self.domain.V[source['position'][1]])*dt
+                    self.h[source['position']] = self.h[source['position']] + (2/source['R'] * (source['T_inf']-self.T[source['position']])) / (self.rho[source['position']]*self.domain.V[source['position'][1]])*dt
 
         def solve_equations(self, dt):
             if self.diff is not None:
@@ -196,9 +196,9 @@ class GlobalParameters:
             self.h_value = h_value
 
     def couple(self):
-        Qdot = self.h_value*self.bed.domain.A[0,-1]*(self.fluid.T[0]-self.bed.T[:,-1])
-        self.bed.h[:,-1] = self.bed.h[:,-1] + Qdot/(self.bed.rho[:,-1]*self.bed.domain.V[-1])*self.dt
-        self.fluid.h[0] = self.fluid.h[0] - self.fluid.domain.V/np.sum(self.bed.domain.V)*Qdot/(self.fluid.rho*self.fluid.domain.V)*self.dt
+        Q = self.h_value*self.bed.domain.A[1,-1]*(self.fluid.T[0]-self.bed.T[:,-1])*self.dt
+        self.bed.h[:,-1] = self.bed.h[:,-1] + Q/(self.bed.rho[:,-1]*self.bed.domain.V[-1])
+        self.fluid.h[0] = self.fluid.h[0] - (1-self.fluid.phi)*(self.fluid.domain.V/self.fluid.phi) / np.sum(self.bed.domain.V) * Q/(self.fluid.rho*self.fluid.domain.V)
 
     def run_simulation(self):
         """This is the function full of magic."""
@@ -208,11 +208,11 @@ class GlobalParameters:
                 self.bed.update_boundary_nodes(self.dt)
                 self.bed.solve_equations(self.dt)
                 self.bed.update_properties()
-                
+            
             if hasattr(self.fluid, 'T'):
                 self.fluid.update_boundary_nodes(self.dt)
                 self.fluid.solve_equations(self.dt)
                 self.fluid.update_properties()
 
-            # if self.coupling:
-            #     self.couple()
+            if self.coupling:
+                self.couple()
