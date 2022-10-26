@@ -1,6 +1,6 @@
 name: TestPyPI Publish
 
-on: [workflow_dispatch]
+on: release
 
 jobs:
   build-n-publish:
