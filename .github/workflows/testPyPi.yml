@@ -1,6 +1,7 @@
 name: TestPyPI Publish
 
 on:
+  [workflow_dispatch]
   release:
     types: [published]
 
