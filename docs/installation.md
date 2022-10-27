@@ -18,3 +18,5 @@ conda config --set channel_priority strict
 ```bash
 conda install -c conda-forge openterrace
 ```
+
+Next, head to [Getting started](user-guide/get-started.md) to set up your first simulation.
