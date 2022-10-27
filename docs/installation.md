@@ -10,5 +10,11 @@ pip install openterrace
 ## Install using ``conda``
 
 ```bash
+conda config --add channels conda-forge
+```
+```bash
+conda config --set channel_priority strict
+```
+```bash
 conda install -c conda-forge openterrace
 ```
