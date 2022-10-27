@@ -1,25 +1,22 @@
-# Installation
-First, make sure to have a working installation of Python. 
+# User installation
+First, make sure to have a working installation of Python. We recommand using [Miniconda](https://docs.conda.io/en/latest/miniconda.html). With a working Python installation, you can install OpenTerrace using either pip or conda:
 
-## Install using PyPi
-OpenTerrace is available at the PyPI repository. Do yourself the favour to install it inside a virtual environment to isolate the installation from your system-wide Python installation. 
+## Install using ``pip``
 
-=== "Windows"
-
-    ``` sh
-    python3 -m venv $HOME/openterrace
-    $HOME\openterrace\Scripts\activate.bat
-    ```
-
-=== "macOS/Linux"
-
-    ``` sh
-    python3 -m venv $HOME/openterrace
-    source $HOME/openterrace/bin/activate
-    ```
-
-Next, use pip to install it inside the virtual environment:
-
-```python
-python3 -m pip install openterrace
+```bash
+pip install openterrace
 ```
+
+## Install using ``conda``
+
+```bash
+conda config --add channels conda-forge
+```
+```bash
+conda config --set channel_priority strict
+```
+```bash
+conda install -c conda-forge openterrace
+```
+
+Next, head to [Getting started](user-guide/get-started.md) to set up your first simulation.

@@ -1,39 +1,38 @@
 # Getting started
-
-When OpenTerrace is [installed](../installation.md), you can start setting up your simulation.
+With OpenTerrace [installed](../installation.md), you can start setting up your simulation.
 
 ## Example of complete simulation
-The following shows a complete example of an OpenTerrace simulation setup. 
+The following shows a complete example of an OpenTerrace simulation setup.
 
-First, we create an instance of the OpenTerrace class:
+First, we import openterrace and create global parameter:
 ```python linenums="1"
-ot = OpenTerrace(t_end=1800, dt=0.1, n_fluid=10, n_bed=5)
+import openterrace
+ot = openterrace.GlobalParameters(t_end=3600*10, dt=0.1, n_fluid=50, n_bed=10)
 ```
 
 Next, we set up the fluid phase:
-```python linenums="2"
-ot.fluid.select_substance(substance='water')
+```python linenums="3"
+ot.fluid.define_substance_on_the_fly(substance='air')
 ot.fluid.select_domain(domain='1d_cylinder', D=1, H=5)
-ot.fluid.select_scheme(conv='upwind_1d') #diff='central_difference_1d')
-ot.fluid.initialise(T=20+273.15, mdot=1)
-ot.fluid.define_bc(bc_type='dirichlet', parameter='T', position=(0,0), value=80+273.15)
-ot.fluid.define_bc(bc_type='neumann', parameter='T', position=(0,1))
-ot.fluid.update_properties()
+ot.fluid.add_porosity(phi=0.4)
+ot.fluid.select_schemes(diff='central_difference_1d', conv='upwind_1d')
+ot.fluid.initialise(T=273.15+20, mdot=0.1)
+ot.fluid.define_bc(bc_type='dirichlet', parameter='T', position=(slice(None, None, None), 0), value=273.15+50)
+ot.fluid.define_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), -1))
 ```
 
-Then, we set up the bed phase in a similar manner:
-```python linenums="9"
-ot.bed.select_substance(substance='magnetite')
-ot.bed.select_domain(domain='1d_sphere', D=0.05, n=7)
-ot.bed.select_scheme(diff='central_difference_1d')
-ot.bed.initialise(T=50+273.15)
-ot.bed.define_bc(bc_type='neumann', parameter='T', position=(0,0))
-ot.bed.define_bc(bc_type='neumann', parameter='T', position=(0,1))
-ot.bed.update_properties()
+Then, we set up the bed phase in a similar fashion:
+```python linenums="10"
+ot.bed.select_substance(substance='magnetite)
+ot.bed.select_domain(domain='1d_sphere', R=0.005)
+ot.bed.select_schemes(diff='central_difference_1d')
+ot.bed.initialise(T=273.15+20)
+ot.bed.define_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), 0))
+ot.bed.define_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), -1))
 ```
 
-Fianlly, we execute the simulation:
+Fianlly, we define the coupling between the phases and run the simulation:
 ```python linenums="16"
+ot.define_coupling(h_coeff='constant', h_value=5)
 ot.run_simulation()
 ```
-## Additional details
