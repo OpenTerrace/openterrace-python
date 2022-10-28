@@ -17,6 +17,8 @@ documentation = "https://openterrace.github.io/openterrace-python/"
 
 [tool.poetry-dynamic-versioning]
 enable = true
+vcs = "git"
+format = "v{base}"
 
 # Requirements
 [tool.poetry.dependencies]
