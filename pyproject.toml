@@ -4,17 +4,21 @@ description = "OpenTerrace is a pure Python framework for thermal energy storage
 version = "0.0.0"
 authors = [
     "Jakob Hærvig"
-    ]
+]
 readme = "README.md"
 license = "MIT"
 
 packages = [
     { include = "openterrace"}
-
 ]
 
 repository = "https://github.com/OpenTerrace/openterrace-python"
 documentation = "https://openterrace.github.io/openterrace-python/"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+format = "v{base}"
 
 # Requirements
 [tool.poetry.dependencies]
@@ -42,5 +46,5 @@ pytest-github-actions-annotate-failures = "^0.1.7"
 pytest = "^5.2"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry_dynamic_versioning.backend"

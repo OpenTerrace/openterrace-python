@@ -1,3 +1,11 @@
+"""
+Data for Swedish Diabase.
+
+cp = 1272 (specific heat capacity at constant pressure)
+rho = 3007 (density)
+k = 1.75 (thermal conductivity)
+"""
+
 def h(T: float) -> float:
     """Mass specific enthalpy as function of temperature at 1 atm (fit assumes constant cp).
 

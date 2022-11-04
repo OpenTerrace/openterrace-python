@@ -1,3 +1,11 @@
+"""
+Data for Magnetite.
+
+cp = 1130 (specific heat capacity at constant pressure)
+rho = 5150 (density)
+k = 1.9 (thermal conductivity)
+"""
+
 def h(T: float) -> float:
     """Mass specific enthalpy as function of temperature at 1 atm (fit assumes constant cp).
 

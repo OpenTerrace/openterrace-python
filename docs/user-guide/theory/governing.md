@@ -1,3 +1,6 @@
 # Governing equations
+OpenTerrace solves 
 
-To be added
+$$
+\operatorname{ker} f=\{g\in G:f(g)=e_{H}\}{\mbox{.}}
+$$
