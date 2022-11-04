@@ -6,8 +6,11 @@ from . import diffusion_schemes
 from . import convection_schemes
 
 # Import common Python modules
+import sys
 import tqdm
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 
 class GlobalParameters:
     """OpenTerrace class."""
@@ -20,18 +23,21 @@ class GlobalParameters:
             n_fluid (float): Number of discretisations for fluid phase
             n_bed (float): Number of discretisations for bed phase
         """
-        self.t = 0
+        self.t_start = 0
         self.t_end = t_end
         self.dt = dt
-        self.fluid = self.Phase(n=n_fluid, _type='fluid', options='fluid_substances')
+        self.fluid = self.Phase(n=n_fluid, n2=1, _type='fluid', options='fluid_substances')
         self.bed = self.Phase(n=n_bed, n2=n_fluid, _type='bed', options='bed_substances')
         self.sources = []
-        self.phi = 1
+        #self.phi = 1
         self.coupling = False
+        self.saved_data = []
+        self.list_postprocess = []
+        self.save_data_flag = np.full(int(np.floor(t_end/dt))+1, False)
 
     class Phase:
-        """Main class to define to define either the fluid or bed phase."""
-        def __init__(self, n=None, n2=1, _type=None, options=None):
+        """Main class to define either the fluid or bed phase."""
+        def __init__(self, n=None, n2=None, _type=None, options=None):
             self.n = n
             self.n2 = n2
             self.options = options
@@ -200,10 +206,44 @@ class GlobalParameters:
         self.bed.h[:,-1] = self.bed.h[:,-1] + Q/(self.bed.rho[:,-1]*self.bed.domain.V[-1])
         self.fluid.h[0] = self.fluid.h[0] - (1-self.fluid.phi)*(self.fluid.domain.V/self.fluid.phi) / np.sum(self.bed.domain.V) * Q/(self.fluid.rho*self.fluid.domain.V)
 
+    def animate(self, save_int:int=None, animate_data_flag:bool=False):
+        if not save_int:
+            raise Exception("Keyword 'save_int' not specified.")
+
+        self.save_int = save_int
+        self.saved_bed_data = np.zeros((len(np.arange(self.t_start,self.t_end,save_int*self.dt)), self.fluid.n, self.bed.n))
+        self.saved_fluid_data = np.zeros((len(np.arange(self.t_start,self.t_end,save_int*self.dt)), self.fluid.n))
+        self.save_data_flag[range(0, int(np.floor(self.t_end/self.dt))+1, save_int)] = True
+        self.animate_data_flag = True
+
+    def create_animation(self, data):
+        fig, ax = plt.subplots()
+        xdata, ydata = [], []
+        ln, = ax.plot([], [], '-k')
+
+        def init():
+            ax.set_xlim(0, np.max(self.bed.domain.node_pos))
+            ax.set_ylim(np.min(data)-273.15, np.max(data)-273.15)
+            ax.set_xlabel('Radial position (m)')
+            ax.set_ylabel('Temperature (C)')
+            return ln,
+
+        def update(frame):
+            xdata = self.bed.domain.node_pos
+            ydata = data[frame]
+            ln.set_data(xdata, ydata-273.15)
+            return ln,
+
+        ani = FuncAnimation(fig, update, frames=np.arange(int(np.floor(self.t_end/(self.dt*self.save_int)))),
+                            init_func=init, blit=True)
+        plt.plot()
+        plt.grid()
+        plt.show()
+
     def run_simulation(self):
         """This is the function full of magic."""
-
-        for i in tqdm.tqdm(np.arange(0, self.t_end, self.dt)):
+        i = 0
+        for t in tqdm.tqdm(np.arange(self.t_start, self.t_end, self.dt)):
             if hasattr(self.bed, 'T'):
                 self.bed.update_boundary_nodes(self.dt)
                 self.bed.solve_equations(self.dt)
@@ -216,3 +256,17 @@ class GlobalParameters:
 
             if self.coupling:
                 self.couple()
+
+            if self.save_data_flag[i]:
+                if np.mod(i, self.save_int) == 0:
+                    if hasattr(self.bed, 'T'):
+                        self.saved_bed_data[int(i/self.save_int),:,:] = self.bed.T
+                    if hasattr(self.fluid, 'T'):
+                        self.saved_fluid_data[int(i/self.save_int),:] = self.fluid.T
+            i = i+1
+
+        if self.animate_data_flag:
+            if hasattr(self.bed, 'T'):
+                self.create_animation(self.saved_bed_data)
+            if hasattr(self.fluid, 'T'):
+                self.create_animation(self.saved_fluid_data)

@@ -1,7 +1,13 @@
+"""
+Data for water.
+
+Reference 1: W. Wagner and A. Pruß. The IAPWS Formulation 1995 for the Thermodynamic Properties of Ordinary Water Substance for General and Scientific Use. J. Phys. Chem. Ref. Data, 31:387–535, 2002. doi:10.1063/1.1461829.
+Reference 2: M. L. Huber, R. A. Perkins, D. G. Friend, J. V. Sengers, M. J. Assael, I. N. Metaxa, K. Miyagawa, R. Hellmann, and E. Vogel. New International Formulation for the Thermal Conductivity of H2O. J. Phys. Chem. Ref. Data, 41(3):033102–1:23, 2012. doi:10.1063/1.4738955.
+Reference 3: M. L. Huber, R. A. Perkins, A. Laesecke, D. G. Friend, J. V. Sengers, M. J Assael, I. M. Metaxa, E. Vogel, R. Mareš, and K. Miyagawa. New International Formulation for the Viscosity of H2O. J. Phys. Chem. Ref. Data, 38(2):101–125, 2009. doi:10.1063/1.3088050.
+"""
+
 def h(T: float) -> float:
     """Mass specific enthalpy as function of temperature at 1 atm (fit valid between 273 K to 373 K).
-
-    Reference: W. Wagner and A. Pruß. The IAPWS Formulation 1995 for the Thermodynamic Properties of Ordinary Water Substance for General and Scientific Use. J. Phys. Chem. Ref. Data, 31:387–535, 2002. doi:10.1063/1.1461829.
 
     Args:
         T (float): Temperature in K
@@ -13,8 +19,6 @@ def h(T: float) -> float:
 
 def T(h: float, p:float=None) -> float:
     """Temperature as function of mass specific enthalpy at 1 atm (fit valid between 273 K to 373 K).
-
-    Reference: W. Wagner and A. Pruß. The IAPWS Formulation 1995 for the Thermodynamic Properties of Ordinary Water Substance for General and Scientific Use. J. Phys. Chem. Ref. Data, 31:387–535, 2002. doi:10.1063/1.1461829.
 
     Args:
         h (float): Specific enthalpy in J/kg
@@ -28,8 +32,6 @@ def T(h: float, p:float=None) -> float:
 def rho(h: float, p:float=None) -> float:
     """Density as function of mass specific enthalpy at 1 atm (fit valid between 273 K to 373 K).
 
-    Reference: W. Wagner and A. Pruß. The IAPWS Formulation 1995 for the Thermodynamic Properties of Ordinary Water Substance for General and Scientific Use. J. Phys. Chem. Ref. Data, 31:387–535, 2002. doi:10.1063/1.1461829.
-
     Args:
         h (float): Specific enthalpy in J/kg
         p (float): Pressure in Pa
@@ -41,8 +43,6 @@ def rho(h: float, p:float=None) -> float:
 
 def k(h: float, p:float=None) -> float:
     """Thermal conductivity as function of mass specific enthalpy at 1 atm (fit valid between 273 K to 373 K).
-
-    Reference: M. L. Huber, R. A. Perkins, D. G. Friend, J. V. Sengers, M. J. Assael, I. N. Metaxa, K. Miyagawa, R. Hellmann, and E. Vogel. New International Formulation for the Thermal Conductivity of H2O. J. Phys. Chem. Ref. Data, 41(3):033102–1:23, 2012. doi:10.1063/1.4738955.
 
     Args:
         h (float): Specific enthalpy in J/kg
@@ -56,8 +56,6 @@ def k(h: float, p:float=None) -> float:
 def cp(h: float, p:float=None) -> float:
     """Specific heat capacity as function of mass specific enthalpy at 1 atm (fit valid between 273 K to 373 K).
 
-    Reference: W. Wagner and A. Pruß. The IAPWS Formulation 1995 for the Thermodynamic Properties of Ordinary Water Substance for General and Scientific Use. J. Phys. Chem. Ref. Data, 31:387–535, 2002. doi:10.1063/1.1461829.
-
     Args:
         h (float): Specific enthalpy in J/kg
         p (float): Pressure in Pa
@@ -70,8 +68,6 @@ def cp(h: float, p:float=None) -> float:
 def mu(h: float, p:float=None) -> float:
     """Dynamic viscosity as function of mass specific enthalpy at 1 atm (fit valid between 273 K to 373 K).
 
-    Reference: M.L. Huber, R.A. Perkins, A. Laesecke, D.G. Friend, J.V. Sengers, M.J Assael, I.M. Metaxa, E. Vogel, R. Mareš, and K. Miyagawa. New International Formulation for the Viscosity of H2O. J. Phys. Chem. Ref. Data, 38(2):101–125, 2009. doi:10.1063/1.3088050.
-
     Args:
         h (float): Specific enthalpy in J/kg
         p (float): Pressure in Pa
@@ -83,11 +79,6 @@ def mu(h: float, p:float=None) -> float:
 
 def Pr(h: float, p:float=None) -> float:
     """Prandtl number as function of mass specific enthalpy at 1 atm (fit valid between 273 K to 373 K).
-
-    Reference:
-    W. Wagner and A. Pruß. The IAPWS Formulation 1995 for the Thermodynamic Properties of Ordinary Water Substance for General and Scientific Use. J. Phys. Chem. Ref. Data, 31:387–535, 2002. doi:10.1063/1.1461829.
-    M.L. Huber, R.A. Perkins, A. Laesecke, D.G. Friend, J.V. Sengers, M.J Assael, I.M. Metaxa, E. Vogel, R. Mareš, and K. Miyagawa. New International Formulation for the Viscosity of H2O. J. Phys. Chem. Ref. Data, 38(2):101–125, 2009. doi:10.1063/1.3088050.
-    M. L. Huber, R. A. Perkins, D. G. Friend, J. V. Sengers, M. J. Assael, I. N. Metaxa, K. Miyagawa, R. Hellmann, and E. Vogel. New International Formulation for the Thermal Conductivity of H2O. J. Phys. Chem. Ref. Data, 41(3):033102–1:23, 2012. doi:10.1063/1.4738955.
 
     Args:
         h (float): Specific enthalpy in J/kg
