@@ -29,11 +29,11 @@ class GlobalParameters:
         self.fluid = self.Phase(n=n_fluid, n2=1, _type='fluid', options='fluid_substances')
         self.bed = self.Phase(n=n_bed, n2=n_fluid, _type='bed', options='bed_substances')
         self.sources = []
-        #self.phi = 1
         self.coupling = False
         self.saved_data = []
         self.list_postprocess = []
         self.save_data_flag = np.full(int(np.floor(t_end/dt))+1, False)
+        self.animate_data_flag = False
 
     class Phase:
         """Main class to define either the fluid or bed phase."""
