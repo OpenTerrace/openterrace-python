@@ -27,7 +27,7 @@ def T(h: float, p:float=None) -> float:
     Returns:
         Temperature in kelvin
     """
-    return -1.16571910e-12*h**2 + 2.39343432e-04*h + 2.73074072e+02     
+    return 2.38859172e-04*h + 2.73107340e+02
 
 def rho(h: float, p:float=None) -> float:
     """Density as function of mass specific enthalpy at 1 atm (fit valid between 273 K to 373 K).
@@ -39,7 +39,7 @@ def rho(h: float, p:float=None) -> float:
     Returns:
         Density in kg/m^3
     """
-    return 2.48881337e-16*h**3 - 3.55685672e-10*h**2 + 7.09888943e-06*h + 9.99916857e+02
+    return -2.01577822e-10*h**2 - 1.84350638e-05*h + 1.00080945e+03
 
 def k(h: float, p:float=None) -> float:
     """Thermal conductivity as function of mass specific enthalpy at 1 atm (fit valid between 273 K to 373 K).
@@ -51,7 +51,7 @@ def k(h: float, p:float=None) -> float:
     Returns:
         Thermal conductivity in W/(m K)
     """
-    return -5.78946472e-13*h**2 + 5.22719636e-07*h + 5.57043098e-01
+    return -5.45934292e-13*h**2 + 5.09161571e-07*h + 5.58152818e-01
 
 def cp(h: float, p:float=None) -> float:
     """Specific heat capacity as function of mass specific enthalpy at 1 atm (fit valid between 273 K to 373 K).
@@ -63,7 +63,7 @@ def cp(h: float, p:float=None) -> float:
     Returns:
         Specific heat capacity in J/(kg K)
     """
-    return 9.12725636e-21*h**4 - 9.49490894e-15*h**3 + 3.98071678e-09*h**2 - 6.75046221e-04*h + 4.21790304e+03    
+    return -1.91167239e-15*h**3 + 1.96122501e-09*h**2 - 4.90430569e-04*h**1 + 4.21421348e+03    
 
 def mu(h: float, p:float=None) -> float:
     """Dynamic viscosity as function of mass specific enthalpy at 1 atm (fit valid between 273 K to 373 K).
@@ -75,7 +75,7 @@ def mu(h: float, p:float=None) -> float:
     Returns:
         Dynamic viscosity in kg/(m*s)
     """
-    return -3.39233531e-20*h**3 + 3.17381373e-14*h**2 - 1.08887320e-08*h + 1.73113017e-03
+    return 1.05996810e-14*h**2 - 7.39076316e-09*h + 1.61251851e-03
 
 def Pr(h: float, p:float=None) -> float:
     """Prandtl number as function of mass specific enthalpy at 1 atm (fit valid between 273 K to 373 K).
@@ -87,4 +87,4 @@ def Pr(h: float, p:float=None) -> float:
     Returns:
         Prandtl number
     """
-    return -3.02544350e-16*h**3 + 2.76464299e-10*h**2 - 9.03954950e-05*h + 1.30070174e+01
+    return 2.76464299e-10*h**2 - 9.03954950e-05*h + 1.30070174e+01

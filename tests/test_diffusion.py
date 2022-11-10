@@ -15,13 +15,13 @@ def test_diffusion():
     k = 0.627
 
     ot = openterrace.GlobalParameters(t_end=t_end, dt=1e-2, n_bed=n)
-    ot.bed.define_substance_on_the_fly(cp=cp, rho=rho, k=k)
-    ot.bed.select_domain(domain='1d_sphere', R=Lc)
+    ot.bed.select_substance_on_the_fly(cp=cp, rho=rho, k=k)
+    ot.bed.select_domain_shape(domain='sphere_1d', R=Lc)
     ot.bed.select_schemes(diff='central_difference_1d')
-    ot.bed.initialise(T=T_init)
-    ot.bed.define_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), 0))
-    ot.bed.define_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), -1))
-    ot.bed.define_source_term(source_type='thermal_resistance', R=1/(h*4*np.pi*Lc**2), T_inf=T_inf, position=(slice(None, None, None), -1))
+    ot.bed.select_initial_conditions(T=T_init)
+    ot.bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), 0))
+    ot.bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), -1))
+    ot.bed.select_source_term(source_type='thermal_resistance', R=1/(h*4*np.pi*Lc**2), T_inf=T_inf, position=(slice(None, None, None), -1))
     ot.run_simulation()
 
     Bi = h*Lc/k
@@ -40,4 +40,7 @@ def test_diffusion():
     plt.legend([r"OpenTerrace "+"("+r"$Bi=$"+f"{Bi:.2e}"+", "+r"$Fo=$"+f"{Fo:.2e}"+")", "Analytical"], loc ="lower left")
     plt.xlabel(r'Radial position, $r^* = r/r_0$')
     plt.ylabel(r'Temperature, $\theta = (T(r,t)-T_\infty)/(T_{init}-T_\infty)$')
-    plt.savefig('docs/_figures/test_sphere_0.svg', bbox_inches='tight')
+    plt.savefig('test_sphere.svg', bbox_inches='tight')
+
+if __name__ == "__main__":
+    test_diffusion()
