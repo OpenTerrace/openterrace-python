@@ -7,7 +7,7 @@ First make sure you have a working installation of Python. With a working Python
 pip install openterrace
 ```
 
-# Install in editable mode
+## Install in editable mode
 
 If you plan to extend or modify OpenTerrace, you should install it in editable mode. First, using [git](https://git-scm.com) to clone the OpenTerrace GitHub repository
 ```bash
