@@ -2,7 +2,7 @@ import openterrace
 
 ot = openterrace.GlobalParameters(t_end=3600*6, dt=0.025, n_fluid=50, n_bed=5)
 
-ot.fluid.select_substance_on_the_fly(rho=1.2, cp=1000, k=0.06)
+ot.fluid.select_substance(substance='air')
 ot.fluid.select_domain_shape(domain='cylinder_1d', D=0.5, H=2)
 ot.fluid.select_porosity(phi=0.4)
 ot.fluid.select_schemes(diff='central_difference_1d', conv='upwind_1d')

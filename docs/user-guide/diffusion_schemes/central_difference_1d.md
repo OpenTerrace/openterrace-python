@@ -1,4 +1,4 @@
 ::: diffusion_schemes.central_difference_1d
-    rendering:
+    options:
       show_source: true
       heading_level: 1

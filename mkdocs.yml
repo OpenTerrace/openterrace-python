@@ -73,6 +73,7 @@ nav:
   - Installation guide: installation.md
   - User guide:
       - user-guide/get-started.md
+      - user-guide/tutorials.md
       - Theory:
         - user-guide/theory/governing.md
       - Substances:
@@ -84,16 +85,16 @@ nav:
           - user-guide/bed_substances/magnetite.md
           - user-guide/bed_substances/ATS58.md
       - Domain types:
-          - user-guide/domains/1d_cylinder.md
-          - user-guide/domains/1d_sphere.md
+          - user-guide/domains/cylinder_1d.md
+          - user-guide/domains/block_1d.md
+          - user-guide/domains/sphere_1d.md
+          - user-guide/domains/hollow_sphere_1d.md
       - Numerical schemes:
         - Diffusion:
           - user-guide/diffusion_schemes/central_difference_1d.md
         - Convection:
           - user-guide/convection_schemes/upwind_1d.md
-      - Validation and verification:
-        - user-guide/verification-and-validation/verification.md
-        - user-guide/verification-and-validation/validation.md
+      - Verification studies: user-guide/verification-and-validation/verification.md
   - source_code.md
   - contributing.md
   - contact.md

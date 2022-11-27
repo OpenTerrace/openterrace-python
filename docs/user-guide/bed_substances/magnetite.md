@@ -1,4 +1,4 @@
 ::: bed_substances.magnetite
-    rendering:
+    options:
       show_source: true
       heading_level: 1

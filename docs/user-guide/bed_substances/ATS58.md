@@ -1,4 +1,4 @@
 ::: bed_substances.ATS58
-    rendering:
+    options:
       show_source: true
       heading_level: 1

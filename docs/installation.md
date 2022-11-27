@@ -1,15 +1,7 @@
 # Installation guide
-First make sure you have a working installation of Python. Installing [Miniconda](https://docs.conda.io/en/latest/miniconda.html) is recommended but any Python installation will do. With a working Python installation, you can install OpenTerrace using either conda or pip:
+First make sure you have a working installation of Python. With a working Python installation, you can install OpenTerrace using pip:
 
-## Option 1: Install using ``conda``
-
-```bash
-conda config --add channels conda-forge 
-conda config --set channel_priority strict 
-conda install openterrace
-```
-
-## Option 2: Install using ``pip``
+## Install using ``pip``
 
 ```bash
 pip install openterrace
