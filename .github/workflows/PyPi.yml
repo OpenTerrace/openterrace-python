@@ -8,7 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
@@ -19,6 +22,6 @@ jobs:
         pip install poetry        
     - name: Build and publish
       run: |
-        poetry version $(git fetch --prune --unshallow --tags)
+        poetry self add "poetry-dynamic-versioning[plugin]"
         poetry build
         poetry publish --username ${{ secrets.PYPI_USERNAME }} --password ${{ secrets.PYPI_API_TOKEN }}  
