@@ -1,6 +1,6 @@
 import openterrace
 
-ot = openterrace.GlobalParameters(t_end=60*15, dt=1, n_fluid=50)
+ot = openterrace.GlobalParameters(t_end=60*30, dt=1, n_fluid=50)
 
 ot.fluid.select_substance_on_the_fly(rho=1000, cp=4200, k=0.6)
 ot.fluid.select_domain_shape(domain='cylinder_1d', D=0.3, H=1)
