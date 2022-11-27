@@ -1,13 +1,13 @@
 # Getting started
 With OpenTerrace [installed](../installation.md), you can start setting up your simulation. The following shows a complete example of an OpenTerrace simulation setup.
 
-## Global parameters:
+## Define global parameters
 First, we import openterrace and define global parameter such as end time, time step size and number of discretisations for the fluid and bed phases:
 ```python linenums="1"
 import openterrace
 ot = openterrace.GlobalParameters(t_end=3600*6, dt=0.025, n_fluid=50, n_bed=5)
 ```
-## Setting up the fluid phase
+## Define the fluid phase
 Next, we select a fluid phase for our simulation. We can either use of the [predefined substances](../fluid_substances/air), e.g.:
 ```python linenums="3"
 ot.fluid.select_substance(substance='air')
@@ -34,7 +34,7 @@ ot.fluid.select_bc(bc_type='dirichlet', parameter='T', position=(slice(None, Non
 ot.fluid.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), -1))
 ```
 
-## Setting up the bed phase
+## Define the bed phase
 Next, we set up the bed phase in a similar fashion. Let's define a custom substance with constant properties:
 ```python linenums="10"
 ot.fluid.select_substance_on_the_fly(rho=5150, cp=1130, k=1.9)
@@ -57,7 +57,7 @@ ot.bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, N
 ot.bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), -1))
 ```
 
-## Phase interactions and post-processing
+## Define phase interactions and post-processing
 Fianlly, we define the coupling between the phases and run the simulation. Here we choose convection with a heat transfer coefficient of 20 W/(m^2 K):
 ```python linenums="16"
 ot.select_coupling(h_coeff='constant', h_value=20)
