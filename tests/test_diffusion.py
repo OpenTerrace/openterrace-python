@@ -56,7 +56,7 @@ def test_diffusion_wall():
     k = 0.627
     A = 1
 
-    ot = openterrace.GlobalParameters(t_end=t_end, dt=1e-2, n_bed=n)
+    ot = openterrace.Simulate(t_end=t_end, dt=1e-2, n_bed=n)
     ot.bed.select_substance_on_the_fly(cp=cp, rho=rho, k=k)
     ot.bed.select_domain_shape(domain='block_1d', L=Lc, A=A)
     ot.bed.select_schemes(diff='central_difference_1d')
