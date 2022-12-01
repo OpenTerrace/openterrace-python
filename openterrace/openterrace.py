@@ -137,7 +137,7 @@ class GlobalParameters:
 
         def select_bc(self, bc_type=None, parameter=None, position=None, value=None):
             """Specify boundary condition type"""
-            valid_bc_types = ['neumann','dirichlet']
+            valid_bc_types = ['neumann','dirichlet','timevarying_dirichlet']
             if bc_type not in valid_bc_types:
                 raise Exception("bc_type \'"+bc_type+"\' specified. Valid options for bc_type are:", valid_bc_types)
             valid_parameters = ['T','mdot']
