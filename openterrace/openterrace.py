@@ -4,6 +4,7 @@ from . import bed_substances
 from . import domains
 from . import diffusion_schemes
 from . import convection_schemes
+from . import boundary_conditions
 
 # Import common Python modules
 import __main__
@@ -61,7 +62,6 @@ class Simulate:
                 rho (float): Density in kg/m^3
                 k (float): Thermal conductivity in W/(m K)
             """
-
             class dummy:
                 pass
             self.fcns = dummy()
@@ -137,7 +137,7 @@ class Simulate:
 
         def select_bc(self, bc_type=None, parameter=None, position=None, value=None):
             """Specify boundary condition type"""
-            valid_bc_types = ['neumann','dirichlet','timevarying_dirichlet']
+            valid_bc_types = ['neumann','dirichlet','dirichlet_timevarying']
             if bc_type not in valid_bc_types:
                 raise Exception("bc_type \'"+bc_type+"\' specified. Valid options for bc_type are:", valid_bc_types)
             valid_parameters = ['T','mdot']
@@ -147,7 +147,7 @@ class Simulate:
                 raise Exception("Keyword 'position' not specified.")
             if value is None and bc_type=='dirichlet':
                 raise Exception("Keyword 'value' is needed for dirichlet type bc.")
-            self.bcs.append({'type': bc_type, 'parameter': parameter, 'position': position, 'value': value})
+            self.bcs.append({'type': bc_type, 'parameter': parameter, 'position': position, 'value': np.array(value)})
 
         def select_source_term(self, **kwargs):
             valid_source_types = ['thermal_resistance']
@@ -175,11 +175,13 @@ class Simulate:
                 self.F[0,:,:] = self.mdot*self.cp
                 self.F[1,:,:] = self.mdot*self.cp
 
-        def _update_boundary_nodes(self, dt):
+        def _update_boundary_nodes(self, t, dt):
             """Update boundary nodes"""
             for bc in self.bcs:
                 if bc['type'] == 'dirichlet':
                     self.h[bc['position']] = self.fcns.h(bc['value'])
+                if bc['type'] == 'dirichlet_timevarying':
+                    self.h[bc['position']] = self.fcns.h(np.interp(t,bc['value'][:,0],bc['value'][:,1]))
                 if bc['type'] == 'neumann':
                     if bc['position'] == np.s_[:,0]:
                         self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,1]*self.D[1,:,0] - 2*self.T[:,0]*self.D[1,:,0] - self.F[0,:,1]*self.T[:,1] + self.F[1,:,0]*self.T[:,0]) / (self.rho[:,0]*self.domain.V[0])*dt
@@ -255,12 +257,12 @@ class Simulate:
         i = 0
         for t in tqdm.tqdm(np.arange(self.t_start, self.t_end, self.dt)):
             if hasattr(self.bed, 'T'):
-                self.bed._update_boundary_nodes(self.dt)
+                self.bed._update_boundary_nodes(t, self.dt)
                 self.bed._solve_equations(self.dt)
                 self.bed._update_properties()
             
             if hasattr(self.fluid, 'T'):
-                self.fluid._update_boundary_nodes(self.dt)
+                self.fluid._update_boundary_nodes(t, self.dt)
                 self.fluid._solve_equations(self.dt)
                 self.fluid._update_properties()
 
