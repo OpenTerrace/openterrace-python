@@ -14,7 +14,7 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 
-class GlobalParameters:
+class Simulate:
     """OpenTerrace class."""
     def __init__(self, t_end:float=None, dt:float=None, n_fluid:float=1, n_bed:float=2):
         """Initialise with various control parameters.
@@ -248,7 +248,7 @@ class GlobalParameters:
             ax.set_title('Time: ' + str(np.round(self.saved_time_data[frame], decimals=2)) + ' s')
 
         ani = anim.FuncAnimation(fig, _update, frames=np.arange(int(np.floor(self.t_end/(self.dt*self.save_int)))))
-        ani.save(filename='animation_'+self.filename+'_'+phase+'.gif', writer=anim.PillowWriter(fps=30),progress_callback=lambda i, n: print(f'Saving frame {i} of {n}'))
+        ani.save(filename='animation_'+self.filename+'_'+phase+'.gif', writer=anim.PillowWriter(fps=10),progress_callback=lambda i, n: print(f'Saving frame {i} of {n}'))
 
     def run_simulation(self):
         """This is the function full of magic."""
