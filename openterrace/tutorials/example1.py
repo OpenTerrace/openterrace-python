@@ -1,6 +1,6 @@
 import openterrace
 
-ot = openterrace.GlobalParameters(t_end=3600*6, dt=0.025, n_fluid=50, n_bed=5)
+ot = openterrace.Simulate(t_end=3600*6, dt=0.025, n_fluid=50, n_bed=5)
 
 ot.fluid.select_substance(substance='air')
 ot.fluid.select_domain_shape(domain='cylinder_1d', D=0.5, H=2)
@@ -18,5 +18,5 @@ ot.bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, N
 ot.bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), -1))
 
 ot.select_coupling(h_coeff='constant', h_value=20)
-ot.animate(save_int=6000, animate_data_flag=True)
+ot.output_animation(save_int=6000, animate_data_flag=True)
 ot.run_simulation()
