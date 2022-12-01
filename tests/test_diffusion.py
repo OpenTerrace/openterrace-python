@@ -14,7 +14,7 @@ def test_diffusion_sphere():
     rho = 993
     k = 0.627
 
-    ot = openterrace.GlobalParameters(t_end=t_end, dt=1e-2, n_bed=n)
+    ot = openterrace.Simulate(t_end=t_end, dt=1e-2, n_bed=n)
     ot.bed.select_substance_on_the_fly(cp=cp, rho=rho, k=k)
     ot.bed.select_domain_shape(domain='sphere_1d', R=Lc)
     ot.bed.select_schemes(diff='central_difference_1d')
