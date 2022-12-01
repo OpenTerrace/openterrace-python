@@ -10,4 +10,6 @@ def central_difference_1d(x, D):
         for i in range(1, x.shape[1]-1):
             _out[j,i] = x[j,i-1]*D[0,j,i] + x[j,i+1]*D[1,j,i]\
                 - x[j,i]*(D[0,j,i]+D[1,j,i])
+            # _out[j,i] = x[j,i-1]*D[0,j,i] + x[j,i+1]*D[1,j,i]\
+            #     - x[j,i]*(D[0,j,i]+D[1,j,i])                
     return _out
