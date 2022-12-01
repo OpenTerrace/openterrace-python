@@ -18,5 +18,5 @@ ot.bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, N
 ot.bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), -1))
 
 ot.select_coupling(h_coeff='constant', h_value=20)
-ot.animate(save_int=6000, animate_data_flag=True)
+ot.output_animation(save_int=6000, animate_data_flag=True)
 ot.run_simulation()
