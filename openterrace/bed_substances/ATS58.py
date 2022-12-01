@@ -62,7 +62,7 @@ def rho(h):
     """
     return _rho_l*h**0
 
-def k(T):
+def k(h: float, p:float=None) -> float:
     """Thermal conductivity as function of mass specific enthalpy at 1 atm (fit assumes piecewice constant k).
 
     Args:
