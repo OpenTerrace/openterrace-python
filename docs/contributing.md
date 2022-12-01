@@ -1,5 +1,4 @@
 # Contributing
-
 OpenTerrace is all open-source and contributions are most welcome.
 
 ## Code development
