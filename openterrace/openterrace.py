@@ -1,9 +1,10 @@
-# # Import OpenTerrace modules
+# Import OpenTerrace modules
 from . import fluid_substances
 from . import bed_substances
 from . import domains
 from . import diffusion_schemes
 from . import convection_schemes
+from . import boundary_conditions
 
 # Import common Python modules
 import __main__
@@ -36,6 +37,7 @@ class Simulate:
         self.list_postprocess = []
         self.save_data_flag = np.full(int(np.floor(t_end/dt))+1, False)
         self.output_animation_flag = False
+        self.output_panda_dataframe_flag = False
         self.filename = __main__.__file__.split('/')[-1].rsplit( ".", 1)[0]
 
     class Phase:
@@ -61,7 +63,6 @@ class Simulate:
                 rho (float): Density in kg/m^3
                 k (float): Thermal conductivity in W/(m K)
             """
-
             class dummy:
                 pass
             self.fcns = dummy()
@@ -137,7 +138,7 @@ class Simulate:
 
         def select_bc(self, bc_type=None, parameter=None, position=None, value=None):
             """Specify boundary condition type"""
-            valid_bc_types = ['neumann','dirichlet','timevarying_dirichlet']
+            valid_bc_types = ['neumann','dirichlet','dirichlet_timevarying']
             if bc_type not in valid_bc_types:
                 raise Exception("bc_type \'"+bc_type+"\' specified. Valid options for bc_type are:", valid_bc_types)
             valid_parameters = ['T','mdot']
@@ -147,7 +148,7 @@ class Simulate:
                 raise Exception("Keyword 'position' not specified.")
             if value is None and bc_type=='dirichlet':
                 raise Exception("Keyword 'value' is needed for dirichlet type bc.")
-            self.bcs.append({'type': bc_type, 'parameter': parameter, 'position': position, 'value': value})
+            self.bcs.append({'type': bc_type, 'parameter': parameter, 'position': position, 'value': np.array(value)})
 
         def select_source_term(self, **kwargs):
             valid_source_types = ['thermal_resistance']
@@ -175,11 +176,13 @@ class Simulate:
                 self.F[0,:,:] = self.mdot*self.cp
                 self.F[1,:,:] = self.mdot*self.cp
 
-        def _update_boundary_nodes(self, dt):
+        def _update_boundary_nodes(self, t, dt):
             """Update boundary nodes"""
             for bc in self.bcs:
                 if bc['type'] == 'dirichlet':
                     self.h[bc['position']] = self.fcns.h(bc['value'])
+                if bc['type'] == 'dirichlet_timevarying':
+                    self.h[bc['position']] = self.fcns.h(np.interp(t,bc['value'][:,0],bc['value'][:,1]))
                 if bc['type'] == 'neumann':
                     if bc['position'] == np.s_[:,0]:
                         self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,1]*self.D[1,:,0] - 2*self.T[:,0]*self.D[1,:,0] - self.F[0,:,1]*self.T[:,1] + self.F[1,:,0]*self.T[:,0]) / (self.rho[:,0]*self.domain.V[0])*dt
@@ -191,13 +194,17 @@ class Simulate:
                 if source['source_type'] == 'thermal_resistance':
                     self.h[source['position']] = self.h[source['position']] + (2/source['R'] * (source['T_inf']-self.T[source['position']])) / (self.rho[source['position']]*self.domain.V[source['position'][1]])*dt
 
-        def _solve_equations(self, dt):
+        def _solve_equations(self, t, dt):
+            self._update_boundary_nodes(t, dt)
             if self.diff is not None:
                 self.h = self.h + self.diff(self.T, self.D)/(self.rho*self.domain.V)*dt
             if self.conv is not None:
                 self.h = self.h + self.conv(self.T, self.F)/(self.rho*self.domain.V)*dt
             if self.sources is not None:
                 self._update_source(dt)
+
+        def _postprocess():
+            pass
 
     def select_coupling(self, h_coeff='constant', h_value=None):
         self.coupling = True
@@ -212,12 +219,18 @@ class Simulate:
         self.bed.h[:,-1] = self.bed.h[:,-1] + Q/(self.bed.rho[:,-1]*self.bed.domain.V[-1])
         self.fluid.h[0] = self.fluid.h[0] - (1-self.fluid.phi)*(self.fluid.domain.V/self.fluid.phi) / np.sum(self.bed.domain.V) * Q/(self.fluid.rho*self.fluid.domain.V)
 
-    def output_data(self):
-        pass
+    def output_panda_dataframe(self, times: list[float]):
+        import pandas as pd
+        """Outputs a panda dataframe at user-specfied times and of the specified parameters
 
-    def output_animation(self, save_int:int=None, animate_data_flag:bool=False):
-        if not save_int:
-            raise Exception("Keyword 'save_int' not specified.")
+        Args:
+            times (list[float]): Wanted output times
+        """
+
+        self.df = pd.DataFrame()
+        self.output_panda_dataframe_flag = True
+
+    def output_animation(self, save_int:int=1):
         self.save_int = save_int
         self.saved_bed_data = np.zeros((len(np.arange(self.t_start,self.t_end,save_int*self.dt)), self.fluid.n, self.bed.n))
         self.saved_fluid_data = np.zeros((len(np.arange(self.t_start,self.t_end,save_int*self.dt)), self.fluid.n))
@@ -255,14 +268,14 @@ class Simulate:
         i = 0
         for t in tqdm.tqdm(np.arange(self.t_start, self.t_end, self.dt)):
             if hasattr(self.bed, 'T'):
-                self.bed._update_boundary_nodes(self.dt)
-                self.bed._solve_equations(self.dt)
+                self.bed._solve_equations(t, self.dt)
                 self.bed._update_properties()
+                self.bed._postprocess()
             
             if hasattr(self.fluid, 'T'):
-                self.fluid._update_boundary_nodes(self.dt)
-                self.fluid._solve_equations(self.dt)
+                self.fluid._solve_equations(t, self.dt)
                 self.fluid._update_properties()
+                self.fluid._postprocess()
 
             if self.coupling:
                 self._couple()
