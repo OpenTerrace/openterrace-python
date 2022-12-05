@@ -1,5 +1,5 @@
 # Installation guide
-First make sure you have a working installation of Python. With a working Python installation, you can install OpenTerrace using pip:
+First make sure you have a working installation of Python. If you have never worked with Python before, we recommend installing [Miniconda](https://docs.conda.io/en/latest/miniconda.html) alongside the [Visual Studio Code](https://code.visualstudio.com/) text editor. After selecting Miniconda as the Python interpreter in VS Code, you may now install OpenTerrace using pip:
 
 ## Install using ``pip``
 

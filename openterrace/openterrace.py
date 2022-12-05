@@ -230,13 +230,14 @@ class Simulate:
         self.df = pd.DataFrame()
         self.output_panda_dataframe_flag = True
 
-    def output_animation(self, save_int:int=1):
+    def output_animation(self, save_int:int=1, file_name:str='openterrace'):
         self.save_int = save_int
         self.saved_bed_data = np.zeros((len(np.arange(self.t_start,self.t_end,save_int*self.dt)), self.fluid.n, self.bed.n))
         self.saved_fluid_data = np.zeros((len(np.arange(self.t_start,self.t_end,save_int*self.dt)), self.fluid.n))
         self.saved_time_data = np.zeros(len(np.arange(self.t_start,self.t_end,save_int*self.dt)))
         self.save_data_flag[range(0, int(np.floor(self.t_end/self.dt))+1, save_int)] = True
         self.output_animation_flag = True
+        self.file_name = file_name
 
     def _create_animation(self, phase=None, xdata=None, ydata=None):
         fig, ax = plt.subplots()
@@ -261,7 +262,7 @@ class Simulate:
             ax.set_title('Time: ' + str(np.round(self.saved_time_data[frame], decimals=2)) + ' s')
 
         ani = anim.FuncAnimation(fig, _update, frames=np.arange(int(np.floor(self.t_end/(self.dt*self.save_int)))))
-        ani.save(filename='animation_'+self.filename+'_'+phase+'.gif', writer=anim.PillowWriter(fps=10),progress_callback=lambda i, n: print(f'Saving frame {i} of {n}'))
+        ani.save(self.file_name+'_'+phase+'.gif', writer=anim.PillowWriter(fps=10),progress_callback=lambda i, n: print(f'{phase}: Saving animation frame {i}/{n}'))
 
     def run_simulation(self):
         """This is the function full of magic."""
