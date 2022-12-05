@@ -6,7 +6,7 @@ rho = 5150 (density)
 k = 1.9 (thermal conductivity)
 """
 
-def h(T: float) -> float:
+def h(T:float) -> float:
     """Mass specific enthalpy as function of temperature at 1 atm (fit assumes constant cp).
 
     Args:
@@ -17,7 +17,7 @@ def h(T: float) -> float:
     """
     return 1130*T
 
-def T(h: float, p:float=None) -> float:
+def T(h:float, p:float=None) -> float:
     """Temperature as function of mass specific enthalpy at 1 atm (fit assumes constant cp).
 
     Args:
@@ -29,7 +29,7 @@ def T(h: float, p:float=None) -> float:
     """
     return 1/1130*h
 
-def rho(h: float, p:float=None) -> float:
+def rho(h:float, p:float=None) -> float:
     """Density as function of mass specific entahlpy at 1 atm (fit assumes constant density).
 
     Args:
@@ -41,7 +41,7 @@ def rho(h: float, p:float=None) -> float:
     """
     return 5150*h**0
 
-def k(h: float, p:float=None) -> float:
+def k(h:float, p:float=None) -> float:
     """Thermal conductivity as function of mass specific enthalpy at 1 atm (fit assumes constant thermal conductivity).
 
     Args:
@@ -53,7 +53,7 @@ def k(h: float, p:float=None) -> float:
     """
     return 1.9*h**0
 
-def cp(h: float, p:float=None) -> float:
+def cp(h:float, p:float=None) -> float:
     """Specific heat capacity as function of mass specific enthalpy at 1 atm (fit assumes constant specific heat capacity).
 
     Args:
