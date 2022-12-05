@@ -51,11 +51,13 @@ def T(h:float, p:float=None) -> float:
     """
     return np.piecewise(h, [h <= _h_s, (h > _h_s) & (h <= _h_l), h > _h_l], [lambda h: 1/_cp*h, lambda h: _T_s + (_T_l-_T_s)*(h-_h_s)/(_h_l-_h_s), lambda h: _T_l + 1/_cp*(h-_h_l)])
 
+
 def rho(h:float, p:float=None) -> float:
     """Density as function of mass specific entahlpy at 1 atm (fit assumes constant density).
 
     Args:
         h (float): Specific enthalpy in J/kg
+        p (float): Pressure in Pa
 
     Returns:
         float: Density in kg/m^3
@@ -66,7 +68,8 @@ def k(h:float, p:float=None) -> float:
     """Thermal conductivity as function of mass specific enthalpy at 1 atm (fit assumes piecewice constant k).
 
     Args:
-        T (float): Temperature in kelvin
+        h (float): Specific enthalpy in J/kg
+        p (float): Pressure in Pa
 
     Returns:
         float: Thermal conductivity in W/(m K)

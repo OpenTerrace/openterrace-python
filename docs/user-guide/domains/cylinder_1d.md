@@ -1,4 +1,4 @@
 ::: domains.cylinder_1d
-    rendering:
+    options:
       show_source: true
       heading_level: 1

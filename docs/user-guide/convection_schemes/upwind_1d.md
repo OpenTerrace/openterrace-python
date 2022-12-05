@@ -1,4 +1,4 @@
 ::: convection_schemes.upwind_1d
-    rendering:
+    options:
       show_source: true
       heading_level: 1

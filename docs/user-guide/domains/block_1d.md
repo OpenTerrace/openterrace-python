@@ -1,4 +1,4 @@
-::: domains.sphere_1d
+::: domains.block_1d
     options:
       show_source: true
       heading_level: 1
