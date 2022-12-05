@@ -262,7 +262,7 @@ class Simulate:
             ax.set_title('Time: ' + str(np.round(self.saved_time_data[frame], decimals=2)) + ' s')
 
         ani = anim.FuncAnimation(fig, _update, frames=np.arange(int(np.floor(self.t_end/(self.dt*self.save_int)))))
-        ani.save(self.file_name+'_'+phase+'.gif', writer=anim.PillowWriter(fps=10),progress_callback=lambda i, n: print(f'Saving frame {i} of {n}'))
+        ani.save(self.file_name+'_'+phase+'.gif', writer=anim.PillowWriter(fps=10),progress_callback=lambda i, n: print(f'{phase}: Saving animation frame {i}/{n}'))
 
     def run_simulation(self):
         """This is the function full of magic."""

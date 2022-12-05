@@ -97,9 +97,10 @@ ot.select_coupling(h_coeff='constant', h_value=20)
 
 
 ```python linenums="18"
-ot.output_animation(save_int=6000)
+ot.output_animation(save_int=6000, file_name='mySimulations')
 ```
 - ``save_int`` (required): Save interval (number of time steps between two successive write outs)
+- ``file_name`` (optional): Specfies a filename for the animation
 
 Finally, we define how to visualise the results. Here, we save results every 6000 timestep (dt=0.025 s) e.g. every 150 s.
 
