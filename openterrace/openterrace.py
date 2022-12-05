@@ -270,12 +270,10 @@ class Simulate:
             if hasattr(self.bed, 'T'):
                 self.bed._solve_equations(t, self.dt)
                 self.bed._update_properties()
-                self.bed._postprocess()
             
             if hasattr(self.fluid, 'T'):
                 self.fluid._solve_equations(t, self.dt)
                 self.fluid._update_properties()
-                self.fluid._postprocess()
 
             if self.coupling:
                 self._couple()
