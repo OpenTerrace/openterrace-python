@@ -1,3 +1,5 @@
+""" This example shows how to simulate a cylindrical thermal storage tank with air and spherical magnetite stones as the bed material. """
+
 import openterrace
 
 ot = openterrace.Simulate(t_end=3600*6, dt=0.025, n_fluid=50, n_bed=5)
@@ -18,5 +20,5 @@ ot.bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, N
 ot.bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), -1))
 
 ot.select_coupling(h_coeff='constant', h_value=20)
-ot.output_animation(save_int=6000, animate_data_flag=True)
+ot.output_animation(save_int=6000)
 ot.run_simulation()
