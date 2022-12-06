@@ -1,29 +1,29 @@
-## Example 1: Packed bed with and and magnetite: 
+## Example 1
 
 ```python linenums="1"
---8<-- "openterrace/tutorials/example1.py"
+--8<-- "tutorials/example1.py"
 ```
 
-## Example 2: Convective heating of a hollow sphere of phase-change material (ATS58)
+## Example 2
 
 ```python linenums="1"
---8<-- "openterrace/tutorials/example2.py"
+--8<-- "tutorials/example2.py"
 ```
 
-## Example 3: Convective heating of a sphere of phase-change material (ATS58)
+## Example 3
 
 ```python linenums="1"
---8<-- "openterrace/tutorials/example3.py"
+--8<-- "tutorials/example3.py"
 ```
 
-## Example 4: Convective heating of a sphere of swedish diabase stone
+## Example 4
 
 ```python linenums="1"
---8<-- "openterrace/tutorials/example4.py"
+--8<-- "tutorials/example4.py"
 ```
 
-## Example 5: Pure advection of a custom fluid in a cylinder
+## Example 5
 
 ```python linenums="1"
---8<-- "openterrace/tutorials/example4.py"
+--8<-- "tutorials/example5.py"
 ```
