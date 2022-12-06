@@ -7,7 +7,6 @@ from . import convection_schemes
 from . import boundary_conditions
 
 # Import common Python modules
-import __main__
 import tqdm
 import numpy as np
 import matplotlib
@@ -38,8 +37,7 @@ class Simulate:
         self.save_data_flag = np.full(int(np.floor(t_end/dt))+1, False)
         self.output_animation_flag = False
         self.output_panda_dataframe_flag = False
-        self.filename = __main__.__file__.split('/')[-1].rsplit( ".", 1)[0]
-
+        
     class Phase:
         """Main class to define either the fluid or bed phase."""
         def __init__(self, n:int=None, n2:int=None, _type:str=None):
