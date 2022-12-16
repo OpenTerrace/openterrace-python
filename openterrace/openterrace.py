@@ -213,7 +213,7 @@ class Simulate:
         def output_csv(self, times:list[float]=None, file_name:str='openterrace_csv_'):
             pass
 
-    def select_coupling(self, h_coeff='constant', h_value=None):
+    def select_coupling(self, h_coeff=None, h_value=None):
         self.coupling = True
         valid_h_coeff = ['constant']
         if h_coeff not in valid_h_coeff:
