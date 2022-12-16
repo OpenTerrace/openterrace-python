@@ -16,14 +16,14 @@ import matplotlib.animation as anim
 
 class Simulate:
     """OpenTerrace class."""
-    def __init__(self, t_end:float=None, dt:float=None, n_fluid:float=1, n_bed:float=2):
+    def __init__(self, t_end:float=None, dt:float=None, n_fluid:int=1, n_bed:int=2):
         """Initialise with various control parameters.
 
         Args:
             t_end (float): End time in s
             dt (float): Time step size in s
-            n_fluid (float): Number of discretisations for fluid phase
-            n_bed (float): Number of discretisations for bed phase
+            n_fluid (int): Number of discretisations for fluid phase
+            n_bed (int): Number of discretisations for bed phase
         """
         self.t_start = 0
         self.t_end = t_end
@@ -98,17 +98,24 @@ class Simulate:
             self.domain.V = self.domain.V(kwargs)
 
         def select_porosity(self, phi:float=1):
+            """Select porosity from 0 to 1, e.g. filling the domain with the phase up to a certain degree."""
             self.domain.V = self.domain.V*phi
             self.phi = phi
 
         def select_schemes(self, diff:str=None, conv:str=None):
             """Imports the specified diffusion and convection schemes."""
             if diff is not None:
+                print('1')
                 try:
+                    print('2')
                     self.diff = getattr(getattr(globals()['diffusion_schemes'], diff), diff)
+                    print(self.diff)
+                    print(self._type)
                 except:
+                    print('3')
                     raise Exception("Diffusion scheme \'"+diff+"\' specified. Valid options for diffusion schemes are:", diffusion_schemes.__all__)
             else:
+                print('4')
                 self.diff = None
 
             if conv is not None:
@@ -194,6 +201,7 @@ class Simulate:
 
         def _solve_equations(self, t, dt):
             self._update_boundary_nodes(t, dt)
+            print('hej',self.diff)
             if self.diff is not None:
                 self.h = self.h + self.diff(self.T, self.D)/(self.rho*self.domain.V)*dt
             if self.conv is not None:
