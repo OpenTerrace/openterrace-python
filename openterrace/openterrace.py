@@ -7,6 +7,7 @@ from . import convection_schemes
 from . import boundary_conditions
 
 # Import common Python modules
+import sys
 import tqdm
 import numpy as np
 import matplotlib
@@ -16,7 +17,7 @@ import matplotlib.animation as anim
 
 class Simulate:
     """OpenTerrace class."""
-    def __init__(self, t_end:float=None, dt:float=None, n_fluid:int=1, n_bed:int=2):
+    def __init__(self, t_end:float=None, dt:float=None, n_fluid:int=50, n_bed:int=5):
         """Initialise with various control parameters.
 
         Args:
@@ -33,10 +34,8 @@ class Simulate:
         self.sources = []
         self.coupling = False
         self.saved_data = []
-        self.list_postprocess = []
-        self.save_data_flag = np.full(int(np.floor(t_end/dt))+1, False)
         self.output_animation_flag = False
-        self.output_panda_dataframe_flag = False
+        self.save_flag = []
         
     class Phase:
         """Main class to define either the fluid or bed phase."""
@@ -46,6 +45,7 @@ class Simulate:
             self._type = _type
             self.bcs = []
             self.sources = []
+            self.postprocess = []
             self.phi = 1
             self._valid_inputs(_type)
 
@@ -105,26 +105,16 @@ class Simulate:
         def select_schemes(self, diff:str=None, conv:str=None):
             """Imports the specified diffusion and convection schemes."""
             if diff is not None:
-                print('1')
                 try:
-                    print('2')
                     self.diff = getattr(getattr(globals()['diffusion_schemes'], diff), diff)
-                    print(self.diff)
-                    print(self._type)
                 except:
-                    print('3')
                     raise Exception("Diffusion scheme \'"+diff+"\' specified. Valid options for diffusion schemes are:", diffusion_schemes.__all__)
-            else:
-                print('4')
-                self.diff = None
 
             if conv is not None:
                 try:
                     self.conv = getattr(getattr(globals()['convection_schemes'], conv), conv)
                 except:
                     raise Exception("Convection scheme \'"+conv+"\' specified. Valid options for convection schemes are:", convection_schemes.__all__)
-            else:
-                self.conv = None
 
         def select_initial_conditions(self, T:float=None, mdot:float=None):
             """Initialises temperature and massflow fields"""
@@ -173,11 +163,11 @@ class Simulate:
             self.cp = self.fcns.cp(self.h)
             self.k = self.fcns.k(self.h)
 
-            if self.diff is not None:
+            if hasattr(self, 'diff'):
                 self.D[0,:,:] = self.k*self.domain.A[0]/self.domain.dx
                 self.D[1,:,:] = self.k*self.domain.A[1]/self.domain.dx
 
-            if self.conv is not None:
+            if hasattr(self, 'conv'):
                 self.F[0,:,:] = self.mdot*self.cp
                 self.F[1,:,:] = self.mdot*self.cp
 
@@ -201,16 +191,19 @@ class Simulate:
 
         def _solve_equations(self, t, dt):
             self._update_boundary_nodes(t, dt)
-            print('hej',self.diff)
-            if self.diff is not None:
+
+            if hasattr(self, 'diff'):
                 self.h = self.h + self.diff(self.T, self.D)/(self.rho*self.domain.V)*dt
-            if self.conv is not None:
+            if hasattr(self, 'conv'):
                 self.h = self.h + self.conv(self.T, self.F)/(self.rho*self.domain.V)*dt
             if self.sources is not None:
                 self._update_source(dt)
 
-        def _postprocess():
-            pass
+        def output_animation(self, times:list[float]=None, file_name:str='openterrace_animation_'):
+            self.animation_saved_data = np.zeros((len(times), self.n))
+            self.animation_saved_time_data = np.array(times)
+            self.animation_file_name = file_name
+            self.animation_output_flag = True
 
     def select_coupling(self, h_coeff='constant', h_value=None):
         self.coupling = True
@@ -221,29 +214,9 @@ class Simulate:
             self.h_value = h_value
 
     def _couple(self):
-        Q = self.h_value*self.bed.domain.A[1,-1]*(self.fluid.T[0]-self.bed.T[:,-1])*self.dt
+        Q = self.h_value*self.bed.domain.A[-1][-1]*(self.fluid.T[0]-self.bed.T[:,-1])*self.dt
         self.bed.h[:,-1] = self.bed.h[:,-1] + Q/(self.bed.rho[:,-1]*self.bed.domain.V[-1])
         self.fluid.h[0] = self.fluid.h[0] - (1-self.fluid.phi)*(self.fluid.domain.V/self.fluid.phi) / np.sum(self.bed.domain.V) * Q/(self.fluid.rho*self.fluid.domain.V)
-
-    def output_panda_dataframe(self, times: list[float]):
-        import pandas as pd
-        """Outputs a panda dataframe at user-specfied times and of the specified parameters
-
-        Args:
-            times (list[float]): Wanted output times
-        """
-
-        self.df = pd.DataFrame()
-        self.output_panda_dataframe_flag = True
-
-    def output_animation(self, save_int:int=1, file_name:str='openterrace'):
-        self.save_int = save_int
-        self.saved_bed_data = np.zeros((len(np.arange(self.t_start,self.t_end,save_int*self.dt)), self.fluid.n, self.bed.n))
-        self.saved_fluid_data = np.zeros((len(np.arange(self.t_start,self.t_end,save_int*self.dt)), self.fluid.n))
-        self.saved_time_data = np.zeros(len(np.arange(self.t_start,self.t_end,save_int*self.dt)))
-        self.save_data_flag[range(0, int(np.floor(self.t_end/self.dt))+1, save_int)] = True
-        self.output_animation_flag = True
-        self.file_name = file_name
 
     def _create_animation(self, phase=None, xdata=None, ydata=None):
         fig, ax = plt.subplots()
@@ -270,22 +243,31 @@ class Simulate:
         ani = anim.FuncAnimation(fig, _update, frames=np.arange(int(np.floor(self.t_end/(self.dt*self.save_int)))))
         ani.save(self.file_name+'_'+phase+'.gif', writer=anim.PillowWriter(fps=10),progress_callback=lambda i, n: print(f'{phase}: saving animation frame {i}/{n}'))
 
+    def _prepare_output(self):
+        pass
+
     def run_simulation(self):
         """This is the function full of magic."""
+        
+       self._prepare_output():
+
         i = 0
         for t in tqdm.tqdm(np.arange(self.t_start, self.t_end, self.dt)):
-            if hasattr(self.bed, 'T'):
-                self.bed._solve_equations(t, self.dt)
-                self.bed._update_properties()
-            
             if hasattr(self.fluid, 'T'):
                 self.fluid._solve_equations(t, self.dt)
                 self.fluid._update_properties()
 
+            if hasattr(self.bed, 'T'):
+                self.bed._solve_equations(t, self.dt)
+                self.bed._update_properties()
+
             if self.coupling:
                 self._couple()
 
-            if self.save_data_flag[i]:
+            if hasattr(self.fluid, 'animation_output_flag'):
+
+
+
                 if np.mod(i, self.save_int) == 0:
                     self.saved_time_data[int(i/self.save_int)] = t
                     if hasattr(self.bed, 'T'):
