@@ -205,6 +205,9 @@ class Simulate:
             self.animation_file_name = file_name
             self.animation_output_flag = True
 
+        def output_csv(self, times:list[float]=None, file_name:str='openterrace_csv_'):
+            pass
+
     def select_coupling(self, h_coeff='constant', h_value=None):
         self.coupling = True
         valid_h_coeff = ['constant']
