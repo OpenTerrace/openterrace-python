@@ -249,7 +249,7 @@ class Simulate:
     def run_simulation(self):
         """This is the function full of magic."""
         
-       self._prepare_output():
+        self._prepare_output()
 
         i = 0
         for t in tqdm.tqdm(np.arange(self.t_start, self.t_end, self.dt)):
