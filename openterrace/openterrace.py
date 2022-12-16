@@ -90,6 +90,7 @@ class Simulate:
             if not domain in globals()['domains'].__all__:
                 raise Exception("domain \'"+domain+"\' specified. Valid options for domain are:", self.valid_domains)
             self.domain = getattr(globals()['domains'], domain)
+            self.domain.type = domain
             self.domain.validate_input(kwargs, domain)
             self.domain.shape = self.domain.shape(kwargs)
             self.domain.node_pos = self.domain.node_pos(kwargs)
@@ -104,6 +105,10 @@ class Simulate:
 
         def select_schemes(self, diff:str=None, conv:str=None):
             """Imports the specified diffusion and convection schemes."""
+
+            if self.domain.type == 'lumped':
+                raise Exception("'lumped' has been selected as domain type. Please don't try discretising it.")
+
             if diff is not None:
                 try:
                     self.diff = getattr(getattr(globals()['diffusion_schemes'], diff), diff)
@@ -161,9 +166,9 @@ class Simulate:
             self.T = self.fcns.T(self.h)
             self.rho = self.fcns.rho(self.h)
             self.cp = self.fcns.cp(self.h)
-            self.k = self.fcns.k(self.h)
 
             if hasattr(self, 'diff'):
+                self.k = self.fcns.k(self.h)
                 self.D[0,:,:] = self.k*self.domain.A[0]/self.domain.dx
                 self.D[1,:,:] = self.k*self.domain.A[1]/self.domain.dx
 
