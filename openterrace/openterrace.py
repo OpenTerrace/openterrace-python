@@ -196,7 +196,6 @@ class Simulate:
 
         def _solve_equations(self, t, dt):
             self._update_boundary_nodes(t, dt)
-
             if hasattr(self, 'diff'):
                 self.h = self.h + self.diff(self.T, self.D)/(self.rho*self.domain.V)*dt
             if hasattr(self, 'conv'):
@@ -204,14 +203,12 @@ class Simulate:
             if self.sources is not None:
                 self._update_source(dt)
 
-        def output_animation(self, times:list[float]=None, file_name:str='openterrace_animation_'):
-            self.animation_saved_data = np.zeros((len(times), self.n))
-            self.animation_saved_time_data = np.array(times)
-            self.animation_file_name = file_name
-            self.animation_output_flag = True
+        def select_output(self, output_type:str=None, times:list[float]=None, file_name:str='openterrace_animation_'):
+            self.postprocess.append({'type': output_type, 'time': np.array(times), 'data': np.zeros((len(times), self.n)), 'file_name': file_name})
 
-        def output_csv(self, times:list[float]=None, file_name:str='openterrace_csv_'):
-            pass
+        def _prepare_output(self, t_start, t_end, dt):
+            for pp in self.postprocess:
+                print(pp)
 
     def select_coupling(self, h_coeff=None, h_value=None):
         self.coupling = True
@@ -251,20 +248,30 @@ class Simulate:
         ani = anim.FuncAnimation(fig, _update, frames=np.arange(int(np.floor(self.t_end/(self.dt*self.save_int)))))
         ani.save(self.file_name+'_'+phase+'.gif', writer=anim.PillowWriter(fps=10),progress_callback=lambda i, n: print(f'{phase}: saving animation frame {i}/{n}'))
 
-    def _prepare_output(self):
-        pass
-
     def run_simulation(self):
         """This is the function full of magic."""
-        
-        self._prepare_output()
+
+        if self.fluid.postprocess:
+            self.fluid._prepare_output(self.t_start, self.t_end, self.dt)
+
+        if self.bed.postprocess:
+            self.bed._prepare_output(self.t_start, self.t_end, self.dt)
+        #         self.fluid._prepare_output(self.t_start, self.t_end, self.dt)
+
+        # if hasattr(self.bed, 'postprocess'):
+        #     if self.bed.postprocess:
+        #         self.bed._prepare_output(self.t_start, self.t_end, self.dt)
+
+        # sys.exit()
 
         i = 0
         for t in tqdm.tqdm(np.arange(self.t_start, self.t_end, self.dt)):
             if hasattr(self.fluid, 'T'):
                 self.fluid._solve_equations(t, self.dt)
                 self.fluid._update_properties()
-
+                if self.fluid.postprocess:
+                    pass
+                    
             if hasattr(self.bed, 'T'):
                 self.bed._solve_equations(t, self.dt)
                 self.bed._update_properties()

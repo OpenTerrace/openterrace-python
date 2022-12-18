@@ -12,7 +12,7 @@ ot.fluid.select_schemes(diff='central_difference_1d', conv='upwind_1d')
 ot.fluid.select_initial_conditions(T=800+273.15, mdot=0.01)
 ot.fluid.select_bc(bc_type='dirichlet', parameter='T', position=(slice(None, None, None), 0), value=100+273.15)
 ot.fluid.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), -1))
-#ot.fluid.output_animation(times=range(0,60,10))
+ot.fluid.select_output(output_type='animation', times=range(0,60,10))
 
 # sys.exit()
 
