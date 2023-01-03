@@ -96,5 +96,7 @@ nav:
           - user-guide/convection_schemes/upwind_1d.md
       - Verification studies: user-guide/verification-and-validation/verification.md
   - source_code.md
-  - contributing.md
+  - Contributing:
+    - contributing.md
+    - students.md
   - contact.md
