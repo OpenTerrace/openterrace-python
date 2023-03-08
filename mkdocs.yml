@@ -71,11 +71,10 @@ plugins:
 nav:
   - index.md
   - Installation guide: installation.md
+  - Tutorials: tutorials.md
   - User guide:
       - user-guide/get-started.md
-      - user-guide/tutorials.md
-      - Theory:
-        - user-guide/theory/governing.md
+      - Theory: theory.md
       - Substances:
         - Fluid:
           - user-guide/fluid_substances/air.md
@@ -95,8 +94,9 @@ nav:
         - Convection:
           - user-guide/convection_schemes/upwind_1d.md
       - Verification studies: user-guide/verification-and-validation/verification.md
+      - Validation studies: user-guide/verification-and-validation/validation.md
   - source_code.md
-  - Contributing:
+  - Contributing and contact:
     - contributing.md
     - students.md
-  - contact.md
+    - contact.md
