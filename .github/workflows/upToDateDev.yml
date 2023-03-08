@@ -1,9 +1,6 @@
 name: Merge main back to dev branch
 
-on: 
-  pull_request:
-    branches: [main]
-    types: [closed]
+on: [workflow_dispatch]
 
 jobs:
   merge-master-back-to-dev:
@@ -19,7 +16,7 @@ jobs:
     - name: Merge main back to dev
       run: |
           git fetch --unshallow
-          git checkout dev
+          git checkout development
           git pull
           git merge --no-ff main -m "Auto-merge main back to dev"
           git push
