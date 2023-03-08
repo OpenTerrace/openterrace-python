@@ -4,10 +4,12 @@ on: [workflow_dispatch]
 
 jobs:
   merge-master-back-to-dev:
-    runs-on: ubuntu-latest    
+    name: Merged main (and tags) back to dev branch
+    runs-on: ubuntu-latest
+
     steps:
-      uses: actions/checkout@v3
     - name: Set Git config
+    - uses: actions/checkout@v3
       run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
