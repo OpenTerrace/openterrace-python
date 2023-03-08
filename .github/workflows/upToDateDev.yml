@@ -4,7 +4,8 @@ on:
   pull_request:
     branches: [main]
     types: [closed]
-    jobs:
+
+jobs:
   merge-master-back-to-dev:
     if: github.event.pull_request.merged == true
     timeout-minutes: 2
