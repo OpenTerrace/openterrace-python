@@ -1,6 +1,6 @@
 # Step-by-step guide
 
-1. [Install](../installation.md) OpenTerrace.
+1. Follow the [installation guide](../installation.md) to install OpenTerrace.
 2. Browse through the [tutorials](../tutorials.md) to get an idea of how to set up simulations.
 3. Then come back to this section to get more details on the individual steps.
 
@@ -11,7 +11,7 @@ ot = openterrace.Simulate(t_end=3600*6, dt=0.025, n_fluid=50, n_bed=5)
 ```
 **Line 1:** OpenTerrace is imported so we can access its functions
 
-**Line 2:** An instance of the OpenTerrace class lobal parameters that control our simulation. They include:
+**Line 2:** Create an instance ``ot`` and initialise with parameters that control our simulation. They include:
 
 - ``t_end`` (required): End time of the simulation in seconds
 
@@ -23,20 +23,18 @@ ot = openterrace.Simulate(t_end=3600*6, dt=0.025, n_fluid=50, n_bed=5)
 
 Note, either ``n_fluid`` or ``n_bed`` should be specified. If either is omitted that phase wont be simulated.
 
-# Setup the fluid phase
-
-## 1. Select a fluid
 ```python linenums="3"
 ot.fluid.select_substance(substance='air')
 ```
-**Line 3:** We select a fluid substance for our simulation.
+**Line 3:** One of the predefined [predefined substances](../fluid_substances/air) is selected as the fluid substance. By using the predefined substances that come with OpenTerrace all properties such as density, viscosity, thermal conductivity will be temperature dependent:
 
 - ``substance`` (required): Name of substance for the phase we are defining
 
-We select a substance for our simulation. We can either use of the [predefined substances](../fluid_substances/air) such as ``'air'`` or define one on the fly with temperature-independent properties, e.g.:
-```python linenums="4"
+Alternatively, we may define a custom substance on-the-fly with a constant density, specific heat capacity and thermal conductivity by:
+```python linenums="3"
 ot.fluid.select_substance_on_the_fly(rho=1.2, cp=1000, k=0.06)
 ```
+
 
 - ``rho`` (required): Density in kg/m^3
 
