@@ -1,29 +1,29 @@
-## Example 1
+## Tutorial 1
 
 ```python linenums="1"
---8<-- "tutorials/example1.py"
+--8<-- "tutorials/tutorial1.py"
 ```
 
-## Example 2
+## Tutorial 2
 
 ```python linenums="1"
---8<-- "tutorials/example2.py"
+--8<-- "tutorials/tutorial2.py"
 ```
 
-## Example 3
+## Tutorial 3
 
 ```python linenums="1"
---8<-- "tutorials/example3.py"
+--8<-- "tutorials/tutorial3.py"
 ```
 
-## Example 4
+## Tutorial 4
 
 ```python linenums="1"
---8<-- "tutorials/example4.py"
+--8<-- "tutorials/tutorial4.py"
 ```
 
-## Example 5
+## Tutorial 5
 
 ```python linenums="1"
---8<-- "tutorials/example5.py"
+--8<-- "tutorials/tutorial5.py"
 ```
