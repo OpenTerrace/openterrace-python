@@ -10,11 +10,11 @@ jobs:
     steps:
     - name: Set Git config
       uses: actions/checkout@v3
+
+    - name: Merge main back to dev
       run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
-    - name: Merge main back to dev
-      run: |
           git fetch --unshallow
           git checkout development
           git pull
