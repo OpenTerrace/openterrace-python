@@ -15,5 +15,5 @@ git clone https://github.com/OpenTerrace/openterrace-python.git
 ```
 Next, navigate to the "openterrace-python" folder and install in editable mode:
 ```bash
-pip install -e .
+pip install --editable .
 ```
