@@ -1,12 +1,17 @@
-# Getting started
-With OpenTerrace [installed](../installation.md), you can start setting up your simulation. The following shows a complete example of an OpenTerrace simulation setup.
+# Step-by-step guide
 
-# Define global parameters
+1. [Install](../installation.md) OpenTerrace.
+2. Browse through the [tutorials](../tutorials.md) to get an idea of how to set up simulations.
+3. Then come back to this section to get more details on the individual steps.
+
+# Import OpenTerrace and define global parameters
 ```python linenums="1"
 import openterrace
 ot = openterrace.Simulate(t_end=3600*6, dt=0.025, n_fluid=50, n_bed=5)
 ```
-Here, we import openterrace and define global parameters that control our simulation. They include:
+**Line 1:** OpenTerrace is imported so we can access its functions
+
+**Line 2:** An instance of the OpenTerrace class lobal parameters that control our simulation. They include:
 
 - ``t_end`` (required): End time of the simulation in seconds
 
@@ -24,6 +29,7 @@ Note, either ``n_fluid`` or ``n_bed`` should be specified. If either is omitted 
 ```python linenums="3"
 ot.fluid.select_substance(substance='air')
 ```
+**Line 3:** We select a fluid substance for our simulation.
 
 - ``substance`` (required): Name of substance for the phase we are defining
 
