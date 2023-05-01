@@ -1,7 +1,8 @@
 # Theory
 
 ## Schematic overview
-Test
+![Alt text](docs/_figures/schematic.svg)
+<img src="docs/_figures/schematic.svg">
 
 ## Governing equations
 OpenTerrace solves partial differential equations for both phases.
