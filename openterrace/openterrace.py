@@ -17,20 +17,16 @@ import matplotlib.animation as anim
 
 class Simulate:
     """OpenTerrace class."""
-    def __init__(self, t_end:float=None, dt:float=None, n_fluid:int=50, n_bed:int=5):
+    def __init__(self, t_end:float=None, dt:float=None):
         """Initialise with various control parameters.
 
         Args:
             t_end (float): End time in s
             dt (float): Time step size in s
-            n_fluid (int): Number of discretisations for fluid phase
-            n_bed (int): Number of discretisations for bed phase
         """
         self.t_start = 0
         self.t_end = t_end
         self.dt = dt
-        self.fluid = self.Phase(n=n_fluid, n2=1, _type='fluid')
-        self.bed = self.Phase(n=n_bed, n2=n_fluid, _type='bed')
         self.sources = []
         self.coupling = False
         self.saved_data = []
@@ -39,19 +35,32 @@ class Simulate:
         
     class Phase:
         """Main class to define either the fluid or bed phase."""
-        def __init__(self, n:int=None, n2:int=None, _type:str=None):
+        def __init__(self, n:int=None, n_other:int=1, type:str=None):
+            """Initialise a phase with number of control points and type.
+
+            Args:
+                n_self (int): Number of discretisations for the given phase
+                n_other (int): Number of discretisations for the other phase
+                type (str): Type of phase
+            """
             self.n = n
-            self.n2 = n2
-            self._type = _type
+            self.n_other = n_other
+            
+            self.phi = 1
+
             self.bcs = []
             self.sources = []
             self.postprocess = []
-            self.phi = 1
-            self._valid_inputs(_type)
+            
+            self.type = type
+            self._valid_inputs(type)
 
-        def _valid_inputs(self, _type:str):
+        def _valid_inputs(self, type:str):
+            """Gets valid domain and substances depending on type of phase.
+            """
+
             self.valid_domains = globals()['domains'].__all__
-            self.valid_substances = globals()[self._type+'_substances'].__all__
+            self.valid_substances = globals()[type+'_substances'].__all__
 
         def select_substance_on_the_fly(self, cp:float=None, rho:float=None, k:float=None):
             """Defines and selects a new substance on-the-fly. This is useful for defining a substance for testing purposes with temperature independent properties.
@@ -79,8 +88,8 @@ class Simulate:
             if not substance:
                 raise Exception("Keyword 'substance' not specified.")
             if not substance in self.valid_substances:
-                raise Exception(substance+" specified as "+self._type+" substance. Valid "+self._type+" substances are:", self.valid_substances)
-            self.fcns = getattr(globals()[self._type+'_substances'], substance)
+                raise Exception(substance+" specified as "+self._type+" substance. Valid "+self.type+" substances are:", self.valid_substances)
+            self.fcns = getattr(globals()[self.type+'_substances'], substance)
 
         def select_domain_shape(self, domain:str=None, **kwargs):
             """Select domain shape and initialise constants."""
@@ -124,10 +133,10 @@ class Simulate:
         def select_initial_conditions(self, T:float=None, mdot:float=None):
             """Initialises temperature and massflow fields"""
             if T is not None:
-                self.T = np.tile(T,(np.append(self.n2,self.domain.shape)))
+                self.T = np.tile(T,(np.append(self.n_other,self.domain.shape)))
                 self.h = self.fcns.h(self.T)
             if mdot is not None:
-                self.mdot = np.tile(mdot,(np.append(self.n2,self.domain.shape)))
+                self.mdot = np.tile(mdot,(np.append(self.n_other,self.domain.shape)))
             self.T = self.fcns.T(self.h)
             self.rho = self.fcns.rho(self.h)
             self.cp = self.fcns.cp(self.h)
@@ -256,13 +265,6 @@ class Simulate:
 
         if self.bed.postprocess:
             self.bed._prepare_output(self.t_start, self.t_end, self.dt)
-        #         self.fluid._prepare_output(self.t_start, self.t_end, self.dt)
-
-        # if hasattr(self.bed, 'postprocess'):
-        #     if self.bed.postprocess:
-        #         self.bed._prepare_output(self.t_start, self.t_end, self.dt)
-
-        # sys.exit()
 
         i = 0
         for t in tqdm.tqdm(np.arange(self.t_start, self.t_end, self.dt)):
@@ -280,9 +282,6 @@ class Simulate:
                 self._couple()
 
             if hasattr(self.fluid, 'animation_output_flag'):
-
-
-
                 if np.mod(i, self.save_int) == 0:
                     self.saved_time_data[int(i/self.save_int)] = t
                     if hasattr(self.bed, 'T'):
