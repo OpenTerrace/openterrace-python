@@ -22,16 +22,12 @@ class Simulate:
 
         Args:
             t_end (float): End time in s
-            dt (float): Time step size in s
+            dt (float): Ti me step size in s
         """
         self.t_start = 0
         self.t_end = t_end
         self.dt = dt
-        self.sources = []
         self.coupling = False
-        self.saved_data = []
-        self.output_animation_flag = False
-        self.save_flag = []
         
     class Phase:
         """Main class to define either the fluid or bed phase."""
@@ -51,6 +47,10 @@ class Simulate:
             self.bcs = []
             self.sources = []
             self.postprocess = []
+            self.saved_data = []
+
+            self.save_flag = False
+            self.output_animation_flag = False
             
             self.type = type
             self._valid_inputs(type)
