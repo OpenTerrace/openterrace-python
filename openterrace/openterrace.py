@@ -46,19 +46,16 @@ class Simulate:
 
             self.bcs = []
             self.sources = []
-            self.postprocess = []
-            self.saved_data = []
 
-            self.save_flag = False
-            self.output_animation_flag = False
-            
+            self.flag_plot = False
+            self.flag_animation = False
+ 
             self.type = type
             self._valid_inputs(type)
 
         def _valid_inputs(self, type:str):
             """Gets valid domain and substances depending on type of phase.
             """
-
             self.valid_domains = globals()['domains'].__all__
             self.valid_substances = globals()[type+'_substances'].__all__
 
@@ -170,6 +167,9 @@ class Simulate:
                         raise Exception("Keyword \'"+var+"\' not specified for source of type \'"+kwargs['source_type']+"\'")
             self.sources.append(kwargs)
 
+        def save_data(self, times:list[float]=None, parameters:list[str]=None):
+            self.data = {'times': np.array(times), 'data': np.zeros((len(times), self.n, self.n_other))}
+
         def _update_properties(self):
             """Updates properties based on specific enthalpy"""
             self.T = self.fcns.T(self.h)
@@ -211,13 +211,6 @@ class Simulate:
                 self.h = self.h + self.conv(self.T, self.F)/(self.rho*self.domain.V)*dt
             if self.sources is not None:
                 self._update_source(dt)
-
-        def select_output(self, output_type:str=None, times:list[float]=None, file_name:str='openterrace_animation_'):
-            self.postprocess.append({'type': output_type, 'time': np.array(times), 'data': np.zeros((len(times), self.n)), 'file_name': file_name})
-
-        def _prepare_output(self, t_start, t_end, dt):
-            for pp in self.postprocess:
-                print(pp)
 
     def select_coupling(self, h_coeff=None, h_value=None):
         self.coupling = True
@@ -290,8 +283,8 @@ class Simulate:
                         self.saved_fluid_data[int(i/self.save_int),:] = self.fluid.T
             i = i+1
 
-        if self.output_animation_flag:
-            if hasattr(self.bed, 'T'):
-                self._create_animation(phase='bed', xdata=self.bed.domain.node_pos, ydata=self.saved_bed_data)
-            if hasattr(self.fluid, 'T'):
-                self._create_animation(phase='fluid', xdata=self.fluid.domain.node_pos, ydata=self.saved_fluid_data)
+        # if self.output_animation_flag:
+        #     if hasattr(self.bed, 'T'):
+        #         self._create_animation(phase='bed', xdata=self.bed.domain.node_pos, ydata=self.saved_bed_data)
+        #     if hasattr(self.fluid, 'T'):
+        #         self._create_animation(phase='fluid', xdata=self.fluid.domain.node_pos, ydata=self.saved_fluid_data)
