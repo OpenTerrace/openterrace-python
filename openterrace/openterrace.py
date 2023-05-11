@@ -27,9 +27,10 @@ class Simulate:
         self.t_start = 0
         self.t_end = t_end
         self.dt = dt
-        self.coupling = False
+        self.flag_coupling = False
         
     class Phase:
+        instances = []
         """Main class to define either the fluid or bed phase."""
         def __init__(self, n:int=None, n_other:int=1, type:str=None):
             """Initialise a phase with number of control points and type.
@@ -39,6 +40,7 @@ class Simulate:
                 n_other (int): Number of discretisations for the other phase
                 type (str): Type of phase
             """
+            self.__class__.instances.append(self)
             self.n = n
             self.n_other = n_other
             
@@ -47,8 +49,7 @@ class Simulate:
             self.bcs = []
             self.sources = []
 
-            self.flag_plot = False
-            self.flag_animation = False
+            self.flag_save_data = False
  
             self.type = type
             self._valid_inputs(type)
@@ -168,7 +169,8 @@ class Simulate:
             self.sources.append(kwargs)
 
         def save_data(self, times:list[float]=None, parameters:list[str]=None):
-            self.data = {'times': np.array(times), 'data': np.zeros((len(times), self.n, self.n_other))}
+            self.data = {'times': np.array(times), 'data': np.zeros((len(times), self.n_other, self.n))}
+            self.flag_save_data = True
 
         def _update_properties(self):
             """Updates properties based on specific enthalpy"""
@@ -213,74 +215,67 @@ class Simulate:
                 self._update_source(dt)
 
     def select_coupling(self, h_coeff=None, h_value=None):
-        self.coupling = True
+        self.flag_coupling = True
         valid_h_coeff = ['constant']
         if h_coeff not in valid_h_coeff:
             raise Exception("h_coeff \'"+h_coeff+"\' specified. Valid options for h_coeff are:", valid_h_coeff)
         if h_coeff == 'constant':
             self.h_value = h_value
 
-    def _couple(self):
+    def _coupling(self):
         Q = self.h_value*self.bed.domain.A[-1][-1]*(self.fluid.T[0]-self.bed.T[:,-1])*self.dt
         self.bed.h[:,-1] = self.bed.h[:,-1] + Q/(self.bed.rho[:,-1]*self.bed.domain.V[-1])
         self.fluid.h[0] = self.fluid.h[0] - (1-self.fluid.phi)*(self.fluid.domain.V/self.fluid.phi) / np.sum(self.bed.domain.V) * Q/(self.fluid.rho*self.fluid.domain.V)
 
-    def _create_animation(self, phase=None, xdata=None, ydata=None):
-        fig, ax = plt.subplots()
-        fig.tight_layout(pad=2)
-        ymin = np.min(ydata)-273.15
-        ymax = np.max(ydata)-273.15
-        xmin = np.min(xdata)
-        xmax = np.max(xdata)
+    # def _create_animation(self, phase=None, xdata=None, ydata=None):
+    #     fig, ax = plt.subplots()
+    #     fig.tight_layout(pad=2)
+    #     ymin = np.min(ydata)-273.15
+    #     ymax = np.max(ydata)-273.15
+    #     xmin = np.min(xdata)
+    #     xmax = np.max(xdata)
 
-        def _update(frame):
-            x = xdata
-            y = ydata[frame]
-            ax.clear()
-            ax.set_xlim(xmin, xmax)
-            ax.set_ylim(ymin, ymax)
-            ax.set_xlabel('Position (m)')
-            ax.set_ylabel('Temperature (C)')
-            ax.grid()
-            ax.plot(x, y.T-273.15, color = '#4cae4f')
-            ax.text(.05, .95, 'Simulated with OpenTerrace', ha='left', va='top', transform=ax.transAxes, color = '#4cae4f',
-                bbox=dict(facecolor='white',boxstyle="square,pad=0.5", alpha=0.5))
-            ax.set_title('Time: ' + str(np.round(self.saved_time_data[frame], decimals=2)) + ' s')
+    #     def _update(frame):
+    #         x = xdata
+    #         y = ydata[frame]
+    #         ax.clear()
+    #         ax.set_xlim(xmin, xmax)
+    #         ax.set_ylim(ymin, ymax)
+    #         ax.set_xlabel('Position (m)')
+    #         ax.set_ylabel('Temperature (C)')
+    #         ax.grid()
+    #         ax.plot(x, y.T-273.15, color = '#4cae4f')
+    #         ax.text(.05, .95, 'Simulated with OpenTerrace', ha='left', va='top', transform=ax.transAxes, color = '#4cae4f',
+    #             bbox=dict(facecolor='white',boxstyle="square,pad=0.5", alpha=0.5))
+    #         ax.set_title('Time: ' + str(np.round(self.saved_time_data[frame], decimals=2)) + ' s')
 
-        ani = anim.FuncAnimation(fig, _update, frames=np.arange(int(np.floor(self.t_end/(self.dt*self.save_int)))))
-        ani.save(self.file_name+'_'+phase+'.gif', writer=anim.PillowWriter(fps=10),progress_callback=lambda i, n: print(f'{phase}: saving animation frame {i}/{n}'))
+    #     ani = anim.FuncAnimation(fig, _update, frames=np.arange(int(np.floor(self.t_end/(self.dt*self.save_int)))))
+    #     ani.save(self.file_name+'_'+phase+'.gif', writer=anim.PillowWriter(fps=10),progress_callback=lambda i, n: print(f'{phase}: saving animation frame {i}/{n}'))
 
     def run_simulation(self):
         """This is the function full of magic."""
 
-        if self.fluid.postprocess:
-            self.fluid._prepare_output(self.t_start, self.t_end, self.dt)
-
-        if self.bed.postprocess:
-            self.bed._prepare_output(self.t_start, self.t_end, self.dt)
-
         i = 0
         for t in tqdm.tqdm(np.arange(self.t_start, self.t_end, self.dt)):
-            if hasattr(self.fluid, 'T'):
-                self.fluid._solve_equations(t, self.dt)
-                self.fluid._update_properties()
-                if self.fluid.postprocess:
-                    pass
-                    
-            if hasattr(self.bed, 'T'):
-                self.bed._solve_equations(t, self.dt)
-                self.bed._update_properties()
+            flag_save = False
 
-            if self.coupling:
-                self._couple()
+            for phase_instance in self.Phase.instances:
+                if phase_instance.flag_save_data:
+                    if t in phase_instance.data['times']:
+                        phase_instance.data['data'][i,:,:] = phase_instance.T
+                phase_instance._solve_equations(t, self.dt)
+                phase_instance._update_properties()
 
-            if hasattr(self.fluid, 'animation_output_flag'):
-                if np.mod(i, self.save_int) == 0:
-                    self.saved_time_data[int(i/self.save_int)] = t
-                    if hasattr(self.bed, 'T'):
-                        self.saved_bed_data[int(i/self.save_int),:,:] = self.bed.T
-                    if hasattr(self.fluid, 'T'):
-                        self.saved_fluid_data[int(i/self.save_int),:] = self.fluid.T
+            if self.flag_coupling:
+                self._coupling()
+
+            # if hasattr(self.fluid, 'animation_output_flag'):
+            #     if np.mod(i, self.save_int) == 0:
+            #         self.saved_time_data[int(i/self.save_int)] = t
+            #         if hasattr(self.bed, 'T'):
+            #             self.saved_bed_data[int(i/self.save_int),:,:] = self.bed.T
+            #         if hasattr(self.fluid, 'T'):
+            #             self.saved_fluid_data[int(i/self.save_int),:] = self.fluid.T
             i = i+1
 
         # if self.output_animation_flag:
