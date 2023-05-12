@@ -168,9 +168,36 @@ class Simulate:
                         raise Exception("Keyword \'"+var+"\' not specified for source of type \'"+kwargs['source_type']+"\'")
             self.sources.append(kwargs)
 
-        def save_data(self, times:list[float]=None, parameters:list[str]=None):
-            self.data = {'times': np.array(times), 'data': np.zeros((len(times), self.n_other, self.n))}
-            self.flag_save_data = True
+        def select_output(self, times:list[float]=None, parameters:list[str]=None):
+            class Data(object):
+                pass
+            self.data = Data()
+            self.data.time = np.array(times)
+            self.data.parameters = parameters
+            for parameter in parameters:
+                setattr(self.data,parameter,np.zeros((len(times), self.n_other, self.n))) 
+                self._flag_save_data = True
+
+        def _save_data(self, q, t):
+            if t in self.data.time:
+                self.data.time[q] = t
+                for parameter in self.data.parameters:
+                    setattr(self.data,parameter[q],getattr(self,parameter))
+
+
+                    getattr(self,parameter)[q].__setitem__(slice(None, None, None), self.T)
+
+        def _create_plot(self):
+            for parameter in self.data.parameters:
+                print(parameter)
+                fig, ax = plt.subplots()
+                fig.tight_layout(pad=2)
+
+                plt.plot(self.data.time, getattr(self.data,parameter))
+                plt.grid()
+                plt.xlabel('Time, t (s)')
+                plt.ylabel(parameter)
+                plt.savefig('fig.png')
 
         def _update_properties(self):
             """Updates properties based on specific enthalpy"""
@@ -255,28 +282,23 @@ class Simulate:
     def run_simulation(self):
         """This is the function full of magic."""
 
-        i = 0
         q = 0
         for t in tqdm.tqdm(np.arange(self.t_start, self.t_end, self.dt)):
-            flag_save = False
-
             for phase_instance in self.Phase.instances:
                 phase_instance._solve_equations(t, self.dt)
                 phase_instance._update_properties()
-                if phase_instance.flag_save_data:
-                    if t in phase_instance.data['times']:
-                        phase_instance.data['data'][q,:,:] = phase_instance.T
-                        phase_instance.data['times'][q] = t
-                        q = q+1
-                        
+                if phase_instance._flag_save_data:
+                    phase_instance._save_data(q,t)
+
             if self.flag_coupling:
                 self._coupling()
 
 
-            i = i+1
+    def generate_plots(self):
+        for phase_instance in self.Phase.instances:
+            if phase_instance.flag_save_data:
+                print(phase_instance.data.T)
+                phase_instance._create_plot()
 
-        if self.output_animation_flag:
-            if hasattr(self.bed, 'T'):
-                self._create_animation(phase='bed', xdata=self.bed.domain.node_pos, ydata=self.saved_bed_data)
-            if hasattr(self.fluid, 'T'):
-                self._create_animation(phase='fluid', xdata=self.fluid.domain.node_pos, ydata=self.saved_fluid_data)
+    def generate_animations(self):
+        pass

@@ -3,17 +3,17 @@
 import openterrace
 import numpy as np
 
-ot = openterrace.Simulate(t_end=60, dt=0.01)
+ot = openterrace.Simulate(t_end=3, dt=0.01)
 
 ot.fluid = ot.Phase(n=5, type='fluid')
 ot.fluid.select_substance(substance='air')
 ot.fluid.select_domain_shape(domain='cylinder_1d', D=0.5, H=2)
 ot.fluid.select_porosity(phi=0.4)
 ot.fluid.select_schemes(diff='central_difference_1d', conv='upwind_1d')
-ot.fluid.select_initial_conditions(T=273.15+50, mdot=0.1)
+ot.fluid.select_initial_conditions(T=273.15+50, mdot=0.001)
 ot.fluid.select_bc(bc_type='dirichlet', parameter='T', position=(slice(None, None, None), 0), value=273.15+600)
 ot.fluid.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), -1))
-ot.fluid.save_data(times=range(0, 60, 1), parameters=['T'])
+ot.fluid.select_output(times=range(0, 60, 1), parameters=['T'])
 
 # ot.bed = ot.Phase(n=5, n_other=50, type='bed')
 # ot.bed.select_substance(substance='magnetite')
@@ -25,5 +25,4 @@ ot.fluid.save_data(times=range(0, 60, 1), parameters=['T'])
 
 # ot.select_coupling(h_coeff='constant', h_value=20)
 ot.run_simulation()
-
-#ot.animate(times=range(0, 3600, 900), fps=30, filename='openterrace_animation.avi')
+ot.generate_plots()
