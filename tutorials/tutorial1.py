@@ -26,6 +26,4 @@ ot.fluid.save_data(times=range(0, 60, 1), parameters=['T'])
 # ot.select_coupling(h_coeff='constant', h_value=20)
 ot.run_simulation()
 
-print(ot.fluid.data['data'])
-
 #ot.animate(times=range(0, 3600, 900), fps=30, filename='openterrace_animation.avi')

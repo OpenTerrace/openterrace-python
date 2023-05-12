@@ -256,30 +256,27 @@ class Simulate:
         """This is the function full of magic."""
 
         i = 0
+        q = 0
         for t in tqdm.tqdm(np.arange(self.t_start, self.t_end, self.dt)):
             flag_save = False
 
             for phase_instance in self.Phase.instances:
-                if phase_instance.flag_save_data:
-                    if t in phase_instance.data['times']:
-                        phase_instance.data['data'][i,:,:] = phase_instance.T
                 phase_instance._solve_equations(t, self.dt)
                 phase_instance._update_properties()
-
+                if phase_instance.flag_save_data:
+                    if t in phase_instance.data['times']:
+                        phase_instance.data['data'][q,:,:] = phase_instance.T
+                        phase_instance.data['times'][q] = t
+                        q = q+1
+                        
             if self.flag_coupling:
                 self._coupling()
 
-            # if hasattr(self.fluid, 'animation_output_flag'):
-            #     if np.mod(i, self.save_int) == 0:
-            #         self.saved_time_data[int(i/self.save_int)] = t
-            #         if hasattr(self.bed, 'T'):
-            #             self.saved_bed_data[int(i/self.save_int),:,:] = self.bed.T
-            #         if hasattr(self.fluid, 'T'):
-            #             self.saved_fluid_data[int(i/self.save_int),:] = self.fluid.T
+
             i = i+1
 
-        # if self.output_animation_flag:
-        #     if hasattr(self.bed, 'T'):
-        #         self._create_animation(phase='bed', xdata=self.bed.domain.node_pos, ydata=self.saved_bed_data)
-        #     if hasattr(self.fluid, 'T'):
-        #         self._create_animation(phase='fluid', xdata=self.fluid.domain.node_pos, ydata=self.saved_fluid_data)
+        if self.output_animation_flag:
+            if hasattr(self.bed, 'T'):
+                self._create_animation(phase='bed', xdata=self.bed.domain.node_pos, ydata=self.saved_bed_data)
+            if hasattr(self.fluid, 'T'):
+                self._create_animation(phase='fluid', xdata=self.fluid.domain.node_pos, ydata=self.saved_fluid_data)
