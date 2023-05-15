@@ -7,10 +7,10 @@ from . import convection_schemes
 from . import boundary_conditions
 
 # Import common Python modules
-import sys
 import tqdm
 import numpy as np
 import matplotlib
+import datetime
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
@@ -175,29 +175,55 @@ class Simulate:
             self.data.time = np.array(times)
             self.data.parameters = parameters
             for parameter in parameters:
-                setattr(self.data,parameter,np.zeros((len(times), self.n_other, self.n))) 
+                setattr(self.data,parameter,np.zeros((len(times), self.n_other, self.n)))
                 self._flag_save_data = True
+                self._q = 0
 
-        def _save_data(self, q, t):
-            if t in self.data.time:
-                self.data.time[q] = t
-                for parameter in self.data.parameters:
-                    setattr(self.data,parameter[q],getattr(self,parameter))
+        def _save_data(self, t):
+            if self._flag_save_data:
+                if t in self.data.time:
+                    self.data.time[self._q] = t
+                    for parameter in self.data.parameters: 
+                        getattr(self.data,parameter)[self._q] = getattr(self,parameter)
+                        self._q = self._q+1
 
-
-                    getattr(self,parameter)[q].__setitem__(slice(None, None, None), self.T)
-
-        def _create_plot(self):
+        def _create_plot(self, file_prefix=None):
             for parameter in self.data.parameters:
-                print(parameter)
+                filename='OpenTerrace_'+datetime.datetime.now().strftime("%Y%m%d_%H%M")+'_'+self.type+'_'+parameter+'.png'
                 fig, ax = plt.subplots()
                 fig.tight_layout(pad=2)
 
-                plt.plot(self.data.time, getattr(self.data,parameter))
+                plt.plot(self.domain.node_pos, np.mean(getattr(self.data,parameter),1).transpose())
                 plt.grid()
-                plt.xlabel('Time, t (s)')
+                plt.xlabel('Position (m)')
                 plt.ylabel(parameter)
-                plt.savefig('fig.png')
+                plt.savefig(filename)
+
+        def _create_animation(self):
+            def _update(frame):
+                x = xdata
+                y = ydata[frame]
+                ax.clear()
+                ax.set_xlim(xmin, xmax)
+                ax.set_ylim(ymin, ymax)
+                ax.set_xlabel('Position (m)')
+                ax.set_ylabel('Temperature (C)')
+                ax.grid()
+                ax.plot(x, y.T-273.15, color = '#4cae4f')
+                ax.text(.05, .95, 'Simulated with OpenTerrace', ha='left', va='top', transform=ax.transAxes, color = '#4cae4f',
+                    bbox=dict(facecolor='white',boxstyle="square,pad=0.5", alpha=0.5))
+                ax.set_title('Time: ' + str(np.round(self.saved_time_data[frame], decimals=2)) + ' s')
+
+            for parameter in self.data.parameters:
+                fig, ax = plt.subplots()
+                fig.tight_layout(pad=2)
+                ymin = np.min(ydata)-273.15
+                ymax = np.max(ydata)-273.15
+                xmin = np.min(xdata)
+                xmax = np.max(xdata)
+
+                ani = anim.FuncAnimation(fig, _update, frames=np.arange(int(np.floor(self.t_end/(self.dt*self.save_int)))))
+                ani.save(self.file_name+'_'+phase+'.gif', writer=anim.PillowWriter(fps=10),progress_callback=lambda i, n: print(f'{phase}: saving animation frame {i}/{n}'))
 
         def _update_properties(self):
             """Updates properties based on specific enthalpy"""
@@ -254,51 +280,22 @@ class Simulate:
         self.bed.h[:,-1] = self.bed.h[:,-1] + Q/(self.bed.rho[:,-1]*self.bed.domain.V[-1])
         self.fluid.h[0] = self.fluid.h[0] - (1-self.fluid.phi)*(self.fluid.domain.V/self.fluid.phi) / np.sum(self.bed.domain.V) * Q/(self.fluid.rho*self.fluid.domain.V)
 
-    # def _create_animation(self, phase=None, xdata=None, ydata=None):
-    #     fig, ax = plt.subplots()
-    #     fig.tight_layout(pad=2)
-    #     ymin = np.min(ydata)-273.15
-    #     ymax = np.max(ydata)-273.15
-    #     xmin = np.min(xdata)
-    #     xmax = np.max(xdata)
-
-    #     def _update(frame):
-    #         x = xdata
-    #         y = ydata[frame]
-    #         ax.clear()
-    #         ax.set_xlim(xmin, xmax)
-    #         ax.set_ylim(ymin, ymax)
-    #         ax.set_xlabel('Position (m)')
-    #         ax.set_ylabel('Temperature (C)')
-    #         ax.grid()
-    #         ax.plot(x, y.T-273.15, color = '#4cae4f')
-    #         ax.text(.05, .95, 'Simulated with OpenTerrace', ha='left', va='top', transform=ax.transAxes, color = '#4cae4f',
-    #             bbox=dict(facecolor='white',boxstyle="square,pad=0.5", alpha=0.5))
-    #         ax.set_title('Time: ' + str(np.round(self.saved_time_data[frame], decimals=2)) + ' s')
-
-    #     ani = anim.FuncAnimation(fig, _update, frames=np.arange(int(np.floor(self.t_end/(self.dt*self.save_int)))))
-    #     ani.save(self.file_name+'_'+phase+'.gif', writer=anim.PillowWriter(fps=10),progress_callback=lambda i, n: print(f'{phase}: saving animation frame {i}/{n}'))
-
     def run_simulation(self):
         """This is the function full of magic."""
-
-        q = 0
-        for t in tqdm.tqdm(np.arange(self.t_start, self.t_end, self.dt)):
+        for t in tqdm.tqdm(np.arange(self.t_start, self.t_end+self.dt, self.dt)):
             for phase_instance in self.Phase.instances:
                 phase_instance._solve_equations(t, self.dt)
                 phase_instance._update_properties()
-                if phase_instance._flag_save_data:
-                    phase_instance._save_data(q,t)
-
+                phase_instance._save_data(t)
             if self.flag_coupling:
                 self._coupling()
 
-
     def generate_plots(self):
         for phase_instance in self.Phase.instances:
-            if phase_instance.flag_save_data:
-                print(phase_instance.data.T)
+            if phase_instance._flag_save_data:
                 phase_instance._create_plot()
 
     def generate_animations(self):
-        pass
+        for phase_instance in self.Phase.instances:
+            if phase_instance._flag_save_data:
+                phase_instance._create_animation()
