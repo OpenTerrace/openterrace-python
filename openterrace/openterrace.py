@@ -22,7 +22,7 @@ class Simulate:
 
         Args:
             t_end (float): End time in s
-            dt (float): Ti me step size in s
+            dt (float): Time step size in s
         """
         self.t_start = 0
         self.t_end = t_end
@@ -49,12 +49,12 @@ class Simulate:
             self.bcs = []
             self.sources = []
 
-            self.flag_save_data = False
+            self._flag_save_data = False
  
             self.type = type
             self._valid_inputs(type)
 
-        def _valid_inputs(self, type:str):
+        def _valid_inputs(self, type:str=None):
             """Gets valid domain and substances depending on type of phase.
             """
             self.valid_domains = globals()['domains'].__all__
@@ -86,7 +86,7 @@ class Simulate:
             if not substance:
                 raise Exception("Keyword 'substance' not specified.")
             if not substance in self.valid_substances:
-                raise Exception(substance+" specified as "+self._type+" substance. Valid "+self.type+" substances are:", self.valid_substances)
+                raise Exception(substance+" specified as "+self.type+" substance. Valid "+self.type+" substances are:", self.valid_substances)
             self.fcns = getattr(globals()[self.type+'_substances'], substance)
 
         def select_domain_shape(self, domain:str=None, **kwargs):
@@ -179,7 +179,7 @@ class Simulate:
                 self._flag_save_data = True
                 self._q = 0
 
-        def _save_data(self, t):
+        def _save_data(self, t:float=None):
             if self._flag_save_data:
                 if t in self.data.time:
                     self.data.time[self._q] = t
@@ -240,7 +240,7 @@ class Simulate:
                 self.F[0,:,:] = self.mdot*self.cp
                 self.F[1,:,:] = self.mdot*self.cp
 
-        def _update_boundary_nodes(self, t, dt):
+        def _update_boundary_nodes(self, t:float=None, dt:float=None):
             """Update boundary nodes"""
             for bc in self.bcs:
                 if bc['type'] == 'dirichlet':
@@ -253,12 +253,12 @@ class Simulate:
                     if bc['position'] == np.s_[:,-1]:
                         self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,-2]*self.D[0,:,-1] - 2*self.T[:,-1]*self.D[0,:,-1] + self.F[1,:,-2]*self.T[:,-2] - self.F[0,:,-1]*self.T[:,-1]) / (self.rho[:,-1]*self.domain.V[-1])*dt
 
-        def _update_source(self, dt):
+        def _update_source(self, dt:float=None):
             for source in self.sources:
                 if source['source_type'] == 'thermal_resistance':
                     self.h[source['position']] = self.h[source['position']] + (2/source['R'] * (source['T_inf']-self.T[source['position']])) / (self.rho[source['position']]*self.domain.V[source['position'][1]])*dt
 
-        def _solve_equations(self, t, dt):
+        def _solve_equations(self, t:float=None, dt:float=None):
             self._update_boundary_nodes(t, dt)
             if hasattr(self, 'diff'):
                 self.h = self.h + self.diff(self.T, self.D)/(self.rho*self.domain.V)*dt
