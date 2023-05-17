@@ -1,9 +1,6 @@
 import numpy as np
 from scipy.optimize import brentq
 
-def analytical_step(u:float, t:float, L:float):
-    return np.array([0, u*t, L]), np.array([0, 1, 1])
-
 def analytical_wall(Bi:float, Fo:float, n:int):
     def theta_fcn(Bi:float, Fo:float, r_r0:float, n_terms:int=100):
         def lambda_fcn(Bi, i):

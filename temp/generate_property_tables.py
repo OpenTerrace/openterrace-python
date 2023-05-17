@@ -2,9 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import CoolProp.CoolProp as CP
 
-fluid = 'water'
+fluid = 'air'
 
-T = np.arange(273.2,373.15)
+T = np.arange(273.2,1000)
 
 H = CP.PropsSI('H','P',101325,'T',T,fluid)
 D = CP.PropsSI('D','P',101325,'H',H,fluid) #density
@@ -20,6 +20,7 @@ for i,par in enumerate([T, D, L, C, V, Pr]):
     z = np.polyfit(H, par, n_coeffs[i])
     f = np.poly1d(z)
     coeffs.append([f.coef])
+    print(f.coef)
 
     # # calculate new x's and y's
     H_new = np.linspace(H[0], H[-1], 50)
@@ -28,8 +29,6 @@ for i,par in enumerate([T, D, L, C, V, Pr]):
     # plot data and fit
     plt.plot(H, par, '-k', H_new, par_new, '-ok')
     plt.show()
-
-print(coeffs)
 
 a = 1/coeffs[0][0][0]
 b = -coeffs[0][0][1]/coeffs[0][0][0]

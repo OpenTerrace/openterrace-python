@@ -19,6 +19,7 @@ def shape(vars):
     Args:
         vars (list): List of arguments
     """
+    
     n = vars['n']
     return np.array([n])
 
