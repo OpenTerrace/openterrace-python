@@ -47,7 +47,8 @@ def A(vars):
         vars (list): List of arguments
     """
 
-    return (np.repeat(0,1), np.repeat(0,1))
+    A = vars['A']
+    return np.array([[0,0],[0,A]])
 
 def V(vars):
     """Volume of node element.

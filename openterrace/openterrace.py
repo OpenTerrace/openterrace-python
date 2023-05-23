@@ -7,6 +7,7 @@ from . import convection_schemes
 from . import boundary_conditions
 
 # Import common Python modules
+import sys
 import tqdm
 import numpy as np
 import matplotlib
@@ -27,6 +28,7 @@ class Simulate:
         self.t_start = 0
         self.t_end = t_end
         self.dt = dt
+        self.coupling = []
         self.flag_coupling = False
         
     class Phase:
@@ -267,18 +269,22 @@ class Simulate:
             if self.sources is not None:
                 self._update_source(dt)
 
-    def select_coupling(self, h_coeff=None, h_value=None):
+    def select_coupling(self, fluid_phase:int=None, bed_phase:int=None, h_exp:str=None, h_value:float=None):
+        valid_h_exp = ['constant']
+        if h_exp not in valid_h_exp:
+            raise Exception("h_exp \'"+h_exp+"\' specified. Valid options for h_exp are:", valid_h_exp)
+        
+        self.coupling.append({"fluid_phase":fluid_phase, "bed_phase":bed_phase, "h_exp":h_exp, "h_value":h_value})
         self.flag_coupling = True
-        valid_h_coeff = ['constant']
-        if h_coeff not in valid_h_coeff:
-            raise Exception("h_coeff \'"+h_coeff+"\' specified. Valid options for h_coeff are:", valid_h_coeff)
-        if h_coeff == 'constant':
-            self.h_value = h_value
 
     def _coupling(self):
-        Q = self.h_value*self.bed.domain.A[-1][-1]*(self.fluid.T[0]-self.bed.T[:,-1])*self.dt
-        self.bed.h[:,-1] = self.bed.h[:,-1] + Q/(self.bed.rho[:,-1]*self.bed.domain.V[-1])
-        self.fluid.h[0] = self.fluid.h[0] - (1-self.fluid.phi)*(self.fluid.domain.V/self.fluid.phi) / np.sum(self.bed.domain.V) * Q/(self.fluid.rho*self.fluid.domain.V)
+        for couple in self.coupling:
+
+            Q = couple['h_value']*self.Phase.instances[couple['bed_phase']].domain.A[-1][-1]*(self.Phase.instances[couple['fluid_phase']].T[0]-self.Phase.instances[couple['bed_phase']].T[:,-1])*self.dt
+            print(Q)
+            sys.exit()
+        #self.bed.h[:,-1] = self.bed.h[:,-1] + Q/(self.bed.rho[:,-1]*self.bed.domain.V[-1])
+        #self.fluid.h[0] = self.fluid.h[0] - (1-self.fluid.phi)*(self.fluid.domain.V/self.fluid.phi) / np.sum(self.bed.domain.V) * Q/(self.fluid.rho*self.fluid.domain.V)
 
     def run_simulation(self):
         """This is the function full of magic."""
