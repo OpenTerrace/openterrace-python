@@ -130,3 +130,4 @@ dmypy.json
 # OpenTerrace generated files
 OpenTerrace*.gif
 OpenTerrace*.png
+*.svg
