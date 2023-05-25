@@ -2,6 +2,9 @@ import openterrace
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime
+import pathlib
+
+print(pathlib.Path(__file__).parent.resolve())
 
 def test_diffusion_sphere():
     n = 50
@@ -29,7 +32,7 @@ def test_diffusion_sphere():
     Bi = h*Lc/k
     Fo = k/(rho*cp)*t_end/Lc**2
 
-    r_r0_ana, theta_ana = openterrace.analytical_sphere(Bi, Fo, n)
+    r_r0_ana, theta_ana = openterrace.analytical_diffusion_sphere(Bi, Fo, n)
     r_r0_num, theta_num = ot.bed.domain.node_pos/(ot.bed.domain.node_pos[-1]-ot.bed.domain.node_pos[0]), (ot.bed.T[0,:]-T_inf)/(T_init-T_inf)
 
     plt.plot(r_r0_num, theta_num,'s', label='OpenTerrace', color = '#4cae4f')
@@ -72,7 +75,7 @@ def test_diffusion_wall():
     Bi = h*Lc/k
     Fo = k/(rho*cp)*t_end/Lc**2
 
-    x_x0_ana, theta_ana = openterrace.analytical_wall(Bi, Fo, n)
+    x_x0_ana, theta_ana = openterrace.analytical_diffusion_wall(Bi, Fo, n)
     x_x0_num, theta_num = ot.bed.domain.node_pos/(ot.bed.domain.node_pos[-1]-ot.bed.domain.node_pos[0]), (ot.bed.T[0,:]-T_inf)/(T_init-T_inf)
 
     plt.plot(x_x0_num, theta_num,'s', label='OpenTerrace', color = '#4cae4f')

@@ -1,7 +1,14 @@
 import numpy as np
 from scipy.optimize import brentq
 
-def analytical_wall(Bi:float, Fo:float, n:int):
+def analytical_step(X:float, n=int):
+    y_H_arr = np.linspace(0,1,n)
+    theta_arr = np.zeros(n)
+    indices = [i for i,y_H in enumerate(y_H_arr+1) if y_H >= X]
+    theta_arr[indices] = 1
+    return y_H_arr, theta_arr
+
+def analytical_diffusion_wall(Bi:float, Fo:float, n:int):
     def theta_fcn(Bi:float, Fo:float, r_r0:float, n_terms:int=100):
         def lambda_fcn(Bi, i):
             left = np.pi*i
@@ -26,7 +33,7 @@ def analytical_wall(Bi:float, Fo:float, n:int):
         theta_arr.append(theta)
     return x_x0_arr, theta_arr
 
-def analytical_sphere(Bi:float, Fo:float, n:int):
+def analytical_diffusion_sphere(Bi:float, Fo:float, n:int):
     def theta_fcn(Bi:float, Fo:float, r_r0:float, n_terms:int=100):
         def lambda_fcn(Bi, i):
             left = np.pi*(i) + 1e-12
