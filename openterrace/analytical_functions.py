@@ -4,7 +4,8 @@ from scipy.optimize import brentq
 def analytical_step(X:float, n=int):
     y_H_arr = np.linspace(0,1,n)
     theta_arr = np.zeros(n)
-    indices = [i for i,y_H in enumerate(y_H_arr+1) if y_H >= X]
+    
+    indices = [i for i,y_H in enumerate(y_H_arr) if y_H >= X]
     theta_arr[indices] = 1
     return y_H_arr, theta_arr
 

@@ -91,7 +91,7 @@ class TestDiffusion:
 
 class TestConvection:
     def test_1(self):
-        n = 30
+        n = 100
         t_end = 120
 
         H = 2
