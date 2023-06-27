@@ -2,12 +2,12 @@
 
 import openterrace
 
-ot = openterrace.Simulate(t_end=15*60, dt=0.01)
-
 R = 0.025
 T_init = 40+273.15
 T_room = 80+273.15
 h = 200
+
+ot = openterrace.Simulate(t_end=15*60, dt=0.01, sim_name='tutorial2')
 
 ot.bed = ot.Phase(n=50, type='bed')
 ot.bed.select_substance('swedish_diabase')

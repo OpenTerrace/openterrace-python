@@ -8,7 +8,7 @@ T_init = 40+273.15
 T_room = 80+273.15
 h = 50
 
-ot = openterrace.Simulate(t_end=7200, dt=0.05)
+ot = openterrace.Simulate(t_end=7200, dt=0.05, sim_name='tutorial3')
 
 ot.bed = ot.Phase(n=30, type='bed')
 ot.bed.select_substance(substance='ATS58')

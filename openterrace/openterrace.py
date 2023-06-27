@@ -7,7 +7,6 @@ from . import convection_schemes
 from . import boundary_conditions
 
 # Import common Python modules
-import sys
 import tqdm
 import numpy as np
 import matplotlib
@@ -18,7 +17,7 @@ import matplotlib.animation as anim
 
 class Simulate:
     """OpenTerrace class."""
-    def __init__(self, t_end:float=None, dt:float=None):
+    def __init__(self, t_end:float=None, dt:float=None, sim_name:str=None):
         """Initialise with various control parameters.
 
         Args:
@@ -30,6 +29,7 @@ class Simulate:
         self.dt = dt
         self.coupling = []
         self.flag_coupling = False
+        self.sim_name = sim_name
         
     class Phase:
         instances = []
@@ -116,7 +116,7 @@ class Simulate:
             """Imports the specified diffusion and convection schemes."""
 
             if self.domain.type == 'lumped':
-                raise Exception("'lumped' has been selected as domain type. Please don't try discretising it.")
+                raise Exception("'lumped' has been selected as domain type. Please don't specify a discretisation scheme.")
 
             if diff is not None:
                 try:
@@ -189,17 +189,19 @@ class Simulate:
                         getattr(self.data,parameter)[self._q] = getattr(self,parameter)
                         self._q = self._q+1
 
-        def _create_plot(self, file_prefix=None):
+        def _create_plot(self, sim_name=None):
             for parameter in self.data.parameters:
-                filename='OpenTerrace_'+datetime.datetime.now().strftime("%Y%m%d_%H%M")+'_'+self.type+'_'+parameter+'.png'
+                filename='OpenTerrace_'+sim_name+'_'+datetime.datetime.now().strftime("%Y-%m-%d_%H%M")+'_'+self.type+'_'+parameter+'.png'
                 fig, ax = plt.subplots()
                 fig.tight_layout(pad=2)
 
-                plt.plot(self.domain.node_pos, np.mean(getattr(self.data,parameter),1).transpose())
+                ax.plot(self.domain.node_pos, np.mean(getattr(self.data,parameter),1).transpose())
                 plt.grid()
                 plt.xlabel('Position (m)')
-                plt.ylabel(parameter)
+                plt.ylabel('$%s_{%s}$' % (parameter, self.type))
+                plt.legend(['$\it{t}$ = '+str(s)+' s' for s in getattr(self.data,'time')], loc='lower right')
                 plt.savefig(filename)
+                
 
         def _create_animation(self):
             def _update(frame):
@@ -296,7 +298,7 @@ class Simulate:
     def generate_plots(self):
         for phase_instance in self.Phase.instances:
             if phase_instance._flag_save_data:
-                phase_instance._create_plot()
+                phase_instance._create_plot(self.sim_name)
 
     def generate_animations(self):
         for phase_instance in self.Phase.instances:
