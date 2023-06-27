@@ -1,6 +1,10 @@
 import openterrace
 import numpy as np
 import matplotlib.pyplot as plt
+import datetime
+import pathlib
+
+print(pathlib.Path(__file__).parent.resolve())
 
 def test_diffusion_sphere():
     n = 50
@@ -14,7 +18,8 @@ def test_diffusion_sphere():
     rho = 993
     k = 0.627
 
-    ot = openterrace.Simulate(t_end=t_end, dt=1e-2, n_bed=n)
+    ot = openterrace.Simulate(t_end=t_end, dt=1e-2)
+    ot.bed = ot.Phase(n=n, type='bed')
     ot.bed.select_substance_on_the_fly(cp=cp, rho=rho, k=k)
     ot.bed.select_domain_shape(domain='sphere_1d', R=Lc)
     ot.bed.select_schemes(diff='central_difference_1d')
@@ -27,7 +32,7 @@ def test_diffusion_sphere():
     Bi = h*Lc/k
     Fo = k/(rho*cp)*t_end/Lc**2
 
-    r_r0_ana, theta_ana = openterrace.analytical_sphere(Bi, Fo, n)
+    r_r0_ana, theta_ana = openterrace.analytical_diffusion_sphere(Bi, Fo, n)
     r_r0_num, theta_num = ot.bed.domain.node_pos/(ot.bed.domain.node_pos[-1]-ot.bed.domain.node_pos[0]), (ot.bed.T[0,:]-T_inf)/(T_init-T_inf)
 
     plt.plot(r_r0_num, theta_num,'s', label='OpenTerrace', color = '#4cae4f')
@@ -56,7 +61,8 @@ def test_diffusion_wall():
     k = 0.627
     A = 1
 
-    ot = openterrace.Simulate(t_end=t_end, dt=1e-2, n_bed=n)
+    ot = openterrace.Simulate(t_end=t_end, dt=1e-2)
+    ot.bed = ot.Phase(n=n, type='bed')
     ot.bed.select_substance_on_the_fly(cp=cp, rho=rho, k=k)
     ot.bed.select_domain_shape(domain='block_1d', L=Lc, A=A)
     ot.bed.select_schemes(diff='central_difference_1d')
@@ -69,7 +75,7 @@ def test_diffusion_wall():
     Bi = h*Lc/k
     Fo = k/(rho*cp)*t_end/Lc**2
 
-    x_x0_ana, theta_ana = openterrace.analytical_wall(Bi, Fo, n)
+    x_x0_ana, theta_ana = openterrace.analytical_diffusion_wall(Bi, Fo, n)
     x_x0_num, theta_num = ot.bed.domain.node_pos/(ot.bed.domain.node_pos[-1]-ot.bed.domain.node_pos[0]), (ot.bed.T[0,:]-T_inf)/(T_init-T_inf)
 
     plt.plot(x_x0_num, theta_num,'s', label='OpenTerrace', color = '#4cae4f')

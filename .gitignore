@@ -128,4 +128,6 @@ dmypy.json
 .DS_Store
 
 # OpenTerrace generated files
-animation*.gif
+OpenTerrace*.gif
+OpenTerrace*.png
+*.svg

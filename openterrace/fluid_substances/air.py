@@ -6,7 +6,7 @@ Reference 2: E. W. Lemmon and R. T Jacobsen. Viscosity and Thermal Conductivity 
 """
 
 def h(T:float) -> float:
-    """Mass specific enthalpy as function of temperature at 1 atm (fit valid between 273.15 K to 2000 K).
+    """Mass specific enthalpy as function of temperature at 1 atm (fit valid between 273.15 K to 1000 K).
 
     Args:
         T (float): Temperature in K
