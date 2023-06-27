@@ -136,6 +136,4 @@ class TestConvection:
         plt.savefig('test_convection_cylinder.svg', bbox_inches='tight')
         plt.close()
 
-        np.testing.assert_array_almost_equal(1,1, decimal=2)
-
-TestConvection().test_1()
+        np.testing.assert_array_almost_equal(1,1, decimal=2) #Dummy check
