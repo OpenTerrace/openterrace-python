@@ -22,23 +22,36 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/
 bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
 rm -rf ~/miniconda3/miniconda.sh
 ```
-Then, initialise your conda environment:
+3. Then, initialise your conda environment:
 ```bash
 ~/miniconda3/bin/conda init bash
 ```
 
-Now, reopen your terminal and create a virtual environment called ``ot``:
+4. Now, reopen your terminal and create a virtual environment called ``ot``:
 
 ```bash
 conda create -n ot
 ```
 
-Then activate it:
+5. Then activate it:
 ```bash
 conda activate ot
 ```
+6. Install pip inside the ``ot`` environment
+```bash
+conda install pip
+```
 
-Next, navigate to the "openterrace-python" folder and install in editable mode:
+7. Verify that the right pip version is picked up:
+```bash
+which pip
+```
+which should give you something like ``/home/[username]/miniconda3/envs/ot/bin/pip``
+
+
+8. Finally, install OpenTerrace inside our virtual environment by navigating to the "openterrace-python" folder and install in editable mode by:
 ```bash
 pip install --editable .
 ```
+
+Now you are ready to run tutorials and modify the OpenTerrace like as you like.
