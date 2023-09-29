@@ -22,10 +22,10 @@ format = "v{base}"
 
 # Requirements
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 
 numpy = "^1.23.4"
-numba = "^0.56.3"
+numba = "*"
 scipy = "^1.9.3"
 matplotlib = "^3.6.1"
 tqdm = "^4.64.1"
