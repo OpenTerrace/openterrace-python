@@ -4,7 +4,6 @@ from . import bed_substances
 from . import domains
 from . import diffusion_schemes
 from . import convection_schemes
-from . import boundary_conditions
 
 # Import common Python modules
 import tqdm
