@@ -24,5 +24,7 @@ ot.bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, N
 ot.bed.select_output(times=list(range(0,5400,60)), parameters=['T'])
 
 ot.select_coupling(fluid_phase=0, bed_phase=1, h_exp='constant', h_value=200)
+
 ot.run_simulation()
 ot.generate_plots()
+ot.generate_animations()

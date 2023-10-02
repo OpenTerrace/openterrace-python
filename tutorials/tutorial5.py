@@ -36,3 +36,4 @@ ot.select_coupling(fluid_phase=0, bed_phase=1, h_exp='constant', h_value=100)
 
 ot.run_simulation()
 ot.generate_plots()
+ot.generate_animations()

@@ -21,3 +21,4 @@ ot.bed.select_output(times=range(0, 15*60+60, 60), parameters=['T'])
 
 ot.run_simulation()
 ot.generate_plots()
+ot.generate_animations()
