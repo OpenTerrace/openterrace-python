@@ -15,12 +15,12 @@ ot.fluid.select_domain_shape(domain='cylinder_1d', D=0.3, H=1)
 ot.fluid.select_porosity(phi=0.4)
 ot.fluid.select_schemes(diff='central_difference_1d', conv='upwind_1d')
 ot.fluid.select_initial_conditions(T=273.15+25, mdot=0.001)
-ot.fluid.select_bc(bc_type='dirichlet',
+ot.fluid.select_bc(bc_type='fixedValue',
                    parameter='T',
                    position=(slice(None, None, None), 0),
                    value=273.15+500
                    )
-ot.fluid.select_bc(bc_type='neumann',
+ot.fluid.select_bc(bc_type='zeroGradient',
                    parameter='T',
                    position=(slice(None, None, None), -1)
                    )

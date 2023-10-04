@@ -15,7 +15,7 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 
-class Simulate:
+class ot:
     """OpenTerrace class."""
     def __init__(self, t_end:float=None, dt:float=None, sim_name:str=None):
         """Initialise with various control parameters.
@@ -147,7 +147,7 @@ class Simulate:
 
         def select_bc(self, bc_type:str=None, parameter:str=None, position=None, value:float=None):
             """Specify boundary condition type"""
-            valid_bc_types = ['neumann','dirichlet','dirichlet_timevarying']
+            valid_bc_types = ['fixedValue','zeroGradient']
             if bc_type not in valid_bc_types:
                 raise Exception("bc_type \'"+bc_type+"\' specified. Valid options for bc_type are:", valid_bc_types)
             valid_parameters = ['T','mdot']
@@ -155,8 +155,8 @@ class Simulate:
                 raise Exception("parameter \'"+parameter+"\' specified. Valid options for parameter are:", valid_parameters)
             if not position:
                 raise Exception("Keyword 'position' not specified.")
-            if value is None and bc_type=='dirichlet':
-                raise Exception("Keyword 'value' is needed for dirichlet type bc.")
+            if value is None and bc_type=='fixedValue':
+                raise Exception("Keyword 'value' is needed for fixedValue type bc.")
             self.bcs.append({'type': bc_type, 'parameter': parameter, 'position': position, 'value': np.array(value)})
 
         def select_source_term(self, **kwargs):
@@ -249,11 +249,11 @@ class Simulate:
         def _update_boundary_nodes(self, t:float=None, dt:float=None):
             """Update boundary nodes"""
             for bc in self.bcs:
-                if bc['type'] == 'dirichlet':
+                if bc['type'] == 'fixedValue':
                     self.h[bc['position']] = self.fcns.h(bc['value'])
-                if bc['type'] == 'dirichlet_timevarying':
+                if bc['type'] == 'fixedValue_timevarying':
                     self.h[bc['position']] = self.fcns.h(np.interp(t,bc['value'][:,0],bc['value'][:,1]))
-                if bc['type'] == 'neumann':
+                if bc['type'] == 'zeroGradient':
                     if bc['position'] == np.s_[:,0]:
                         self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,1]*self.D[1,:,0] - 2*self.T[:,0]*self.D[1,:,0] - self.F[0,:,1]*self.T[:,1] + self.F[1,:,0]*self.T[:,0]) / (self.rho[:,0]*self.domain.V[0])*dt
                     if bc['position'] == np.s_[:,-1]:
