@@ -9,11 +9,51 @@ pip install openterrace
 
 ## Install in editable mode
 
-If you plan to extend or modify OpenTerrace, you should install it in editable mode. First, using [git](https://git-scm.com) to clone the OpenTerrace GitHub repository
+1. If you plan on extending or modifying OpenTerrace, you should install it in editable mode. First, use any git client such as [GitHub Desktop](https://desktop.github.com/) to clone the OpenTerrace repository
+
+2. Next, I recommend using Linux or WSL (if on Windows). Inside a linux terminal do:
+
 ```bash
-git clone https://github.com/OpenTerrace/openterrace-python.git
+mkdir -p ~/miniconda3
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+rm -rf ~/miniconda3/miniconda.sh
 ```
-Next, navigate to the "openterrace-python" folder and install in editable mode:
+
+3. Then, initialise your conda environment:
+```bash
+~/miniconda3/bin/conda init bash
+```
+
+4. Now, reopen your terminal and create a virtual environment called ``ot``:
+
+```bash
+conda create -n ot
+```
+
+5. Then activate it:
+```bash
+conda activate ot
+```
+6. Install pip inside the ``ot`` environment
+```bash
+conda install pip
+```
+
+7. Verify that the right pip version is picked up:
+```bash
+which pip
+```
+which should give you something like ``/home/[username]/miniconda3/envs/ot/bin/pip``
+
+
+8. Finally, install OpenTerrace inside our virtual environment by navigating to the "openterrace-python" folder and install in editable mode by:
 ```bash
 pip install --editable .
 ```
+
+9. Verify that the ``ot`` virtual environment is picked up in VS Code.
+
+![Select ot environment](_figures/conda_ot.jpg)
+
+Now you are ready to run tutorials and modify the OpenTerrace like as you like.

@@ -4,9 +4,9 @@ from . import bed_substances
 from . import domains
 from . import diffusion_schemes
 from . import convection_schemes
-from . import boundary_conditions
 
 # Import common Python modules
+import sys
 import tqdm
 import numpy as np
 import matplotlib
@@ -15,7 +15,7 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 
-class Simulate:
+class ot:
     """OpenTerrace class."""
     def __init__(self, t_end:float=None, dt:float=None, sim_name:str=None):
         """Initialise with various control parameters.
@@ -145,9 +145,9 @@ class Simulate:
             self.F = np.zeros(((2,)+(self.T.shape)))
             self.S = np.zeros(self.T.shape)
 
-        def select_bc(self, bc_type=None, parameter=None, position=None, value=None):
+        def select_bc(self, bc_type:str=None, parameter:str=None, position=None, value:float=None):
             """Specify boundary condition type"""
-            valid_bc_types = ['neumann','dirichlet','dirichlet_timevarying']
+            valid_bc_types = ['fixedValue','zeroGradient']
             if bc_type not in valid_bc_types:
                 raise Exception("bc_type \'"+bc_type+"\' specified. Valid options for bc_type are:", valid_bc_types)
             valid_parameters = ['T','mdot']
@@ -155,8 +155,8 @@ class Simulate:
                 raise Exception("parameter \'"+parameter+"\' specified. Valid options for parameter are:", valid_parameters)
             if not position:
                 raise Exception("Keyword 'position' not specified.")
-            if value is None and bc_type=='dirichlet':
-                raise Exception("Keyword 'value' is needed for dirichlet type bc.")
+            if value is None and bc_type=='fixedValue':
+                raise Exception("Keyword 'value' is needed for fixedValue type bc.")
             self.bcs.append({'type': bc_type, 'parameter': parameter, 'position': position, 'value': np.array(value)})
 
         def select_source_term(self, **kwargs):
@@ -189,9 +189,9 @@ class Simulate:
                         getattr(self.data,parameter)[self._q] = getattr(self,parameter)
                         self._q = self._q+1
 
-        def _create_plot(self, sim_name=None):
+        def _create_plot(self, sim_name:str=None):
             for parameter in self.data.parameters:
-                filename='OpenTerrace_'+sim_name+'_'+datetime.datetime.now().strftime("%Y-%m-%d_%H%M")+'_'+self.type+'_'+parameter+'.png'
+                filename='ot_plot_'+sim_name+'_'+datetime.datetime.now().strftime("%Y-%m-%d_%H%M")+'_'+self.type+'_'+parameter+'.png'
                 fig, ax = plt.subplots()
                 fig.tight_layout(pad=2)
 
@@ -199,35 +199,37 @@ class Simulate:
                 plt.grid()
                 plt.xlabel('Position (m)')
                 plt.ylabel('$%s_{%s}$' % (parameter, self.type))
-                plt.legend(['$\it{t}$ = '+str(s)+' s' for s in getattr(self.data,'time')], loc='lower right')
+                #plt.legend(['$\it{t}$ = '+str(s)+' s' for s in getattr(self.data,'time')], loc='lower right')
+                plt.legend(['$\it{t}$ = '+str(s)+' s' for s in getattr(self.data,'time')], bbox_to_anchor=(0, 1), loc='outside left', ncol=3)
+                #plt.legend( bbox_to_anchor=(0, -0.15, 1, 0), loc=2, ncol=2, mode="expand", borderaxespad=0)
                 plt.savefig(filename)
-                
 
-        def _create_animation(self):
+        def _create_animation(self, sim_name:str=None):
             def _update(frame):
-                x = xdata
-                y = ydata[frame]
+
+                x = self.domain.node_pos
+                y = np.mean(getattr(self.data,parameter),1)[frame]
+                
                 ax.clear()
-                ax.set_xlim(xmin, xmax)
-                ax.set_ylim(ymin, ymax)
                 ax.set_xlabel('Position (m)')
                 ax.set_ylabel('Temperature (C)')
+                ax.set_xlim(np.min(self.domain.node_pos), np.max(self.domain.node_pos))
+                ax.set_ylim(np.min(getattr(self.data,parameter)-273.15), np.max(getattr(self.data,parameter)-273.15))
                 ax.grid()
-                ax.plot(x, y.T-273.15, color = '#4cae4f')
                 ax.text(.05, .95, 'Simulated with OpenTerrace', ha='left', va='top', transform=ax.transAxes, color = '#4cae4f',
                     bbox=dict(facecolor='white',boxstyle="square,pad=0.5", alpha=0.5))
-                ax.set_title('Time: ' + str(np.round(self.saved_time_data[frame], decimals=2)) + ' s')
+
+                ax.plot(x, y.T-273.15, color = '#4cae4f')
+                ax.set_title('Time: ' + str(np.round(self.data.time[frame], decimals=2)) + ' s')
 
             for parameter in self.data.parameters:
                 fig, ax = plt.subplots()
                 fig.tight_layout(pad=2)
-                ymin = np.min(ydata)-273.15
-                ymax = np.max(ydata)-273.15
-                xmin = np.min(xdata)
-                xmax = np.max(xdata)
 
-                ani = anim.FuncAnimation(fig, _update, frames=np.arange(int(np.floor(self.t_end/(self.dt*self.save_int)))))
-                ani.save(self.file_name+'_'+phase+'.gif', writer=anim.PillowWriter(fps=10),progress_callback=lambda i, n: print(f'{phase}: saving animation frame {i}/{n}'))
+                filename='ot_ani_'+sim_name+'_'+datetime.datetime.now().strftime("%Y-%m-%d_%H%M")+'_'+self.type+'_'+parameter+'.gif'
+
+                ani = anim.FuncAnimation(fig, _update, frames=np.arange(len(getattr(self.data,parameter))))
+                ani.save(filename, writer=anim.PillowWriter(fps=5),progress_callback=lambda i, n: print(f'{self.type}: saving animation frame {i}/{n}'))
 
         def _update_properties(self):
             """Updates properties based on specific enthalpy"""
@@ -247,11 +249,11 @@ class Simulate:
         def _update_boundary_nodes(self, t:float=None, dt:float=None):
             """Update boundary nodes"""
             for bc in self.bcs:
-                if bc['type'] == 'dirichlet':
+                if bc['type'] == 'fixedValue':
                     self.h[bc['position']] = self.fcns.h(bc['value'])
-                if bc['type'] == 'dirichlet_timevarying':
+                if bc['type'] == 'fixedValue_timevarying':
                     self.h[bc['position']] = self.fcns.h(np.interp(t,bc['value'][:,0],bc['value'][:,1]))
-                if bc['type'] == 'neumann':
+                if bc['type'] == 'zeroGradient':
                     if bc['position'] == np.s_[:,0]:
                         self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,1]*self.D[1,:,0] - 2*self.T[:,0]*self.D[1,:,0] - self.F[0,:,1]*self.T[:,1] + self.F[1,:,0]*self.T[:,0]) / (self.rho[:,0]*self.domain.V[0])*dt
                     if bc['position'] == np.s_[:,-1]:
@@ -303,4 +305,4 @@ class Simulate:
     def generate_animations(self):
         for phase_instance in self.Phase.instances:
             if phase_instance._flag_save_data:
-                phase_instance._create_animation()
+                phase_instance._create_animation(self.sim_name)
