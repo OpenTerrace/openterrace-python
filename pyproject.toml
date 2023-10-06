@@ -23,7 +23,6 @@ format = "v{base}"
 # Requirements
 [tool.poetry.dependencies]
 python = "^3.11"
-
 numpy = "^1.23.4"
 numba = "*"
 scipy = "^1.9.3"
