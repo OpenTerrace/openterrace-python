@@ -15,7 +15,7 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 
-class ot:
+class Simulate:
     """OpenTerrace class."""
     def __init__(self, t_end:float=None, dt:float=None, sim_name:str=None):
         """Initialise with various control parameters.
@@ -192,20 +192,19 @@ class ot:
         def _create_plot(self, sim_name:str=None):
             for parameter in self.data.parameters:
                 filename='ot_plot_'+sim_name+'_'+datetime.datetime.now().strftime("%Y-%m-%d_%H%M")+'_'+self.type+'_'+parameter+'.png'
-                fig, ax = plt.subplots()
-                fig.tight_layout(pad=2)
+                fig, ax = plt.subplots(constrained_layout=True)
 
-                ax.plot(self.domain.node_pos, np.mean(getattr(self.data,parameter),1).transpose())
+                ax.plot(self.domain.node_pos, np.mean(getattr(self.data,parameter),1).transpose()-273.15)
                 plt.grid()
                 plt.xlabel('Position (m)')
-                plt.ylabel('$%s_{%s}$' % (parameter, self.type))
-                #plt.legend(['$\it{t}$ = '+str(s)+' s' for s in getattr(self.data,'time')], loc='lower right')
-                plt.legend(['$\it{t}$ = '+str(s)+' s' for s in getattr(self.data,'time')], bbox_to_anchor=(0, 1), loc='outside left', ncol=3)
-                #plt.legend( bbox_to_anchor=(0, -0.15, 1, 0), loc=2, ncol=2, mode="expand", borderaxespad=0)
+                plt.ylabel(u'$%s_{%s}$ (\u00B0C)' % (parameter, self.type))
+                plt.legend(['$\it{t}$ = '+str(s)+' s' for s in getattr(self.data,'time')],bbox_to_anchor=(1.04, 1), loc="upper left")
                 plt.savefig(filename)
 
         def _create_animation(self, sim_name:str=None):
-            def _update(frame):
+            def _update(frame, parameter):
+
+                print(parameter)
 
                 x = self.domain.node_pos
                 y = np.mean(getattr(self.data,parameter),1)[frame]
@@ -228,7 +227,7 @@ class ot:
 
                 filename='ot_ani_'+sim_name+'_'+datetime.datetime.now().strftime("%Y-%m-%d_%H%M")+'_'+self.type+'_'+parameter+'.gif'
 
-                ani = anim.FuncAnimation(fig, _update, frames=np.arange(len(getattr(self.data,parameter))))
+                ani = anim.FuncAnimation(fig, _update, fargs=parameter, frames=np.arange(len(getattr(self.data,parameter))))
                 ani.save(filename, writer=anim.PillowWriter(fps=5),progress_callback=lambda i, n: print(f'{self.type}: saving animation frame {i}/{n}'))
 
         def _update_properties(self):
@@ -291,9 +290,9 @@ class ot:
         """This is the function full of magic."""
         for t in tqdm.tqdm(np.arange(self.t_start, self.t_end+self.dt, self.dt)):
             for phase_instance in self.Phase.instances:
+                phase_instance._save_data(t)
                 phase_instance._solve_equations(t, self.dt)
                 phase_instance._update_properties()
-                phase_instance._save_data(t)
             if self.flag_coupling:
                 self._coupling()
 
