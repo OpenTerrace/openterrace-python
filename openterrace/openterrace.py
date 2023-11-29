@@ -14,6 +14,7 @@ import datetime
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
+from labellines import labelLines
 
 class Simulate:
     """OpenTerrace class."""
@@ -192,14 +193,30 @@ class Simulate:
         def _create_plot(self, sim_name:str=None):
             for parameter in self.data.parameters:
                 filename='ot_plot_'+sim_name+'_'+datetime.datetime.now().strftime("%Y-%m-%d_%H%M")+'_'+self.type+'_'+parameter+'.png'
-                fig, ax = plt.subplots(constrained_layout=True)
+                times = getattr(self.data,'time')
+                data = getattr(self.data,parameter)
 
-                ax.plot(self.domain.node_pos, np.mean(getattr(self.data,parameter),1).transpose()-273.15)
+                fig, ax = plt.subplots()
+
+                for i,time in enumerate(times):
+                    timelabel = u'$t=%s$' % time
+                    ax.plot(self.domain.node_pos,data[i,0,:], label=timelabel)
+
+                lines = plt.gca().get_lines()
+                labelLines(lines, fontsize=8, align=True)
+                #
+                #print(data)
+
+                # for s in enumerate(getattr(self.data,'time'):
+                #     plt.plot(self.domain.node_pos, np.mean(getattr(self.data,parameter),1).transpose()-273.15,label=str(s))
+                
                 plt.grid()
                 plt.xlabel('Position (m)')
                 plt.ylabel(u'$%s_{%s}$ (\u00B0C)' % (parameter, self.type))
-                plt.legend(['$\it{t}$ = '+str(s)+' s' for s in getattr(self.data,'time')],bbox_to_anchor=(1.04, 1), loc="upper left")
+                #plt.legend(['$\it{t}$ = '+str(s)+' s' for s in getattr(self.data,'time')],bbox_to_anchor=(1.04, 1), loc="upper left")
                 plt.savefig(filename)
+
+                sys.exit()
 
         def _create_animation(self, sim_name:str=None):
             def _update(frame, parameter):
@@ -216,8 +233,7 @@ class Simulate:
                 ax.set_ylim(np.min(getattr(self.data,parameter)-273.15), np.max(getattr(self.data,parameter)-273.15))
                 ax.grid()
                 ax.text(.05, .95, 'Simulated with OpenTerrace', ha='left', va='top', transform=ax.transAxes, color = '#4cae4f',
-                    bbox=dict(facecolor='white',boxstyle="square,pad=0.5", alpha=0.5))
-
+                    bbox=dict(facecolor='white', boxstyle="square,pad=0.5", alpha=0.5))
                 ax.plot(x, y.T-273.15, color = '#4cae4f')
                 ax.set_title('Time: ' + str(np.round(self.data.time[frame], decimals=2)) + ' s')
 

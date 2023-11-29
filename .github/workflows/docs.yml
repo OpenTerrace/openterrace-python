@@ -20,4 +20,5 @@ jobs:
       - run: pip install matplotlib
       - run: pip install scipy
       - run: pip install tqdm
+      - run: pip install matplotlib-label-lines
       - run: mkdocs gh-deploy --force
