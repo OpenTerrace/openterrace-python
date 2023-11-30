@@ -32,6 +32,42 @@ class Simulate:
         self.flag_coupling = False
         self.sim_name = sim_name
         
+    def select_coupling(self, fluid_phase:int=None, bed_phase:int=None, h_exp:str=None, h_value:float=None):
+        valid_h_exp = ['constant']
+        if h_exp not in valid_h_exp:
+            raise Exception("h_exp \'"+h_exp+"\' specified. Valid options for h_exp are:", valid_h_exp)
+        
+        self.coupling.append({"fluid_phase":fluid_phase, "bed_phase":bed_phase, "h_exp":h_exp, "h_value":h_value})
+        self.flag_coupling = True
+
+    def _coupling(self):
+        for couple in self.coupling:
+            Q = couple['h_value']*self.Phase.instances[couple['bed_phase']].domain.A[-1][-1]*(self.Phase.instances[couple['fluid_phase']].T[0]-self.Phase.instances[couple['bed_phase']].T[:,-1])*self.dt
+            self.Phase.instances[couple['bed_phase']].h[:,-1] = self.Phase.instances[couple['bed_phase']].h[:,-1] + Q/(self.Phase.instances[couple['bed_phase']].rho[:,-1] * self.Phase.instances[couple['bed_phase']].domain.V[-1])
+            self.Phase.instances[couple['fluid_phase']].h[0] = self.Phase.instances[couple['fluid_phase']].h[0] - (1-self.Phase.instances[couple['fluid_phase']].phi)*(self.Phase.instances[couple['fluid_phase']].domain.V * self.Phase.instances[couple['fluid_phase']].phi) / np.sum(self.Phase.instances[couple['bed_phase']].domain.V) * Q/(self.Phase.instances[couple['fluid_phase']].rho*self.Phase.instances[couple['fluid_phase']].domain.V)
+
+    def run_simulation(self):
+        """This is the function full of magic."""
+        for t in tqdm.tqdm(np.arange(self.t_start, self.t_end+self.dt, self.dt)):
+            for phase_instance in self.Phase.instances:
+                phase_instance._save_data(t)
+                phase_instance._solve_equations(t, self.dt)
+                phase_instance._update_properties()
+            if self.flag_coupling:
+                self._coupling()
+
+    def generate_plots(self):
+        for phase_instance in self.Phase.instances:
+            print(phase_instance)
+            print(phase_instance._flag_save_data)
+            if phase_instance._flag_save_data:
+                phase_instance._create_plot(self.sim_name)
+
+    def generate_animations(self):
+        for phase_instance in self.Phase.instances:
+            if phase_instance._flag_save_data:
+                phase_instance._create_animation(self.sim_name)
+
     class Phase:
         instances = []
         """Main class to define either the fluid or bed phase."""
@@ -48,7 +84,6 @@ class Simulate:
             self.n_other = n_other
             
             self.phi = 1
-
             self.bcs = []
             self.sources = []
 
@@ -175,10 +210,10 @@ class Simulate:
             class Data(object):
                 pass
             self.data = Data()
-            self.data.time = np.array(times)
+            self.data.requested_times = np.array(times)
             self.data.parameters = parameters
             for parameter in parameters:
-                setattr(self.data,parameter,np.zeros((len(times), self.n_other, self.n)))
+                setattr(self.data,parameter,np.zeros((len(self.data.time), self.n_other, self.n)))
                 self._flag_save_data = True
                 self._q = 0
 
@@ -196,17 +231,19 @@ class Simulate:
                 times = getattr(self.data,'time')
                 data = getattr(self.data,parameter)
 
+                print(parameter)
+
                 fig, ax = plt.subplots()
 
                 for i,time in enumerate(times):
-                    timelabel = u'$t=%s$' % time
+                    #timelabel = u'$t=%s$' % time
+                    timelabel = u'$%s$' % time
                     ax.plot(self.domain.node_pos,data[i,0,:], label=timelabel)
 
                 lines = plt.gca().get_lines()
                 labelLines(lines, fontsize=8, align=True)
-                #
-                #print(data)
 
+                # print(data)
                 # for s in enumerate(getattr(self.data,'time'):
                 #     plt.plot(self.domain.node_pos, np.mean(getattr(self.data,parameter),1).transpose()-273.15,label=str(s))
                 
@@ -215,8 +252,6 @@ class Simulate:
                 plt.ylabel(u'$%s_{%s}$ (\u00B0C)' % (parameter, self.type))
                 #plt.legend(['$\it{t}$ = '+str(s)+' s' for s in getattr(self.data,'time')],bbox_to_anchor=(1.04, 1), loc="upper left")
                 plt.savefig(filename)
-
-                sys.exit()
 
         def _create_animation(self, sim_name:str=None):
             def _update(frame, parameter):
@@ -287,37 +322,3 @@ class Simulate:
                 self.h = self.h + self.conv(self.T, self.F)/(self.rho*self.domain.V)*dt
             if self.sources is not None:
                 self._update_source(dt)
-
-    def select_coupling(self, fluid_phase:int=None, bed_phase:int=None, h_exp:str=None, h_value:float=None):
-        valid_h_exp = ['constant']
-        if h_exp not in valid_h_exp:
-            raise Exception("h_exp \'"+h_exp+"\' specified. Valid options for h_exp are:", valid_h_exp)
-        
-        self.coupling.append({"fluid_phase":fluid_phase, "bed_phase":bed_phase, "h_exp":h_exp, "h_value":h_value})
-        self.flag_coupling = True
-
-    def _coupling(self):
-        for couple in self.coupling:
-            Q = couple['h_value']*self.Phase.instances[couple['bed_phase']].domain.A[-1][-1]*(self.Phase.instances[couple['fluid_phase']].T[0]-self.Phase.instances[couple['bed_phase']].T[:,-1])*self.dt
-            self.Phase.instances[couple['bed_phase']].h[:,-1] = self.Phase.instances[couple['bed_phase']].h[:,-1] + Q/(self.Phase.instances[couple['bed_phase']].rho[:,-1] * self.Phase.instances[couple['bed_phase']].domain.V[-1])
-            self.Phase.instances[couple['fluid_phase']].h[0] = self.Phase.instances[couple['fluid_phase']].h[0] - (1-self.Phase.instances[couple['fluid_phase']].phi)*(self.Phase.instances[couple['fluid_phase']].domain.V * self.Phase.instances[couple['fluid_phase']].phi) / np.sum(self.Phase.instances[couple['bed_phase']].domain.V) * Q/(self.Phase.instances[couple['fluid_phase']].rho*self.Phase.instances[couple['fluid_phase']].domain.V)
-
-    def run_simulation(self):
-        """This is the function full of magic."""
-        for t in tqdm.tqdm(np.arange(self.t_start, self.t_end+self.dt, self.dt)):
-            for phase_instance in self.Phase.instances:
-                phase_instance._save_data(t)
-                phase_instance._solve_equations(t, self.dt)
-                phase_instance._update_properties()
-            if self.flag_coupling:
-                self._coupling()
-
-    def generate_plots(self):
-        for phase_instance in self.Phase.instances:
-            if phase_instance._flag_save_data:
-                phase_instance._create_plot(self.sim_name)
-
-    def generate_animations(self):
-        for phase_instance in self.Phase.instances:
-            if phase_instance._flag_save_data:
-                phase_instance._create_animation(self.sim_name)
