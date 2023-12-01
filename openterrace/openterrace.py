@@ -14,7 +14,7 @@ import datetime
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
-from labellines import labelLines
+from labellines import labelLines, labelLine
 
 class Simulate:
     """OpenTerrace class."""
@@ -24,6 +24,8 @@ class Simulate:
         Args:
             t_end (float): End time in s
             dt (float): Time step size in s
+            t_output list(float): List of requested output times
+            sim_name (str): Simulation name
         """
         self.t_start = 0
         self.t_end = t_end
@@ -31,6 +33,9 @@ class Simulate:
         self.coupling = []
         self.flag_coupling = False
         self.sim_name = sim_name
+
+    def createPhase(self, n:int=None, n_other:int=1, type:str=None):        
+        return self.Phase(self, n, n_other, type)
         
     def select_coupling(self, fluid_phase:int=None, bed_phase:int=None, h_exp:str=None, h_value:float=None):
         valid_h_exp = ['constant']
@@ -58,20 +63,18 @@ class Simulate:
 
     def generate_plots(self):
         for phase_instance in self.Phase.instances:
-            print(phase_instance)
-            print(phase_instance._flag_save_data)
             if phase_instance._flag_save_data:
-                phase_instance._create_plot(self.sim_name)
+                phase_instance._create_plots()
 
     def generate_animations(self):
         for phase_instance in self.Phase.instances:
             if phase_instance._flag_save_data:
-                phase_instance._create_animation(self.sim_name)
+                phase_instance._create_animation()
 
     class Phase:
         instances = []
         """Main class to define either the fluid or bed phase."""
-        def __init__(self, n:int=None, n_other:int=1, type:str=None):
+        def __init__(self, outer=None, n:int=None, n_other:int=1, type:str=None):
             """Initialise a phase with number of control points and type.
 
             Args:
@@ -79,6 +82,7 @@ class Simulate:
                 n_other (int): Number of discretisations for the other phase
                 type (str): Type of phase
             """
+            self.outer = outer
             self.__class__.instances.append(self)
             self.n = n
             self.n_other = n_other
@@ -210,10 +214,10 @@ class Simulate:
             class Data(object):
                 pass
             self.data = Data()
-            self.data.requested_times = np.array(times)
+            self.data.time = np.intersect1d(np.array(times), np.arange(self.outer.t_start, self.outer.t_end+self.outer.dt, self.outer.dt))
             self.data.parameters = parameters
             for parameter in parameters:
-                setattr(self.data,parameter,np.zeros((len(self.data.time), self.n_other, self.n)))
+                setattr(self.data,parameter, np.full((len(self.data.time), self.n_other, self.n),np.nan))
                 self._flag_save_data = True
                 self._q = 0
 
@@ -225,59 +229,51 @@ class Simulate:
                         getattr(self.data,parameter)[self._q] = getattr(self,parameter)
                         self._q = self._q+1
 
-        def _create_plot(self, sim_name:str=None):
+        def _create_plots(self):
             for parameter in self.data.parameters:
-                filename='ot_plot_'+sim_name+'_'+datetime.datetime.now().strftime("%Y-%m-%d_%H%M")+'_'+self.type+'_'+parameter+'.png'
-                times = getattr(self.data,'time')
-                data = getattr(self.data,parameter)
+                filename='ot_plot_'+self.outer.sim_name+'_'+self.type+'_'+parameter+'.png'
 
-                print(parameter)
+                times = getattr(self.data, 'time')
+                data = getattr(self.data, parameter)
 
-                fig, ax = plt.subplots()
+                print(self.type)
+                print(times.shape)
+                print(data.shape)
+                print(data)
+                print(np.mean(data[0,:,:],0).transpose())
+
+                fig, axes = plt.subplots()
 
                 for i,time in enumerate(times):
-                    #timelabel = u'$t=%s$' % time
                     timelabel = u'$%s$' % time
-                    ax.plot(self.domain.node_pos,data[i,0,:], label=timelabel)
-
+                    plt.plot(self.domain.node_pos,np.mean(data[i,:,:],0).transpose()-273.15, label=timelabel)
+                  
                 lines = plt.gca().get_lines()
                 labelLines(lines, fontsize=8, align=True)
 
-                # print(data)
-                # for s in enumerate(getattr(self.data,'time'):
-                #     plt.plot(self.domain.node_pos, np.mean(getattr(self.data,parameter),1).transpose()-273.15,label=str(s))
-                
                 plt.grid()
                 plt.xlabel('Position (m)')
                 plt.ylabel(u'$%s_{%s}$ (\u00B0C)' % (parameter, self.type))
-                #plt.legend(['$\it{t}$ = '+str(s)+' s' for s in getattr(self.data,'time')],bbox_to_anchor=(1.04, 1), loc="upper left")
                 plt.savefig(filename)
 
-        def _create_animation(self, sim_name:str=None):
+        def _create_animation(self):
             def _update(frame, parameter):
-
-                print(parameter)
-
                 x = self.domain.node_pos
                 y = np.mean(getattr(self.data,parameter),1)[frame]
                 
                 ax.clear()
                 ax.set_xlabel('Position (m)')
-                ax.set_ylabel('Temperature (C)')
+                ax.set_ylabel(u'$%s_{%s}$ (\u00B0C)' % (parameter, self.type))
                 ax.set_xlim(np.min(self.domain.node_pos), np.max(self.domain.node_pos))
-                ax.set_ylim(np.min(getattr(self.data,parameter)-273.15), np.max(getattr(self.data,parameter)-273.15))
+                ax.set_ylim(np.min(getattr(self.data,parameter)-273.15)-0.05*(np.max(getattr(self.data,parameter)-273.15)), np.max(getattr(self.data,parameter)-273.15)+0.05*(np.max(getattr(self.data,parameter)-273.15)))
                 ax.grid()
-                ax.text(.05, .95, 'Simulated with OpenTerrace', ha='left', va='top', transform=ax.transAxes, color = '#4cae4f',
-                    bbox=dict(facecolor='white', boxstyle="square,pad=0.5", alpha=0.5))
                 ax.plot(x, y.T-273.15, color = '#4cae4f')
                 ax.set_title('Time: ' + str(np.round(self.data.time[frame], decimals=2)) + ' s')
 
             for parameter in self.data.parameters:
                 fig, ax = plt.subplots()
                 fig.tight_layout(pad=2)
-
-                filename='ot_ani_'+sim_name+'_'+datetime.datetime.now().strftime("%Y-%m-%d_%H%M")+'_'+self.type+'_'+parameter+'.gif'
-
+                filename='ot_ani_'+self.outer.sim_name+'_'+self.type+'_'+parameter+'.gif'
                 ani = anim.FuncAnimation(fig, _update, fargs=parameter, frames=np.arange(len(getattr(self.data,parameter))))
                 ani.save(filename, writer=anim.PillowWriter(fps=5),progress_callback=lambda i, n: print(f'{self.type}: saving animation frame {i}/{n}'))
 
