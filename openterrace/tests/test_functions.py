@@ -17,7 +17,7 @@ class TestDiffusion:
         k = 0.627
 
         ot = openterrace.Simulate(t_end=t_end, dt=dt)
-        bed = ot.Phase(n=n, type='bed')
+        bed = ot.createPhase(n=n, type='bed')
         bed.select_substance_on_the_fly(cp=cp, rho=rho, k=k)
         bed.select_domain_shape(domain='sphere_1d', R=Lc)
         bed.select_schemes(diff='central_difference_1d')
