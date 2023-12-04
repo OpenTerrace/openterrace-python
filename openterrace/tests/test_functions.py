@@ -22,8 +22,8 @@ class TestDiffusion:
         ot.bed.select_domain_shape(domain='sphere_1d', R=Lc)
         ot.bed.select_schemes(diff='central_difference_1d')
         ot.bed.select_initial_conditions(T=T_init)
-        ot.bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), 0))
-        ot.bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), -1))
+        ot.bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), 0))
+        ot.bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), -1))
         ot.bed.select_source_term(source_type='thermal_resistance', R=1/(h*4*np.pi*Lc**2), T_inf=T_inf, position=(slice(None, None, None), -1))
         ot.run_simulation()
 
@@ -65,8 +65,8 @@ class TestDiffusion:
         bed.select_domain_shape(domain='block_1d', L=Lc, A=A)
         bed.select_schemes(diff='central_difference_1d')
         bed.select_initial_conditions(T=T_init)
-        bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), 0))
-        bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), -1))
+        bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), 0))
+        bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), -1))
         bed.select_source_term(source_type='thermal_resistance', R=1/(h*A), T_inf=T_inf, position=(slice(None, None, None), -1))
         ot.run_simulation()
 
@@ -109,12 +109,12 @@ class TestConvection:
         fluid.select_domain_shape(domain='cylinder_1d', D=D, H=H)
         fluid.select_schemes(conv='upwind_1d')
         fluid.select_initial_conditions(T=T_init, mdot=mdot)
-        fluid.select_bc(bc_type='dirichlet',
+        fluid.select_bc(bc_type='fixedValue',
                         parameter='T',
                         position=(slice(None, None, None), 0),
                         value=T_in
                         )
-        fluid.select_bc(bc_type='neumann',
+        fluid.select_bc(bc_type='zeroGradient',
                         parameter='T',
                         position=(slice(None, None, None), -1)
                         )
