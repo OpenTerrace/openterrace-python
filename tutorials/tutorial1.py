@@ -14,5 +14,5 @@ fluid.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, Non
 fluid.select_output(times=range(0, 15*60+60, 60), parameters=['T'])
 
 ot.run_simulation()
-ot.generate_plots()
-ot.generate_animations()
+ot.generate_plot(pos_phase=fluid, data_phase=fluid)
+ot.generate_animation(pos_phase=fluid, data_phase=fluid)

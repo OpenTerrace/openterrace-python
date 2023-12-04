@@ -61,15 +61,59 @@ class Simulate:
             if self.flag_coupling:
                 self._coupling()
 
-    def generate_plots(self):
-        for phase_instance in self.Phase.instances:
-            if phase_instance._flag_save_data:
-                phase_instance._create_plots()
+    def generate_plot(self, pos_phase:object=None, data_phase:object=None, parameter:str='T'):
+        filename='ot_plot_'+self.sim_name+'_'+pos_phase.type+'_'+data_phase.type+'_'+parameter+'.png'
+        x = pos_phase.domain.node_pos
 
-    def generate_animations(self):
-        for phase_instance in self.Phase.instances:
-            if phase_instance._flag_save_data:
-                phase_instance._create_animation()
+        if pos_phase == data_phase:
+            y = np.mean(getattr(data_phase.data, parameter),1)
+        else:
+            y = np.mean(getattr(data_phase.data, parameter),2)
+        times = getattr(data_phase.data, 'time')
+        
+        if y.shape[1] == 1:
+            y = np.append(y, y, 1)
+
+        fig, axes = plt.subplots()
+        for i,time in enumerate(times):
+            timelabel = u'$%s$' % time
+            plt.plot(x, y[i,:].transpose(), label=timelabel)
+
+        lines = plt.gca().get_lines()
+        labelLines(lines, fontsize=8, align=True)
+
+        plt.grid()
+        plt.xlabel('Position (m)')
+        plt.ylabel(u'$%s_{%s}$ (\u00B0C)' % (parameter, data_phase.type))
+        plt.savefig(filename)
+
+    def generate_animation(self, pos_phase:object=None, data_phase:object=None, parameter:str='T'):
+        def _update(frame, parameter):
+            x = pos_phase.domain.node_pos
+            if pos_phase == data_phase:
+                y = np.mean(getattr(data_phase.data, parameter),1)
+            else:
+                y = np.mean(getattr(data_phase.data, parameter),2)
+            times = getattr(data_phase.data, 'time')
+
+            if y.shape[1] == 1:
+                y = np.append(y, y, 1)
+                
+            ax.clear()
+            ax.set_xlabel('Position (m)')
+            ax.set_ylabel(u'$%s_{%s}$ (\u00B0C)' % (parameter, data_phase.type))
+            ax.set_xlim(np.min(pos_phase.domain.node_pos), np.max(pos_phase.domain.node_pos))
+            ax.set_ylim(np.min(getattr(data_phase.data,parameter)-273.15)-0.05*(np.max(getattr(data_phase.data, parameter)-273.15)), np.max(getattr(data_phase.data, parameter)-273.15)+0.05*(np.max(getattr(data_phase.data, parameter)-273.15)))
+            ax.grid()
+            ax.plot(x, y[frame,:].transpose()-273.15, color = '#4cae4f')
+            ax.set_title('Time: ' + str(np.round(getattr(data_phase.data, 'time')[frame], decimals=2)) + ' s')
+
+        parameter = 'T'
+        fig, ax = plt.subplots()
+        fig.tight_layout(pad=2)
+        filename='ot_ani_'+self.sim_name+'_'+pos_phase.type+'_'+data_phase.type+'_'+parameter+'.gif'
+        ani = anim.FuncAnimation(fig, _update, fargs=parameter, frames=np.arange(len(getattr(data_phase.data, parameter))))
+        ani.save(filename, writer=anim.PillowWriter(fps=5), progress_callback=lambda i, n: print(f'{data_phase.type}: saving animation frame {i}/{n}'))
 
     class Phase:
         instances = []
@@ -228,54 +272,6 @@ class Simulate:
                     for parameter in self.data.parameters: 
                         getattr(self.data,parameter)[self._q] = getattr(self,parameter)
                         self._q = self._q+1
-
-        def _create_plots(self):
-            for parameter in self.data.parameters:
-                filename='ot_plot_'+self.outer.sim_name+'_'+self.type+'_'+parameter+'.png'
-
-                times = getattr(self.data, 'time')
-                data = getattr(self.data, parameter)
-
-                print(self.type)
-                print(times.shape)
-                print(data.shape)
-                print(data)
-                print(np.mean(data[0,:,:],0).transpose())
-
-                fig, axes = plt.subplots()
-
-                for i,time in enumerate(times):
-                    timelabel = u'$%s$' % time
-                    plt.plot(self.domain.node_pos,np.mean(data[i,:,:],0).transpose()-273.15, label=timelabel)
-                  
-                lines = plt.gca().get_lines()
-                labelLines(lines, fontsize=8, align=True)
-
-                plt.grid()
-                plt.xlabel('Position (m)')
-                plt.ylabel(u'$%s_{%s}$ (\u00B0C)' % (parameter, self.type))
-                plt.savefig(filename)
-
-        def _create_animation(self):
-            def _update(frame, parameter):
-                x = self.domain.node_pos
-                y = np.mean(getattr(self.data,parameter),1)[frame]
-                
-                ax.clear()
-                ax.set_xlabel('Position (m)')
-                ax.set_ylabel(u'$%s_{%s}$ (\u00B0C)' % (parameter, self.type))
-                ax.set_xlim(np.min(self.domain.node_pos), np.max(self.domain.node_pos))
-                ax.set_ylim(np.min(getattr(self.data,parameter)-273.15)-0.05*(np.max(getattr(self.data,parameter)-273.15)), np.max(getattr(self.data,parameter)-273.15)+0.05*(np.max(getattr(self.data,parameter)-273.15)))
-                ax.grid()
-                ax.plot(x, y.T-273.15, color = '#4cae4f')
-                ax.set_title('Time: ' + str(np.round(self.data.time[frame], decimals=2)) + ' s')
-
-            for parameter in self.data.parameters:
-                fig, ax = plt.subplots()
-                fig.tight_layout(pad=2)
-                filename='ot_ani_'+self.outer.sim_name+'_'+self.type+'_'+parameter+'.gif'
-                ani = anim.FuncAnimation(fig, _update, fargs=parameter, frames=np.arange(len(getattr(self.data,parameter))))
-                ani.save(filename, writer=anim.PillowWriter(fps=5),progress_callback=lambda i, n: print(f'{self.type}: saving animation frame {i}/{n}'))
 
         def _update_properties(self):
             """Updates properties based on specific enthalpy"""

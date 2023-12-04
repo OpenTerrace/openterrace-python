@@ -21,5 +21,5 @@ bed.select_source_term(source_type='thermal_resistance', R=1/(h*4*3.14159*Ro**2)
 bed.select_output(times=range(0, 7200, 300), parameters=['T'])
 
 ot.run_simulation()
-ot.generate_plots()
-ot.generate_animations()
+ot.generate_plot(pos_phase=bed, data_phase=bed)
+ot.generate_animation(pos_phase=bed, data_phase=bed)
