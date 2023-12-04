@@ -31,7 +31,7 @@ class TestDiffusion:
         Fo = k/(rho*cp)*t_end/Lc**2
 
         r_r0_ana, theta_ana = openterrace.analytical_diffusion_sphere(Bi, Fo, n)
-        r_r0_num, theta_num = ot.bed.domain.node_pos/(ot.bed.domain.node_pos[-1]-ot.bed.domain.node_pos[0]), (ot.bed.T[0,:]-T_inf)/(T_init-T_inf)
+        r_r0_num, theta_num = bed.domain.node_pos/(bed.domain.node_pos[-1]-bed.domain.node_pos[0]), (bed.T[0,:]-T_inf)/(T_init-T_inf)
 
         plt.plot(r_r0_num, theta_num,'s', label='OpenTerrace', color = '#4cae4f')
         plt.plot(r_r0_ana, theta_ana,'k', label='Analytical')
