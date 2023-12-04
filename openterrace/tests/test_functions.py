@@ -17,14 +17,14 @@ class TestDiffusion:
         k = 0.627
 
         ot = openterrace.Simulate(t_end=t_end, dt=dt)
-        ot.bed = ot.Phase(n=n, type='bed')
-        ot.bed.select_substance_on_the_fly(cp=cp, rho=rho, k=k)
-        ot.bed.select_domain_shape(domain='sphere_1d', R=Lc)
-        ot.bed.select_schemes(diff='central_difference_1d')
-        ot.bed.select_initial_conditions(T=T_init)
-        ot.bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), 0))
-        ot.bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), -1))
-        ot.bed.select_source_term(source_type='thermal_resistance', R=1/(h*4*np.pi*Lc**2), T_inf=T_inf, position=(slice(None, None, None), -1))
+        bed = ot.Phase(n=n, type='bed')
+        bed.select_substance_on_the_fly(cp=cp, rho=rho, k=k)
+        bed.select_domain_shape(domain='sphere_1d', R=Lc)
+        bed.select_schemes(diff='central_difference_1d')
+        bed.select_initial_conditions(T=T_init)
+        bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), 0))
+        bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), -1))
+        bed.select_source_term(source_type='thermal_resistance', R=1/(h*4*np.pi*Lc**2), T_inf=T_inf, position=(slice(None, None, None), -1))
         ot.run_simulation()
 
         Bi = h*Lc/k
