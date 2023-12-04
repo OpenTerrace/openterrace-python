@@ -60,21 +60,21 @@ class TestDiffusion:
         A = 1
 
         ot = openterrace.Simulate(t_end=t_end, dt=1e-2)
-        ot.bed = ot.Phase(n=n, type='bed')
-        ot.bed.select_substance_on_the_fly(cp=cp, rho=rho, k=k)
-        ot.bed.select_domain_shape(domain='block_1d', L=Lc, A=A)
-        ot.bed.select_schemes(diff='central_difference_1d')
-        ot.bed.select_initial_conditions(T=T_init)
-        ot.bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), 0))
-        ot.bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), -1))
-        ot.bed.select_source_term(source_type='thermal_resistance', R=1/(h*A), T_inf=T_inf, position=(slice(None, None, None), -1))
+        bed = ot.createPhase(n=n, type='bed')
+        bed.select_substance_on_the_fly(cp=cp, rho=rho, k=k)
+        bed.select_domain_shape(domain='block_1d', L=Lc, A=A)
+        bed.select_schemes(diff='central_difference_1d')
+        bed.select_initial_conditions(T=T_init)
+        bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), 0))
+        bed.select_bc(bc_type='neumann', parameter='T', position=(slice(None, None, None), -1))
+        bed.select_source_term(source_type='thermal_resistance', R=1/(h*A), T_inf=T_inf, position=(slice(None, None, None), -1))
         ot.run_simulation()
 
         Bi = h*Lc/k
         Fo = k/(rho*cp)*t_end/Lc**2
 
         x_x0_ana, theta_ana = openterrace.analytical_diffusion_wall(Bi, Fo, n)
-        x_x0_num, theta_num = ot.bed.domain.node_pos/(ot.bed.domain.node_pos[-1]-ot.bed.domain.node_pos[0]), (ot.bed.T[0,:]-T_inf)/(T_init-T_inf)
+        x_x0_num, theta_num = bed.domain.node_pos/(bed.domain.node_pos[-1]-bed.domain.node_pos[0]), (bed.T[0,:]-T_inf)/(T_init-T_inf)
 
         plt.plot(x_x0_num, theta_num,'s', label='OpenTerrace', color = '#4cae4f')
         plt.plot(x_x0_ana, theta_ana,'k', label='Analytical')
@@ -104,17 +104,17 @@ class TestConvection:
         mdot = 1
 
         ot = openterrace.Simulate(t_end=t_end, dt=1e-2)
-        ot.fluid = ot.Phase(n=n, type='fluid')
-        ot.fluid.select_substance_on_the_fly(cp=cp, rho=rho, k=k)
-        ot.fluid.select_domain_shape(domain='cylinder_1d', D=D, H=H)
-        ot.fluid.select_schemes(conv='upwind_1d')
-        ot.fluid.select_initial_conditions(T=T_init, mdot=mdot)
-        ot.fluid.select_bc(bc_type='dirichlet',
+        fluid = ot.createPhase(n=n, type='fluid')
+        fluid.select_substance_on_the_fly(cp=cp, rho=rho, k=k)
+        fluid.select_domain_shape(domain='cylinder_1d', D=D, H=H)
+        fluid.select_schemes(conv='upwind_1d')
+        fluid.select_initial_conditions(T=T_init, mdot=mdot)
+        fluid.select_bc(bc_type='dirichlet',
                         parameter='T',
                         position=(slice(None, None, None), 0),
                         value=T_in
                         )
-        ot.fluid.select_bc(bc_type='neumann',
+        fluid.select_bc(bc_type='neumann',
                         parameter='T',
                         position=(slice(None, None, None), -1)
                         )
@@ -122,7 +122,7 @@ class TestConvection:
 
         X = t_end*(mdot/rho/(np.pi*(D/2)**2))/H
 
-        y_H_num, theta_num = ot.fluid.domain.node_pos/(ot.fluid.domain.node_pos[-1]-ot.fluid.domain.node_pos[0]), (ot.fluid.T[0]-T_in)/(T_init-T_in)
+        y_H_num, theta_num = fluid.domain.node_pos/(fluid.domain.node_pos[-1]-fluid.domain.node_pos[0]), (fluid.T[0]-T_in)/(T_init-T_in)
         y_H_ana, theta_ana = openterrace.analytical_step(X, n)
 
         plt.plot(y_H_num, theta_num,'s', label='OpenTerrace', color = '#4cae4f')
