@@ -91,7 +91,7 @@ class Simulate:
         fig, axes = plt.subplots()
         for i,time in enumerate(times):
             timelabel = u'$%s$' % time
-            plt.plot(x, y[i,:].transpose(), label=timelabel)
+            plt.plot(x, y[i,:].transpose()-273.15, label=timelabel)
 
         lines = plt.gca().get_lines()
         labelLines(lines, fontsize=8, align=True)

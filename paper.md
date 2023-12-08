@@ -27,7 +27,9 @@ A fluid is heated up and pumped through a storage tank. The storage tank contain
 # Statement of need
 `OpenTerrace` is an open-source simulation framework providing easy access to complex simulations. The core part of the computations are made by calling low-level languages using packages such as NumPy [@harris], SciPy [@virtanen] and  Numba [@lam] for speed while maintaining the flexibility and user-friendliness of Python. Plotting and animation capabilities based on Matplotlib [@hunter] are provided with the framework to allow easy access to visualisations.
 
-`OpenTerrace` solves for a fluid phase, which is descretised in `N` nodes. For each node, the bed material may be discretised in `M` nodes. The framework allows an arbritrary number of phases to be defined and coupled in different ways. Each phase is described by a non-linear, partial differential equation. These are coupled using source terms to account for various effects such as convection and radiation. The framework is flexible in such a way that new types of source terms, new domain shape functions, new fluid and bed substances (including phase-changing substances) and new numerical discretisation schemes can easily be added. A set of tutorials is also provided with the framework to highlight its current functionality and ease the learning curve for new users. Also various unit tests are provided to verify different parts of the code and its correctness for some well-defined benchmark cases.
+`OpenTerrace` solves for a fluid phase, which is descretised in `N` nodes. For each node, the bed material is discretised in `M` nodes. The framework allows arbritrary number of phases to be defined and coupled in different ways.
+
+Each phase is described by a non-linear, partial differential equation. The phases are coupled using source terms to account for various physical mechanisms. The framework is flexible in such a way that new types of source terms, new domain shape functions, new fluid and bed substances (including phase-changing substances) with both temperature dependent- and independent properties and new numerical discretisation schemes can easily be added. A set of tutorials is also provided with the framework to highlight its functionality in its current version and to ease the learning curve for new users. Also various unit tests are provided to verify different parts of the code in some well-defined benchmark cases.
 
 ![](docs/_figures/schematic.svg)
 
@@ -35,8 +37,6 @@ A fluid is heated up and pumped through a storage tank. The storage tank contain
 
 # Acknowledgements
 
-This research has received funding from EU Horizon project SERENE under
-grant agreement no. 130930.
+This research has received funding from EU Horizon project SERENE under grant agreement no. 130930.
 
 # References
-
