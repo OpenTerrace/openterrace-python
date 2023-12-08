@@ -24,7 +24,6 @@ class Simulate:
         Args:
             t_end (float): End time in s
             dt (float): Time step size in s
-            t_output list(float): List of requested output times
             sim_name (str): Simulation name
         """
         self.t_start = 0
@@ -34,10 +33,25 @@ class Simulate:
         self.flag_coupling = False
         self.sim_name = sim_name
 
-    def createPhase(self, n:int=None, n_other:int=1, type:str=None):        
+    def createPhase(self, n:int=None, n_other:int=1, type:str=None):
+        """Creates a fluid or bed phase.
+
+        Args:
+            n (int): Number of discretisations
+            n_other (int): Number of discretisations of interacting phase. If you are defining a bed phase within a tank. Then n_other is the number of discretisations of the fluid phase.
+            type (str): Simulation name
+        """
         return self.Phase(self, n, n_other, type)
         
     def select_coupling(self, fluid_phase:int=None, bed_phase:int=None, h_exp:str=None, h_value:float=None):
+        """Selects coupling of a fluid and bed phase
+
+        Args:
+            fluid_phase (int): phase number
+            bed_phase (int): phase number
+            h_exp (str): Predefined function for convective heat transfer
+            h_value (float): Convective heat transfer coefficient in W/(m^2 K)
+        """
         valid_h_exp = ['constant']
         if h_exp not in valid_h_exp:
             raise Exception("h_exp \'"+h_exp+"\' specified. Valid options for h_exp are:", valid_h_exp)
@@ -77,7 +91,7 @@ class Simulate:
         fig, axes = plt.subplots()
         for i,time in enumerate(times):
             timelabel = u'$%s$' % time
-            plt.plot(x, y[i,:].transpose(), label=timelabel)
+            plt.plot(x, y[i,:].transpose()-273.15, label=timelabel)
 
         lines = plt.gca().get_lines()
         labelLines(lines, fontsize=8, align=True)
@@ -118,7 +132,7 @@ class Simulate:
     class Phase:
         instances = []
         """Main class to define either the fluid or bed phase."""
-        def __init__(self, outer=None, n:int=None, n_other:int=1, type:str=None):
+        def __init__(self, outer=None, n:int=None, n_other:int=None, type:str=None):
             """Initialise a phase with number of control points and type.
 
             Args:
