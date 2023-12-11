@@ -1,24 +1,23 @@
-""" This example shows how to simulate heat diffusion in a sphere made out of swedish diabase stone. """
+""" This example shows how to simulate advection of temperature in a cylindrical tank without any bed material. """
 
 import openterrace
 
-R = 0.025
-T_init = 40+273.15
-T_room = 80+273.15
-h = 200
+ot = openterrace.Simulate(t_end=600, dt=0.01, sim_name='tutorial2')
 
-ot = openterrace.Simulate(t_end=15*60, dt=0.01, sim_name='tutorial2')
-
-bed = ot.createPhase(n=50, type='bed')
-bed.select_substance('swedish_diabase')
-bed.select_domain_shape(domain='sphere_1d', R=R)
-bed.select_schemes(diff='central_difference_1d')
-bed.select_initial_conditions(T=T_init)
-bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), 0))
-bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), -1))
-bed.select_source_term(source_type='thermal_resistance', R=1/(h*4*3.14159*R**2), T_inf=T_room, position=(slice(None, None, None), -1))
-bed.select_output(times=range(0, 15*60+60, 60), parameters=['T'])
+fluid = ot.createPhase(n=500, type='fluid')
+fluid.select_substance_on_the_fly(rho=1000, cp=4200, k=0.6)
+fluid.select_domain_shape(domain='cylinder_1d', D=0.3, H=1)
+fluid.select_schemes(diff='central_difference_1d', conv='upwind_1d')
+fluid.select_initial_conditions(T=273.15+100)
+fluid.select_massflow(mdot=[
+                            [0, 0.1],
+                            [400, 0.1],
+                            [600, -0.1]
+                            ])
+fluid.select_bc(bc_type='fixedValue', parameter='T', position=(slice(None, None, None), 0), value=273.15+600)
+fluid.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), -1), value=0)
+fluid.select_output(times=range(0, 15*60+60, 60), parameters=['T'])
 
 ot.run_simulation()
-ot.generate_plot(pos_phase=bed, data_phase=bed)
-ot.generate_animation(pos_phase=bed, data_phase=bed)
+ot.generate_plot(pos_phase=fluid, data_phase=fluid)
+ot.generate_animation(pos_phase=fluid, data_phase=fluid)

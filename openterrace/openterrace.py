@@ -71,6 +71,7 @@ class Simulate:
             for phase_instance in self.Phase.instances:
                 phase_instance._save_data(t)
                 phase_instance._solve_equations(t, self.dt)
+                phase_instance._update_massflow_rate(t)
                 phase_instance._update_properties()
             if self.flag_coupling:
                 self._coupling()
@@ -228,13 +229,11 @@ class Simulate:
                 except:
                     raise Exception("Convection scheme \'"+conv+"\' specified. Valid options for convection schemes are:", convection_schemes.__all__)
 
-        def select_initial_conditions(self, T:float=None, mdot:float=None):
+        def select_initial_conditions(self, T:float=None):
             """Initialises temperature and massflow fields"""
             if T is not None:
                 self.T = np.tile(T,(np.append(self.n_other,self.domain.shape)))
                 self.h = self.fcns.h(self.T)
-            if mdot is not None:
-                self.mdot = np.tile(mdot,(np.append(self.n_other,self.domain.shape)))
             self.T = self.fcns.T(self.h)
             self.rho = self.fcns.rho(self.h)
             self.cp = self.fcns.cp(self.h)
@@ -242,6 +241,9 @@ class Simulate:
             self.D = np.zeros(((2,)+(self.T.shape)))
             self.F = np.zeros(((2,)+(self.T.shape)))
             self.S = np.zeros(self.T.shape)
+
+        def select_massflow(self, mdot:list[float]=None):
+            self.mdot_array = np.array(mdot)
 
         def select_bc(self, bc_type:str=None, parameter:str=None, position=None, value:float=None):
             """Specify boundary condition type"""
@@ -286,6 +288,13 @@ class Simulate:
                     for parameter in self.data.parameters: 
                         getattr(self.data,parameter)[self._q] = getattr(self,parameter)
                         self._q = self._q+1
+
+        def _update_massflow_rate(self, t:float=None):
+            """Updates mass flow rate"""
+            if self.mdot_array.ndim == 0:
+                self.mdot = np.tile(self.mdot_array,(np.append(self.n_other,self.domain.shape)))
+            elif self.mdot_array.ndim == 2:
+                self.mdot = np.interp(t, self.mdot_array[:,0], self.mdot_array[:,1])
 
         def _update_properties(self):
             """Updates properties based on specific enthalpy"""

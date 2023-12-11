@@ -1,50 +1,25 @@
-""" 
-This example shows how to simulate a cylindrical thermal storage tank with air and spherical magnetite
-stones as the bed material.
-"""
+""" This example shows how to simulate heat diffusion in a hollow sphere made out of ATS58 (PCM material). """
 
 import openterrace
 
-t_end = 3600*20
+Ri = 0.005
+Ro = 0.025
+T_init = 40+273.15
+T_room = 80+273.15
+h = 50
 
-ot = openterrace.Simulate(t_end=t_end, dt=0.05, sim_name='tutorial4')
+ot = openterrace.Simulate(t_end=7200, dt=0.05, sim_name='tutorial4')
 
-fluid = ot.createPhase(n=50, type='fluid')
-fluid.select_substance(substance='air')
-fluid.select_domain_shape(domain='cylinder_1d', D=0.3, H=1)
-fluid.select_porosity(phi=0.4)
-fluid.select_schemes(diff='central_difference_1d', conv='upwind_1d')
-fluid.select_initial_conditions(T=273.15+25, mdot=0.001)
-fluid.select_bc(bc_type='fixedValue',
-                   parameter='T',
-                   position=(slice(None, None, None), 0),
-                   value=273.15+500
-                   )
-fluid.select_bc(bc_type='zeroGradient',
-                   parameter='T',
-                   position=(slice(None, None, None), -1)
-                   )
-fluid.select_output(times=range(0, t_end+1800, 1800), parameters=['T'])
-
-bed = ot.createPhase(n=20, n_other=50, type='bed')
-bed.select_substance(substance='magnetite')
-bed.select_domain_shape(domain='sphere_1d', R=0.05)
+bed = ot.createPhase(n=30, type='bed')
+bed.select_substance(substance='ATS58')
+bed.select_domain_shape(domain='hollow_sphere_1d', Rinner=Ri, Router=Ro)
 bed.select_schemes(diff='central_difference_1d')
-bed.select_initial_conditions(T=273.15+25)
-bed.select_output(times=range(0, t_end+1800, 1800), parameters=['T'])
-bed.select_bc(bc_type='zeroGradient',
-                   parameter='T',
-                   position=(slice(None, None, None), 0)
-                   )
-bed.select_bc(bc_type='zeroGradient',
-                   parameter='T',
-                   position=(slice(None, None, None), -1)
-                   )
+bed.select_initial_conditions(T=T_init)
+bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), 0))
+bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), -1))
+bed.select_source_term(source_type='thermal_resistance', R=1/(h*4*3.14159*Ro**2), T_inf=T_room, position=(slice(None, None, None), -1))
+bed.select_output(times=range(0, 7200, 300), parameters=['T'])
 
-ot.select_coupling(fluid_phase=0, bed_phase=1, h_exp='constant', h_value=100)
 ot.run_simulation()
-ot.generate_plot(pos_phase=fluid, data_phase=fluid)
 ot.generate_plot(pos_phase=bed, data_phase=bed)
-ot.generate_plot(pos_phase=fluid, data_phase=bed)
-ot.generate_animation(pos_phase=fluid, data_phase=fluid)
-
+ot.generate_animation(pos_phase=bed, data_phase=bed)
