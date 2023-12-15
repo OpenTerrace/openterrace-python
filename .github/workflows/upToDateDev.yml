@@ -1,6 +1,9 @@
 name: Merge main back to dev branch
 
-on: [workflow_dispatch]
+on:
+  push:
+    branches: 
+      - main
 
 jobs:
   merge-master-back-to-dev:

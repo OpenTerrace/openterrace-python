@@ -12,7 +12,6 @@ pip install openterrace
 1. If you plan on extending or modifying OpenTerrace, you should install it in editable mode. First, use any git client such as [GitHub Desktop](https://desktop.github.com/) to clone the OpenTerrace repository
 
 2. Next, I recommend using Linux or WSL (if on Windows). Inside a linux terminal do:
-
 ```bash
 mkdir -p ~/miniconda3
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
@@ -26,7 +25,6 @@ rm -rf ~/miniconda3/miniconda.sh
 ```
 
 4. Now, reopen your terminal and create a virtual environment called ``ot``:
-
 ```bash
 conda create -n ot
 ```
