@@ -10,9 +10,11 @@ authors:
   - name: Jakob Hærvig
     orcid: 0000-0001-8710-1610
     equal-contrib: true
+    affiliation: 1
 affiliations:
  - name: Aalborg University, Denmark
-date: 04 October 2023
+   index: 1
+date: 11 December 2023
 bibliography: paper.bib
 ---
 
