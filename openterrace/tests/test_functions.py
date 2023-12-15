@@ -109,7 +109,7 @@ class TestConvection:
         fluid.select_domain_shape(domain='cylinder_1d', D=D, H=H)
         fluid.select_schemes(conv='upwind_1d')
         fluid.select_initial_conditions(T=T_init)
-        fluid.select_massflow(mdot=mdot),
+        fluid.select_massflow(mdot=mdot)
         fluid.select_bc(bc_type='fixedValue',
                         parameter='T',
                         position=(slice(None, None, None), 0),
