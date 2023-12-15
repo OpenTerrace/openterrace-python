@@ -71,7 +71,6 @@ class Simulate:
             for phase_instance in self.Phase.instances:
                 phase_instance._save_data(t)
                 phase_instance._solve_equations(t, self.dt)
-                phase_instance._update_massflow_rate(t)
                 phase_instance._update_properties()
             if self.flag_coupling:
                 self._coupling()
@@ -334,6 +333,7 @@ class Simulate:
             if hasattr(self, 'diff'):
                 self.h = self.h + self.diff(self.T, self.D)/(self.rho*self.domain.V)*dt
             if hasattr(self, 'conv'):
+                self._update_massflow_rate()
                 self.h = self.h + self.conv(self.T, self.F)/(self.rho*self.domain.V)*dt
             if self.sources is not None:
                 self._update_source(dt)
