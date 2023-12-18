@@ -56,7 +56,7 @@ which should give you something like ``/home/[username]/miniconda3/envs/ot/bin/p
 pip install --editable .
 ```
 
-10. Verify that the ``ot`` virtual environment is picked up in VS Code.
+10. Verify that the ``ot`` virtual environment is picked up as the interpreter in VS Code.
 
 ![Select ot environment](_figures/conda_ot.jpg)
 
