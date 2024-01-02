@@ -75,21 +75,19 @@ class Simulate:
             if self.flag_coupling:
                 self._coupling()
 
-    def generate_plot(self, pos_phase:object=None, data_phase:object=None, parameter:str='T'):
-        filename='ot_plot_'+self.sim_name+'_'+pos_phase.type+'_'+data_phase.type+'_'+parameter+'.png'
-        x = pos_phase.domain.node_pos
+    def generate_plot(self, x:object=None, y:object=None, parameter:str='T'):
+        filename='ot_plot_'+self.sim_name+'_'+str(x)+'_'+str(y)+'_'+parameter+'.png'
 
-        if pos_phase == data_phase:
-            y = np.mean(getattr(data_phase.data, parameter),1)
-        else:
-            y = np.mean(getattr(data_phase.data, parameter),2)
-        times = getattr(data_phase.data, 'time')
+        # if pos_phase == data_phase:
+        #     y = np.mean(getattr(data_phase.data, parameter),1)
+        # else:
+        #     y = np.mean(getattr(data_phase.data, parameter),2)
         
-        if y.shape[1] == 1:
-            y = np.append(y, y, 1)
+        # if y.shape[1] == 1:
+        #     y = np.append(y, y, 1)
 
         fig, axes = plt.subplots()
-        for i,time in enumerate(times):
+        for i,time in enumerate(getattr(data_phase.data, 'time')):
             timelabel = u'$%s$' % time
             plt.plot(x, y[i,:].transpose()-273.15, label=timelabel)
 
@@ -101,33 +99,33 @@ class Simulate:
         plt.ylabel(u'$%s_{%s}$ (\u00B0C)' % (parameter, data_phase.type))
         plt.savefig(filename)
 
-    def generate_animation(self, pos_phase:object=None, data_phase:object=None, parameter:str='T'):
-        def _update(frame, parameter):
-            x = pos_phase.domain.node_pos
-            if pos_phase == data_phase:
-                y = np.mean(getattr(data_phase.data, parameter),1)
-            else:
-                y = np.mean(getattr(data_phase.data, parameter),2)
-            times = getattr(data_phase.data, 'time')
+    # def generate_animation(self, pos_phase:object=None, data_phase:object=None, parameter:str='T'):
+    #     def _update(frame, parameter):
+    #         x = pos_phase.domain.node_pos
+    #         if pos_phase == data_phase:
+    #             y = np.mean(getattr(data_phase.data, parameter),1)
+    #         else:
+    #             y = np.mean(getattr(data_phase.data, parameter),2)
+    #         times = getattr(data_phase.data, 'time')
 
-            if y.shape[1] == 1:
-                y = np.append(y, y, 1)
+    #         if y.shape[1] == 1:
+    #             y = np.append(y, y, 1)
                 
-            ax.clear()
-            ax.set_xlabel('Position (m)')
-            ax.set_ylabel(u'$%s_{%s}$ (\u00B0C)' % (parameter, data_phase.type))
-            ax.set_xlim(np.min(pos_phase.domain.node_pos), np.max(pos_phase.domain.node_pos))
-            ax.set_ylim(np.min(getattr(data_phase.data,parameter)-273.15)-0.05*(np.max(getattr(data_phase.data, parameter)-273.15)), np.max(getattr(data_phase.data, parameter)-273.15)+0.05*(np.max(getattr(data_phase.data, parameter)-273.15)))
-            ax.grid()
-            ax.plot(x, y[frame,:].transpose()-273.15, color = '#4cae4f')
-            ax.set_title('Time: ' + str(np.round(getattr(data_phase.data, 'time')[frame], decimals=2)) + ' s')
+    #         ax.clear()
+    #         ax.set_xlabel('Position (m)')
+    #         ax.set_ylabel(u'$%s_{%s}$ (\u00B0C)' % (parameter, data_phase.type))
+    #         ax.set_xlim(np.min(pos_phase.domain.node_pos), np.max(pos_phase.domain.node_pos))
+    #         ax.set_ylim(np.min(getattr(data_phase.data,parameter)-273.15)-0.05*(np.max(getattr(data_phase.data, parameter)-273.15)), np.max(getattr(data_phase.data, parameter)-273.15)+0.05*(np.max(getattr(data_phase.data, parameter)-273.15)))
+    #         ax.grid()
+    #         ax.plot(x, y[frame,:].transpose()-273.15, color = '#4cae4f')
+    #         ax.set_title('Time: ' + str(np.round(getattr(data_phase.data, 'time')[frame], decimals=2)) + ' s')
 
-        parameter = 'T'
-        fig, ax = plt.subplots()
-        fig.tight_layout(pad=2)
-        filename='ot_ani_'+self.sim_name+'_'+pos_phase.type+'_'+data_phase.type+'_'+parameter+'.gif'
-        ani = anim.FuncAnimation(fig, _update, fargs=parameter, frames=np.arange(len(getattr(data_phase.data, parameter))))
-        ani.save(filename, writer=anim.PillowWriter(fps=5), progress_callback=lambda i, n: print(f'{data_phase.type}: saving animation frame {i}/{n}'))
+    #     parameter = 'T'
+    #     fig, ax = plt.subplots()
+    #     fig.tight_layout(pad=2)
+    #     filename='ot_ani_'+self.sim_name+'_'+pos_phase.type+'_'+data_phase.type+'_'+parameter+'.gif'
+    #     ani = anim.FuncAnimation(fig, _update, fargs=parameter, frames=np.arange(len(getattr(data_phase.data, parameter))))
+    #     ani.save(filename, writer=anim.PillowWriter(fps=5), progress_callback=lambda i, n: print(f'{data_phase.type}: saving animation frame {i}/{n}'))
 
     class Phase:
         instances = []
@@ -200,10 +198,10 @@ class Simulate:
             self.domain.type = domain
             self.domain.validate_input(kwargs, domain)
             self.domain.shape = self.domain.shape(kwargs)
-            self.domain.node_pos = self.domain.node_pos(kwargs)
             self.domain.dx = self.domain.dx(kwargs)
             self.domain.A = self.domain.A(kwargs)
             self.domain.V = self.domain.V(kwargs)
+            self.node_pos = self.domain.node_pos(kwargs)
 
         def select_porosity(self, phi:float=1):
             """Select porosity from 0 to 1, e.g. filling the domain with the phase up to a certain degree."""
