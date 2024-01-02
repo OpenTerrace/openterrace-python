@@ -9,6 +9,8 @@ from . import convection_schemes
 import sys
 import tqdm
 import numpy as np
+import xarray as xr
+import pandas as pd
 import matplotlib
 import datetime
 matplotlib.use('agg')
@@ -85,6 +87,16 @@ class Simulate:
         
         # if y.shape[1] == 1:
         #     y = np.append(y, y, 1)
+
+        if len(x.shape) == 1:
+            xp = x
+
+        
+
+        print(len(x.shape),x.shape)
+        print(len(y.shape),y.shape)
+
+        sys.exit()
 
         fig, axes = plt.subplots()
         for i,time in enumerate(getattr(data_phase.data, 'time')):
@@ -267,24 +279,37 @@ class Simulate:
                         raise Exception("Keyword \'"+var+"\' not specified for source of type \'"+kwargs['source_type']+"\'")
             self.sources.append(kwargs)
 
-        def select_output(self, times:list[float]=None, parameters:list[str]=None):
-            class Data(object):
-                pass
-            self.data = Data()
-            self.data.time = np.intersect1d(np.array(times), np.arange(self.outer.t_start, self.outer.t_end+self.outer.dt, self.outer.dt))
-            self.data.parameters = parameters
-            for parameter in parameters:
-                setattr(self.data,parameter, np.full((len(self.data.time), self.n_other, self.n),np.nan))
-                self._flag_save_data = True
-                self._q = 0
+        def select_output(self, times:list[float]=None):
+            self.data = xr.DataArray(
+                data=np.empty(([len(np.intersect1d(np.array(times), np.arange(self.outer.t_start, self.outer.t_end+self.outer.dt, self.outer.dt))), self.n, self.n_other])),
+                dims=("time", "pos", "pos_other"),
+                coords={"time": np.intersect1d(np.array(times), np.arange(self.outer.t_start, self.outer.t_end+self.outer.dt, self.outer.dt)),
+                        "pos": self.node_pos},
+                )
+
+            self._flag_save_data = True
+            self._q = 0
+
+            print(self.data.time[0])
+            sys.exit()
+
+            # class Data(object):
+            #     pass
+            # self.data = Data()
+            # self.data.time = np.intersect1d(np.array(times), np.arange(self.outer.t_start, self.outer.t_end+self.outer.dt, self.outer.dt))
+            # self.data.parameters = parameters
+            # for parameter in parameters:
+            #     setattr(self.data,parameter, np.full((len(self.data.time), self.n_other, self.n),np.nan))
+            #     self._flag_save_data = True
+            #     self._q = 0
 
         def _save_data(self, t:float=None):
             if self._flag_save_data:
-                if t in self.data.time:
-                    self.data.time[self._q] = t
-                    for parameter in self.data.parameters: 
-                        getattr(self.data,parameter)[self._q] = getattr(self,parameter)
-                        self._q = self._q+1
+                if t in self.data['time']:
+                    print(self.data)
+
+                        #getattr(self.data,parameter)[self._q] = getattr(self,parameter)
+                        #self._q = self._q+1
 
         def _update_massflow_rate(self, t:float=None):
             """Updates mass flow rate"""

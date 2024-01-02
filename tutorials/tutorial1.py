@@ -12,8 +12,9 @@ fluid.select_initial_conditions(T=273.15+100)
 fluid.select_massflow(mdot=0.1)
 fluid.select_bc(bc_type='fixedValue', parameter='T', position=(slice(None, None, None), 0), value=273.15+600)
 fluid.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), -1), value=0)
-fluid.select_output(times=range(0, 15*60+60, 60), parameters=['T'])
+fluid.select_output(times=range(0, 15*60+60, 60))
 
 ot.run_simulation()
-ot.generate_plot(pos_phase=fluid, data_phase=fluid)
-ot.generate_animation(pos_phase=fluid, data_phase=fluid)
+
+#print(fluid.data['T'])
+#ot.generate_plot(x=fluid.data['pos'],y=fluid.data['T'])
