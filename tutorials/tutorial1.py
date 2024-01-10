@@ -1,10 +1,11 @@
 """ This example shows how to simulate advection of temperature in a cylindrical tank without any bed material. """
 
 import openterrace
+import matplotlib.pyplot as plt
 
 ot = openterrace.Simulate(t_end=600, dt=0.01, sim_name='tutorial1')
 
-fluid = ot.createPhase(n=500, type='fluid')
+fluid = ot.createPhase(n=20, type='fluid')
 fluid.select_substance_on_the_fly(rho=1000, cp=4200, k=0.6)
 fluid.select_domain_shape(domain='cylinder_1d', D=0.3, H=1)
 fluid.select_schemes(diff='central_difference_1d', conv='upwind_1d')
@@ -16,5 +17,9 @@ fluid.select_output(times=range(0, 15*60+60, 60))
 
 ot.run_simulation()
 
-#print(fluid.data['T'])
-#ot.generate_plot(x=fluid.data['pos'],y=fluid.data['T'])
+print(fluid.data.data)
+
+# fig, axs = plt.subplots(ncols=2)
+
+# fluid.data(time=0).plot.line(x="time")
+# plt.savefig(test)

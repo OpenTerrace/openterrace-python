@@ -91,8 +91,6 @@ class Simulate:
         if len(x.shape) == 1:
             xp = x
 
-        
-
         print(len(x.shape),x.shape)
         print(len(y.shape),y.shape)
 
@@ -290,9 +288,6 @@ class Simulate:
             self._flag_save_data = True
             self._q = 0
 
-            print(self.data.time[0])
-            sys.exit()
-
             # class Data(object):
             #     pass
             # self.data = Data()
@@ -306,10 +301,8 @@ class Simulate:
         def _save_data(self, t:float=None):
             if self._flag_save_data:
                 if t in self.data['time']:
-                    print(self.data)
-
-                        #getattr(self.data,parameter)[self._q] = getattr(self,parameter)
-                        #self._q = self._q+1
+                    self.data[self._q,:,:] = self.T.T
+                    self._q = self._q+1
 
         def _update_massflow_rate(self, t:float=None):
             """Updates mass flow rate"""
