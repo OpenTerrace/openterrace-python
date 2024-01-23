@@ -77,27 +77,10 @@ class Simulate:
             if self.flag_coupling:
                 self._coupling()
 
-    def generate_plot(self, x:object=None, y:object=None, parameter:str='T'):
-        filename='ot_plot_'+self.sim_name+'_'+str(x)+'_'+str(y)+'_'+parameter+'.png'
-
-        # if pos_phase == data_phase:
-        #     y = np.mean(getattr(data_phase.data, parameter),1)
-        # else:
-        #     y = np.mean(getattr(data_phase.data, parameter),2)
-        
-        # if y.shape[1] == 1:
-        #     y = np.append(y, y, 1)
-
-        if len(x.shape) == 1:
-            xp = x
-
-        print(len(x.shape),x.shape)
-        print(len(y.shape),y.shape)
-
-        sys.exit()
-
+    def generate_plot(self, x:list[float]=None, y:list[float]=None, times:list[float]=None, xlabel:str=None, ylabel:str=None, name:str=None):
+        filename='ot_plot_'+self.sim_name+'_'+name+'.png'
         fig, axes = plt.subplots()
-        for i,time in enumerate(getattr(data_phase.data, 'time')):
+        for i,time in enumerate(times):
             timelabel = u'$%s$' % time
             plt.plot(x, y[i,:].transpose()-273.15, label=timelabel)
 
@@ -105,37 +88,27 @@ class Simulate:
         labelLines(lines, fontsize=8, align=True)
 
         plt.grid()
-        plt.xlabel('Position (m)')
-        plt.ylabel(u'$%s_{%s}$ (\u00B0C)' % (parameter, data_phase.type))
+        plt.xlabel('%s' % (xlabel))
+        plt.ylabel('%s' % (ylabel))
         plt.savefig(filename)
 
-    # def generate_animation(self, pos_phase:object=None, data_phase:object=None, parameter:str='T'):
-    #     def _update(frame, parameter):
-    #         x = pos_phase.domain.node_pos
-    #         if pos_phase == data_phase:
-    #             y = np.mean(getattr(data_phase.data, parameter),1)
-    #         else:
-    #             y = np.mean(getattr(data_phase.data, parameter),2)
-    #         times = getattr(data_phase.data, 'time')
+    def generate_animation(self, x:list[float]=None, y:list[float]=None, times:list[float]=None, xlabel:str=None, ylabel:str=None):
+        def _update(frame, y, times):       
+            ax.clear()
+            ax.set_xlabel(xlabel)
+            ax.set_ylabel(ylabel)
+            ax.set_xlim(np.min(x), np.max(x))
+            ax.set_ylim(np.min(y)-0.05*np.max(y), np.max(y)+0.05*np.max(y))
+            ax.grid()
+            ax.plot(x, y[frame,:].transpose(), color = '#4cae4f')
+            ax.set_title('Time: ' + str(np.round(times[frame], decimals=2)) + ' s')
 
-    #         if y.shape[1] == 1:
-    #             y = np.append(y, y, 1)
-                
-    #         ax.clear()
-    #         ax.set_xlabel('Position (m)')
-    #         ax.set_ylabel(u'$%s_{%s}$ (\u00B0C)' % (parameter, data_phase.type))
-    #         ax.set_xlim(np.min(pos_phase.domain.node_pos), np.max(pos_phase.domain.node_pos))
-    #         ax.set_ylim(np.min(getattr(data_phase.data,parameter)-273.15)-0.05*(np.max(getattr(data_phase.data, parameter)-273.15)), np.max(getattr(data_phase.data, parameter)-273.15)+0.05*(np.max(getattr(data_phase.data, parameter)-273.15)))
-    #         ax.grid()
-    #         ax.plot(x, y[frame,:].transpose()-273.15, color = '#4cae4f')
-    #         ax.set_title('Time: ' + str(np.round(getattr(data_phase.data, 'time')[frame], decimals=2)) + ' s')
-
-    #     parameter = 'T'
-    #     fig, ax = plt.subplots()
-    #     fig.tight_layout(pad=2)
-    #     filename='ot_ani_'+self.sim_name+'_'+pos_phase.type+'_'+data_phase.type+'_'+parameter+'.gif'
-    #     ani = anim.FuncAnimation(fig, _update, fargs=parameter, frames=np.arange(len(getattr(data_phase.data, parameter))))
-    #     ani.save(filename, writer=anim.PillowWriter(fps=5), progress_callback=lambda i, n: print(f'{data_phase.type}: saving animation frame {i}/{n}'))
+        parameter = 'T'
+        fig, ax = plt.subplots()
+        fig.tight_layout(pad=2)
+        filename='ot_ani_'+self.sim_name+'.gif'
+        ani = anim.FuncAnimation(fig, _update, fargs=[y,times], frames=np.arange(len(y)))
+        ani.save(filename, writer=anim.PillowWriter(fps=5), progress_callback=lambda i, n: print(f'saving animation frame {i}/{n}'))
 
     class Phase:
         instances = []
@@ -278,33 +251,23 @@ class Simulate:
             self.sources.append(kwargs)
 
         def select_output(self, times:list[float]=None):
-            self.data = xr.DataArray(
-                data=np.empty(([len(np.intersect1d(np.array(times), np.arange(self.outer.t_start, self.outer.t_end+self.outer.dt, self.outer.dt))), self.n, self.n_other])),
-                dims=("time", "pos", "pos_other"),
-                coords={"time": np.intersect1d(np.array(times), np.arange(self.outer.t_start, self.outer.t_end+self.outer.dt, self.outer.dt)),
-                        "pos": self.node_pos},
-                )
-
-            self._flag_save_data = True
-            self._q = 0
-
-            # class Data(object):
-            #     pass
-            # self.data = Data()
-            # self.data.time = np.intersect1d(np.array(times), np.arange(self.outer.t_start, self.outer.t_end+self.outer.dt, self.outer.dt))
-            # self.data.parameters = parameters
-            # for parameter in parameters:
-            #     setattr(self.data,parameter, np.full((len(self.data.time), self.n_other, self.n),np.nan))
-            #     self._flag_save_data = True
-            #     self._q = 0
+            class Data(object):
+                pass
+            self.data = Data()
+            self.data.time = np.intersect1d(np.array(times), np.arange(self.outer.t_start, self.outer.t_end+self.outer.dt, self.outer.dt))
+            for parameter in ['T']:
+                setattr(self.data,parameter, np.full((len(self.data.time), self.n_other, self.n),np.nan))
+                self._flag_save_data = True
+                self._q = 0
 
         def _save_data(self, t:float=None):
             if self._flag_save_data:
-                if t in self.data['time']:
-                    self.data[self._q,:,:] = self.T.T
+                if t in self.data.time:
+                    for parameter in ['T']:
+                        getattr(self.data,parameter)[self._q] = getattr(self,parameter)
                     self._q = self._q+1
 
-        def _update_massflow_rate(self, t:float=None):
+        def _update_massflow_rate(self, t:float):
             """Updates mass flow rate"""
             if self.mdot_array.ndim == 0:
                 self.mdot = np.tile(self.mdot_array,(np.append(self.n_other,self.domain.shape)))
@@ -349,7 +312,7 @@ class Simulate:
             if hasattr(self, 'diff'):
                 self.h = self.h + self.diff(self.T, self.D)/(self.rho*self.domain.V)*dt
             if hasattr(self, 'conv'):
-                self._update_massflow_rate()
+                self._update_massflow_rate(t)
                 self.h = self.h + self.conv(self.T, self.F)/(self.rho*self.domain.V)*dt
             if self.sources is not None:
                 self._update_source(dt)
