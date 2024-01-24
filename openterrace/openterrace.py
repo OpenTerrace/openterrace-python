@@ -77,22 +77,24 @@ class Simulate:
             if self.flag_coupling:
                 self._coupling()
 
-    def generate_plot(self, x:list[float]=None, y:list[float]=None, times:list[float]=None, xlabel:str=None, ylabel:str=None, name:str=None):
+    def generate_plot(self, x:list[float]=None, y:list[float]=None, times:list[float]=None, xlabel:str=None, ylabel:str=None, name:str='fig'):
         filename='ot_plot_'+self.sim_name+'_'+name+'.png'
         fig, axes = plt.subplots()
+
+        print(x.shape,y.shape)
         for i,time in enumerate(times):
             timelabel = u'$%s$' % time
             plt.plot(x, y[i,:].transpose()-273.15, label=timelabel)
 
         lines = plt.gca().get_lines()
-        labelLines(lines, fontsize=8, align=True)
+        labelLines(lines, yoffsets=0.1, fontsize=8, align=False)
 
         plt.grid()
         plt.xlabel('%s' % (xlabel))
         plt.ylabel('%s' % (ylabel))
         plt.savefig(filename)
 
-    def generate_animation(self, x:list[float]=None, y:list[float]=None, times:list[float]=None, xlabel:str=None, ylabel:str=None):
+    def generate_animation(self, x:list[float]=None, y:list[float]=None, times:list[float]=None, xlabel:str=None, ylabel:str=None, name:str='ani'):
         def _update(frame, y, times):       
             ax.clear()
             ax.set_xlabel(xlabel)

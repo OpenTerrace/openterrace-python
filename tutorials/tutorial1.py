@@ -16,5 +16,5 @@ fluid.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, Non
 fluid.select_output(times=range(0, 15*60+60, 60))
 
 ot.run_simulation()
-ot.generate_plot(x=fluid.node_pos, y=fluid.data.T, times=fluid.data.time, xlabel='Position', ylabel='Temperature')
-ot.generate_animation(x=fluid.node_pos, y=fluid.data.T, times=fluid.data.time, xlabel='Position', ylabel='Temperature')
+ot.generate_plot(x=fluid.node_pos, y=fluid.data.T, times=fluid.data.time, xlabel='Position', ylabel='Temperature', name='fig2')
+ot.generate_animation(x=fluid.node_pos, y=fluid.data.T, times=fluid.data.time, xlabel='Position', ylabel='Temperature', name='ani2')
