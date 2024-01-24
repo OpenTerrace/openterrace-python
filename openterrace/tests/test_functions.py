@@ -41,7 +41,7 @@ class TestDiffusion:
         plt.legend([r"OpenTerrace "+"("+r"$Bi=$"+f"{Bi:.2e}"+", "+r"$Fo=$"+f"{Fo:.2e}"+")", "Analytical"], loc ="lower left")
         plt.xlabel(r'Radial position, $r^* = r/r_0$')
         plt.ylabel(r'Temperature, $\theta = (T(r,t)-T_\infty)/(T_{init}-T_\infty)$')
-        plt.savefig('test_diffusion_sphere.svg', bbox_inches='tight')
+        plt.savefig('test_diffusion_test1.svg', bbox_inches='tight')
         plt.close()
 
         np.testing.assert_array_almost_equal(theta_ana, theta_num, decimal=2)
@@ -84,7 +84,7 @@ class TestDiffusion:
         plt.legend([r"OpenTerrace "+"("+r"$Bi=$"+f"{Bi:.2e}"+", "+r"$Fo=$"+f"{Fo:.2e}"+")", "Analytical"], loc ="lower left")
         plt.xlabel(r'Position, $x^* = x/L$')
         plt.ylabel(r'Temperature, $\theta = (T(r,t)-T_\infty)/(T_{init}-T_\infty)$')
-        plt.savefig('test_diffusion_wall.svg', bbox_inches='tight')
+        plt.savefig('test_diffusion_test2.svg', bbox_inches='tight')
         plt.close()
 
         np.testing.assert_array_almost_equal(theta_ana, theta_num, decimal=2)
@@ -134,7 +134,7 @@ class TestConvection:
         plt.legend([r"OpenTerrace "+"("+r"upwind scheme"+")", "Analytical"], loc ="lower right")
         plt.xlabel(r'Position, $y^* = y/H$')
         plt.ylabel(r'Temperature, $\theta = (T(x,t)-T_{in})/(T_{init}-T_{in})$')
-        plt.savefig('test_convection_cylinder.svg', bbox_inches='tight')
+        plt.savefig('test_convection_test1.svg', bbox_inches='tight')
         plt.close()
 
         np.testing.assert_array_almost_equal(1,1, decimal=2) #Dummy check
