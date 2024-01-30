@@ -4,7 +4,7 @@ import openterrace
 import numpy as np
 import matplotlib.pyplot as plt
 
-ot = openterrace.Simulate(t_end=600*60, dt=0.1, sim_name='validation_grabo')
+ot = openterrace.Simulate(t_end=0.1, dt=0.1, sim_name='validation_grabo')
 
 fluid = ot.createPhase(n=290, type='fluid')
 fluid.select_substance_on_the_fly(rho=1000, cp=4200, k=0.6)
@@ -36,5 +36,5 @@ plt.xlabel('Time (min)')
 plt.ylabel('Outlet temperature (C)')
 plt.xlim([0, 900])
 plt.ylim([45, 70])
-plt.savefig('out.png')
+plt.savefig('ot_test.png')
 

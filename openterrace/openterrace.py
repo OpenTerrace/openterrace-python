@@ -68,19 +68,19 @@ class Simulate:
 
     def run_simulation(self):
         """This is the function full of magic."""
-        for t in tqdm.tqdm(np.arange(self.t_start, self.t_end+self.dt, self.dt)):
+        for t in tqdm.tqdm(np.arange(self.t_start, self.t_end, self.dt)):
             for phase_instance in self.Phase.instances:
                 phase_instance._save_data(t)
                 phase_instance._solve_equations(t, self.dt)
                 phase_instance._update_properties()
             if self.flag_coupling:
                 self._coupling()
+            print(t)
 
     def generate_plot(self, x:list[float]=None, y:list[float]=None, times:list[float]=None, xlabel:str=None, ylabel:str=None, name:str='fig'):
         filename='ot_plot_'+self.sim_name+'_'+name+'.png'
         fig, axes = plt.subplots()
 
-        print(x.shape,y.shape)
         for i,time in enumerate(times):
             timelabel = u'$%s$' % time
             plt.plot(x, y[i,:].transpose()-273.15, label=timelabel)
@@ -185,6 +185,7 @@ class Simulate:
             self.domain.dx = self.domain.dx(kwargs)
             self.domain.A = self.domain.A(kwargs)
             self.domain.V = self.domain.V(kwargs)
+            self.domain.V0 = self.domain.V0(kwargs)
             self.node_pos = self.domain.node_pos(kwargs)
 
         def select_porosity(self, phi:float=1):
