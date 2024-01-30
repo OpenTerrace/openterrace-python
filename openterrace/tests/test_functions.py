@@ -91,7 +91,7 @@ class TestDiffusion:
 
 class TestConvection:
     def test_1(self):
-        n = 100
+        n = 1000
         t_end = 120
 
         H = 2
@@ -100,7 +100,7 @@ class TestConvection:
         T_in = 100
         cp = 4180
         rho = 993
-        k = 0.627
+        k = 0
         mdot = 1
 
         ot = openterrace.Simulate(t_end=t_end, dt=1e-2)
