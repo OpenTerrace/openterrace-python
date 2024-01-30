@@ -9,7 +9,6 @@ from . import convection_schemes
 import sys
 import tqdm
 import numpy as np
-import xarray as xr
 import pandas as pd
 import matplotlib
 import datetime
@@ -108,11 +107,7 @@ class Simulate:
         parameter = 'T'
         fig, ax = plt.subplots()
         fig.tight_layout(pad=2)
-<<<<<<< Updated upstream
-        filename='ot_ani_'+self.sim_name+'.gif'
-=======
         filename='ot_ani_'+self.sim_name+'_'+name+'.gif'
->>>>>>> Stashed changes
         ani = anim.FuncAnimation(fig, _update, fargs=[y,times], frames=np.arange(len(y)))
         ani.save(filename, writer=anim.PillowWriter(fps=5), progress_callback=lambda i, n: print(f'saving animation frame {i}/{n}'))
 
