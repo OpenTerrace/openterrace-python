@@ -9,13 +9,10 @@ from . import convection_schemes
 import sys
 import tqdm
 import numpy as np
-import pandas as pd
-import matplotlib
 import datetime
+import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
-import matplotlib.animation as anim
-from labellines import labelLines, labelLine
 
 class Simulate:
     """OpenTerrace class."""
@@ -368,7 +365,7 @@ class Simulate:
                 t (float): Current time
                 dt (float): Time step size
             """
-            
+
             self._update_boundary_nodes(t, dt)
             if hasattr(self, 'diff'):
                 self.h = self.h + self.diff(self.T, self.D)/(self.rho*self.domain.V)*dt
