@@ -31,7 +31,7 @@ class TestDiffusion:
         Fo = k/(rho*cp)*t_end/Lc**2
 
         r_r0_ana, theta_ana = openterrace.analytical_diffusion_sphere(Bi, Fo, n)
-        r_r0_num, theta_num = bed.domain.node_pos/(bed.domain.node_pos[-1]-bed.domain.node_pos[0]), (bed.T[0,:]-T_inf)/(T_init-T_inf)
+        r_r0_num, theta_num = bed.node_pos/(bed.node_pos[-1]-bed.node_pos[0]), (bed.T[0,:]-T_inf)/(T_init-T_inf)
 
         plt.plot(r_r0_num, theta_num,'s', label='OpenTerrace', color = '#4cae4f')
         plt.plot(r_r0_ana, theta_ana,'k', label='Analytical')
@@ -41,7 +41,7 @@ class TestDiffusion:
         plt.legend([r"OpenTerrace "+"("+r"$Bi=$"+f"{Bi:.2e}"+", "+r"$Fo=$"+f"{Fo:.2e}"+")", "Analytical"], loc ="lower left")
         plt.xlabel(r'Radial position, $r^* = r/r_0$')
         plt.ylabel(r'Temperature, $\theta = (T(r,t)-T_\infty)/(T_{init}-T_\infty)$')
-        plt.savefig('test_diffusion_sphere.svg', bbox_inches='tight')
+        plt.savefig('test_diffusion_test1.svg', bbox_inches='tight')
         plt.close()
 
         np.testing.assert_array_almost_equal(theta_ana, theta_num, decimal=2)
@@ -74,7 +74,7 @@ class TestDiffusion:
         Fo = k/(rho*cp)*t_end/Lc**2
 
         x_x0_ana, theta_ana = openterrace.analytical_diffusion_wall(Bi, Fo, n)
-        x_x0_num, theta_num = bed.domain.node_pos/(bed.domain.node_pos[-1]-bed.domain.node_pos[0]), (bed.T[0,:]-T_inf)/(T_init-T_inf)
+        x_x0_num, theta_num = bed.node_pos/(bed.node_pos[-1]-bed.node_pos[0]), (bed.T[0,:]-T_inf)/(T_init-T_inf)
 
         plt.plot(x_x0_num, theta_num,'s', label='OpenTerrace', color = '#4cae4f')
         plt.plot(x_x0_ana, theta_ana,'k', label='Analytical')
@@ -84,14 +84,14 @@ class TestDiffusion:
         plt.legend([r"OpenTerrace "+"("+r"$Bi=$"+f"{Bi:.2e}"+", "+r"$Fo=$"+f"{Fo:.2e}"+")", "Analytical"], loc ="lower left")
         plt.xlabel(r'Position, $x^* = x/L$')
         plt.ylabel(r'Temperature, $\theta = (T(r,t)-T_\infty)/(T_{init}-T_\infty)$')
-        plt.savefig('test_diffusion_wall.svg', bbox_inches='tight')
+        plt.savefig('test_diffusion_test2.svg', bbox_inches='tight')
         plt.close()
 
         np.testing.assert_array_almost_equal(theta_ana, theta_num, decimal=2)
 
 class TestConvection:
     def test_1(self):
-        n = 100
+        n = 1000
         t_end = 120
 
         H = 2
@@ -100,7 +100,7 @@ class TestConvection:
         T_in = 100
         cp = 4180
         rho = 993
-        k = 0.627
+        k = 0
         mdot = 1
 
         ot = openterrace.Simulate(t_end=t_end, dt=1e-2)
@@ -123,7 +123,7 @@ class TestConvection:
 
         X = t_end*(mdot/rho/(np.pi*(D/2)**2))/H
 
-        y_H_num, theta_num = fluid.domain.node_pos/(fluid.domain.node_pos[-1]-fluid.domain.node_pos[0]), (fluid.T[0]-T_in)/(T_init-T_in)
+        y_H_num, theta_num = fluid.node_pos/(fluid.node_pos[-1]-fluid.node_pos[0]), (fluid.T[0]-T_in)/(T_init-T_in)
         y_H_ana, theta_ana = openterrace.analytical_step(X, n)
 
         plt.plot(y_H_num, theta_num,'s', label='OpenTerrace', color = '#4cae4f')
@@ -134,7 +134,7 @@ class TestConvection:
         plt.legend([r"OpenTerrace "+"("+r"upwind scheme"+")", "Analytical"], loc ="lower right")
         plt.xlabel(r'Position, $y^* = y/H$')
         plt.ylabel(r'Temperature, $\theta = (T(x,t)-T_{in})/(T_{init}-T_{in})$')
-        plt.savefig('test_convection_cylinder.svg', bbox_inches='tight')
+        plt.savefig('test_convection_test1.svg', bbox_inches='tight')
         plt.close()
 
         np.testing.assert_array_almost_equal(1,1, decimal=2) #Dummy check

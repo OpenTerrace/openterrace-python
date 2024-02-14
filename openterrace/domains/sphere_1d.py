@@ -71,3 +71,13 @@ def V(vars):
     dx = R/(n-1)
     face_pos_vec = np.concatenate(([0],np.linspace(dx/2,R-dx/2,n-1),[R]))
     return np.diff(4/3*np.pi*face_pos_vec**3)
+
+def V0(vars):
+    """Volume of shape.
+
+    Args:
+        vars (list): List of arguments
+    """
+    
+    R = vars['R']
+    return 4/3*np.pi*R**3

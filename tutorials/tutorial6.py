@@ -1,39 +1,54 @@
-""" 
-This example shows how to simulate a cylindrical thermal storage tank with air and spherical magnetite
-stones as the bed material. Same as other tutorial but with lumped stones.
+"""
+This example sets up a water tank with PCM material
+as the bed material.
 """
 
 import openterrace
+import matplotlib.pyplot as plt
 
-t_end = 3600*20
+ot = openterrace.Simulate(t_end=100*60, dt=0.05)
 
-ot = openterrace.Simulate(t_end=t_end, dt=0.05, sim_name='tutorial6')
-
-fluid = ot.createPhase(n=50, type='fluid')
-fluid.select_substance(substance='air')
-fluid.select_domain_shape(domain='cylinder_1d', D=0.3, H=1)
+fluid = ot.createPhase(n=100, type='fluid')
+fluid.select_substance(substance='water')
+fluid.select_domain_shape(domain='cylinder_1d', D=0.1, H=1)
 fluid.select_porosity(phi=0.4)
 fluid.select_schemes(diff='central_difference_1d', conv='upwind_1d')
-fluid.select_initial_conditions(T=273.15+25, mdot=0.001)
+fluid.select_initial_conditions(T=273.15+20)
+fluid.select_massflow(mdot=0.01)
 fluid.select_bc(bc_type='fixedValue',
-                   parameter='T',
-                   position=(slice(None, None, None), 0),
-                   value=273.15+500
-                   )
+                parameter='T',
+                position=(slice(None, None, None), 0),
+                value=273.15+80)
 fluid.select_bc(bc_type='zeroGradient',
-                   parameter='T',
-                   position=(slice(None, None, None), -1)
-                   )
-fluid.select_output(times=range(0, t_end+1800, 1800), parameters=['T'])
- 
-bed = ot.createPhase(n=1, n_other=50, type='bed')
-bed.select_substance(substance='magnetite')
-bed.select_domain_shape(domain='lumped', A=4*3.14159*0.05**2, V=4/3*3.14159*0.05**3)
-bed.select_initial_conditions(T=273.15+25)
-bed.select_output(times=range(0, t_end+1800, 1800), parameters=['T'])
+                parameter='T',
+                position=(slice(None, None, None), -1))
+fluid.select_output(times=[0, 30, 60, 90, 120, 150, 180, 210,
+                    240, 270, 300, 600, 900,
+                    1800, 3600, 5400, 6000])
 
-ot.select_coupling(fluid_phase=0, bed_phase=1, h_exp='constant', h_value=100)
+bed = ot.createPhase(n=20, n_other=100, type='bed')
+bed.select_substance('ATS58')
+bed.select_domain_shape(domain='hollow_sphere_1d', Rinner=0.005, Router=0.025)
+bed.select_schemes(diff='central_difference_1d')
+bed.select_initial_conditions(T=273.15+20)
+bed.select_bc(bc_type='zeroGradient',
+              parameter='T',
+              position=(slice(None, None, None), 0))
+bed.select_bc(bc_type='zeroGradient',
+              parameter='T',
+              position=(slice(None, None, None), -1))
+bed.select_output(times=range(0,600+300,300))
+
+ot.select_coupling(fluid_phase=0, bed_phase=1, h_exp='constant', h_value=200)
 ot.run_simulation()
-ot.generate_plot(pos_phase=bed, data_phase=bed)
-ot.generate_plot(pos_phase=fluid, data_phase=fluid)
-ot.generate_animation(pos_phase=fluid, data_phase=fluid)
+
+plt.plot(fluid.node_pos,fluid.data.T[:,0,:].T-273.15, label=fluid.data.time/60)
+plt.legend(title='Simulation time (min)')
+plt.show()
+plt.xlabel(u'Cylinder position (m)')
+plt.ylabel(u'Temperature (℃)')
+plt.grid()
+plt.grid(which='major', color='#DDDDDD', linewidth=1)
+plt.grid(which='minor', color='#EEEEEE', linestyle=':', linewidth=0.8)
+plt.minorticks_on()
+plt.savefig('ot_plot_tutorial6.png')
