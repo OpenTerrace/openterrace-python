@@ -59,3 +59,13 @@ def V(vars):
 
     V = vars['V']
     return np.repeat(V,1)
+
+def V0(vars):
+    """Volume of shape.
+
+    Args:
+        vars (list): List of arguments
+    """
+    
+    V = vars['V']    
+    return V
