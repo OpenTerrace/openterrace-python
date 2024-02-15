@@ -31,7 +31,7 @@ bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None,
 bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), -1))
 bed.select_output(times=range(0, 750*60+60, 30))
 
-ot.select_coupling(fluid_phase=0, bed_phase=1, h_exp='constant', h_value=100)
+ot.select_coupling(fluid_phase=0, bed_phase=1, h_exp='constant', h_value=140)
 ot.run_simulation()
 
 plt.plot(fluid.data.time/60,fluid.data.T[:,0,-1]-273.15,'k')
@@ -47,4 +47,3 @@ plt.grid(which='major', color='#DDDDDD', linewidth=1)
 plt.grid(which='minor', color='#EEEEEE', linestyle=':', linewidth=0.8)
 plt.minorticks_on()
 plt.savefig('grabo.png')
-

@@ -17,14 +17,15 @@ import matplotlib.pyplot as plt
 class Simulate:
     """OpenTerrace class."""
 
-    def __init__(self, t_end:float=None, dt:float=None):
+    def __init__(self, t_start:float=0, t_end:float=None, dt:float=None):
         """Initialise with various control parameters.
 
         Args:
+            t_start (float): Start time in s
             t_end (float): End time in s
             dt (float): Time step size in s
         """
-        self.t_start = 0
+        self.t_start = t_start
         self.t_end = t_end
         self.dt = dt
         self.coupling = []
@@ -70,7 +71,7 @@ class Simulate:
     def run_simulation(self):
         """This is the function full of magic."""
 
-        for t in tqdm.tqdm(np.arange(0, self.t_end+self.dt, self.dt)):
+        for t in tqdm.tqdm(np.arange(self.t_start, self.t_end+self.dt, self.dt)):
             for phase_instance in self.Phase.instances:
                 phase_instance._save_data(t)
                 phase_instance._solve_equations(t, self.dt)
