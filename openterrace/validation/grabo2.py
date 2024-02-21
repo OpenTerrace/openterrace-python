@@ -11,7 +11,7 @@ grabo_sim = np.loadtxt(os.path.dirname(os.path.realpath(__file__))+"/grabo_A.txt
 ot = openterrace.Simulate(t_end=60*800, dt=0.1)
 
 fluid = ot.createPhase(n=290, type='fluid')
-fluid.select_substance('water')
+fluid.select_substance_on_the_fly(rho=990, cp=4179, k=0.64)
 fluid.select_domain_shape(domain='cylinder_1d', D=0.79, H=1.9)
 fluid.select_porosity(phi=0.65)
 fluid.select_schemes(diff='central_difference_1d', conv='upwind_1d')
@@ -30,7 +30,7 @@ bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None,
 bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), -1))
 bed.select_output(times=range(0, 800*60+60, 30))
 
-ot.select_coupling(fluid_phase=0, bed_phase=1, h_exp='constant', h_value=60)
+ot.select_coupling(fluid_phase=0, bed_phase=1, h_exp='constant', h_value=70)
 ot.run_simulation()
 
 plt.plot(fluid.data.time/60,fluid.data.T[:,0,-1]-273.15,'k')
