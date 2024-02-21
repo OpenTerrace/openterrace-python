@@ -82,6 +82,7 @@ nav:
         - Bed:
           - user-guide/bed_substances/swedish_diabase.md
           - user-guide/bed_substances/magnetite.md
+          - user-guide/bed_substances/ATS50.md
           - user-guide/bed_substances/ATS58.md
       - Domain types:
           - user-guide/domains/cylinder_1d.md
