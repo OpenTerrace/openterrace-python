@@ -27,7 +27,7 @@ numba = "*"
 scipy = "^1.9.3"
 matplotlib = "^3.6.1"
 tqdm = "^4.64.1"
-pytest = "^7.1.3"
+pytest = "*"
 
 # Only used for documentation
 [tool.poetry.group.doc]
