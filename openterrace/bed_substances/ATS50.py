@@ -3,14 +3,14 @@ Data for ATS50 phase change material.
 
 Reference: https://www.axiotherm.de/en/download/project/productdatasheet/file/17/
 
-T_s = 56+273.15 (solidification temperature)
-T_l = 58+273.15 (liquid temperature)
+T_s = 49+273.15 (solidification temperature)
+T_l = 50+273.15 (liquid temperature)
 k_s = 1 (solid thermal conductivity)
 k_l = 0.6 (liquid thermal conductivity)
-h_f = 240000 (latent heat of fusion)
+h_f = 228000 (latent heat of fusion)
 cp = 3000 (specific heat capacity at constant pressure)
-rho_l = 1280 (liquid density)
-rho_s = 1280 (solid density)
+rho_l = 1300 (liquid density)
+rho_s = 1300 (solid density)
 h_s = T_s*cp (mass specific enthalpy before phase change)
 h_l = T_s*cp+h_f (mass specific enthalpy at after phase change)
 """
