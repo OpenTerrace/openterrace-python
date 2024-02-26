@@ -37,7 +37,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        poetry install --with test
+        poetry install
 
     - name: Install OpenTerrace
       run: |
