@@ -33,7 +33,10 @@ jobs:
     - name: Setup Python environment
       run: |
         python3 -m pip install --upgrade build pip setuptools
-        pip3 install numpy numba scipy matplotlib tqdm pytest matplotlib-label-lines
+
+    - name: Install dependencies
+      run: |
+        poetry install --with test
 
     - name: Install OpenTerrace
       run: |
