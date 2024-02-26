@@ -9,7 +9,7 @@ OpenTerrace is a pure Python framework for thermal energy storage packed bed sim
 OpenTerrace uses awesome open-source software such as
 [Numba](https://numba.pydata.org), [NumPy](https://numpy.org/) and [SciPy](https://scipy.org/):grey_exclamation:
 
-### [Read the docs](https://openterrace.github.io/openterrace-python/)
+### [Read the documentation of OpenTerrace](https://openterrace.github.io/openterrace-python/)
 
 ## Why OpenTerrace?
 - **FAST**  
