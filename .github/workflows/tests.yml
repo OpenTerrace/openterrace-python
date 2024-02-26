@@ -33,6 +33,7 @@ jobs:
     - name: Setup Python environment
       run: |
         python3 -m pip install --upgrade build pip setuptools
+        pip install poetry
 
     - name: Install dependencies
       run: |
