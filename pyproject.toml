@@ -34,9 +34,9 @@ optional = true
 
 [tool.poetry.group.doc.dependencies]
 mkdocs-material = "*"
-mkdocstrings[python] = "*"
+mkdocstrings-python = "*"
 markdown-katex = "*"
-pytkdocs[numpy-style] = "*"
+pytkdocs = "*"
 
 [tool.poetry.group.test]
 optional = true
