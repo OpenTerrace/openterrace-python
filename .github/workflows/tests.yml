@@ -41,9 +41,9 @@ jobs:
 
     - name: Install OpenTerrace
       run: |
-        python3 -m build
-        pip3 freeze
+        python -m build
+        pip freeze
 
     - name: Run tests
       run: |
-        python3 -m pytest
+        python -m pytest
