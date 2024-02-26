@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "openterrace"
 description = "OpenTerrace is a pure Python framework for thermal energy storage packed bed simulations"
-version = "0.0.0" ## This will be overwritten by the dynamic versioning by Poetry
+version = "0.0.0" # This will be overwritten by the dynamic versioning by Poetry
 authors = [
     "Jakob Hærvig"
 ]
