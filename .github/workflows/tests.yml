@@ -46,5 +46,4 @@ jobs:
 
     - name: Run tests
       run: |
-        source $HOME/.poetry/env
-        pytest openterrace/tests/
+        poetry run pytest
