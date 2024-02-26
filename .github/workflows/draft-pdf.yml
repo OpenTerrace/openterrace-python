@@ -1,3 +1,5 @@
+name: Generate JOSS paper
+
 on: [workflow_dispatch]
 
 jobs:
