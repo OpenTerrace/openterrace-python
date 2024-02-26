@@ -2,48 +2,42 @@ name: Tests
 
 on:
   push:
-    branches: 
+    branches:
       - main
 
 jobs:
   test-pip:
     name: Run tests (with pip)
-
     runs-on: ${{ matrix.os }}
-    
     strategy:
       matrix:
         os: [ubuntu-latest]
         python-version: ['3.11']
-
     defaults:
       run:
         shell: bash
-
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - run: git fetch --prune --unshallow --tags
+      - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    
-    - name: Setup Python environment
-      run: |
-        python -m pip install --upgrade build pip setuptools
-        pip install poetry
+      - name: Setup Python environment
+        run: |
+          python -m pip install --upgrade pip setuptools
+          pip install poetry
 
-    - name: Install dependencies
-      run: |
-        poetry install
+      - name: Install dependencies
+        run: |
+          poetry install
 
-    - name: Install OpenTerrace
-      run: |
-        python3 -m build
-        pip3 freeze
+      - name: Install OpenTerrace
+        run: |
+          poetry build
+          pip install ./dist/openterrace-*.tar.gz
 
-    - name: Run tests
-      run: |
-        python3 -m pytest
+      - name: Run tests
+        run: |
+          poetry run pytest
