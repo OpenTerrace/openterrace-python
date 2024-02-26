@@ -43,7 +43,7 @@ pytkdocs[numpy-style] = "*"
 [tool.poetry.group.test]
 optional = true
 
-tool.poetry.group.test.dependencies]
+[tool.poetry.group.test.dependencies]
 pytest = "^7.1.3"
 
 # Only used in github actions
