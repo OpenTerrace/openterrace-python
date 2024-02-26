@@ -30,14 +30,13 @@ jobs:
           pip install poetry
 
       - name: Install dependencies
-        run: |
-          poetry install
+        run: poetry install
 
       - name: Install OpenTerrace
         run: |
           poetry build
           pip install ./dist/openterrace-*.tar.gz
-
+  
       - name: Run tests
         run: |
           poetry run pytest
