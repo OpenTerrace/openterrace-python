@@ -20,7 +20,6 @@ enable = true
 vcs = "git"
 format = "v{base}"
 
-# Requirements
 [tool.poetry.dependencies]
 python = "^3.11"
 numpy = "^1.23.4"
