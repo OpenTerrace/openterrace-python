@@ -89,6 +89,7 @@ nav:
           - user-guide/domains/block_1d.md
           - user-guide/domains/sphere_1d.md
           - user-guide/domains/hollow_sphere_1d.md
+          - user-guide/domains/lumped.md
       - Numerical schemes:
         - Diffusion:
           - user-guide/diffusion_schemes/central_difference_1d.md

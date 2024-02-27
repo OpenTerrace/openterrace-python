@@ -24,7 +24,7 @@ Being able to store energy for extended periods of time is important for modern 
 
 A fluid is heated up and pumped through a storage tank. The storage tank contains either just a fluid or is filled with a bedding material (known as a packed bed). The bedding material could range from regular, readily available stones to more exotic capsules containing phase-change material encapsulated in a plastic shell. In either case the hot fluid transfers energy to the bed material, which then stores the energy in form of sensible and/or latent heat. The process is simply reversed to extract energy from the bed material and transfer it to the fluid.
 
-![](docs/_figures/logo-banner-paths-grey.svg)
+![](../docs/_figures/logo-banner-paths-grey.svg)
 
 # Statement of need
 `OpenTerrace` is an open-source simulation framework providing easy access to complex simulations. The core part of the computations are made by calling low-level languages using packages such as NumPy [@harris], SciPy [@virtanen] and  Numba [@lam] for speed while maintaining the flexibility and user-friendliness of Python. Plotting and animation capabilities based on Matplotlib [@hunter] are provided with the framework to allow easy access to visualisations.
@@ -33,7 +33,7 @@ A fluid is heated up and pumped through a storage tank. The storage tank contain
 
 Each phase is described by a non-linear, partial differential equation. The phases are coupled using source terms to account for various physical mechanisms. The framework is flexible in such a way that new types of source terms, new domain shape functions, new fluid and bed substances (including phase-changing substances) with both temperature dependent- and independent properties and new numerical discretisation schemes can easily be added. A set of tutorials is also provided with the framework to highlight its functionality in its current version and to ease the learning curve for new users. Also various unit tests are provided to verify different parts of the code in some well-defined benchmark cases.
 
-![](docs/_figures/schematic.svg)
+![](../docs/_figures/schematic.svg)
 
 `OpenTerrace` serves different purposes. First, it was designed to be used by both researchers doing research projects and industry making design decisions. Also, it has now proven useful for engineering students working on semester projects where the learning outcome includes both thermal energy storage knowledge and coding experience with Python.
 

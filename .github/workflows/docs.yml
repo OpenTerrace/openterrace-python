@@ -1,4 +1,4 @@
-name: Docs Publish
+name: Generate Docs
 
 on:
   push:
@@ -8,17 +8,19 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install mkdocs-material
-      - run: pip install mkdocstrings[python]
-      - run: pip install markdown-katex
-      - run: pip install pytkdocs[numpy-style]
-      - run: pip install numpy
-      - run: pip install matplotlib
-      - run: pip install scipy
-      - run: pip install tqdm
-      - run: pip install matplotlib-label-lines
-      - run: mkdocs gh-deploy --force
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install dependencies
+        run: poetry install --with doc
+
+      - name: Deploy website
+        run: poetry run mkdocs gh-deploy --force
