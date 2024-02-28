@@ -19,7 +19,6 @@ documentation = "https://openterrace.github.io/openterrace-python/"
 enable = true
 vcs = "git"
 format = "v{base}"
-enable = true
 latest-tag = true
 
 [tool.poetry.dependencies]
