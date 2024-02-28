@@ -71,7 +71,12 @@ plugins:
 nav:
   - index.md
   - Installation guide: installation.md
-  - Tutorials: tutorials.md
+  - Tutorials: 
+      - tutorials/tutorial1.md
+      - tutorials/tutorial2.md
+      - tutorials/tutorial3.md
+      - tutorials/tutorial4.md
+      - tutorials/tutorial5.md
   - User guide:
       - user-guide/get-started.md
       - Theory: theory.md
