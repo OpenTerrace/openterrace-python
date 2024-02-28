@@ -1,9 +1,8 @@
-name: Tests
+name: Test OS types and Python versions
 
 on:
   push:
     branches:
-      - main
       - development
   workflow_dispatch:
 
@@ -49,4 +48,4 @@ jobs:
 
     - name: Run tests
       run: |
-        poetry run pytest
+        poetry run python -m tutorials/tutorial_1.py

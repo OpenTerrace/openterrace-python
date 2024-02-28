@@ -1,0 +1,46 @@
+name: Test numerical schemes
+
+on:
+  push:
+    branches:
+      - development
+  workflow_dispatch:
+
+jobs:
+  test-pip:
+    name: Run tests (with pip)
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Fetch all tags
+      run: git fetch --prune --unshallow --tags
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.11'
+
+    - name: Setup Python environment
+      run: |
+        python -m pip install --upgrade build pip setuptools
+        pip install poetry
+
+    - name: Install dependencies
+      run: |
+        poetry install
+
+    - name: Install OpenTerrace
+      run: |
+        python -m build
+        pip freeze
+
+    - name: Run tests
+      run: |
+        poetry run pytest

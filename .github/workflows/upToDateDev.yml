@@ -7,7 +7,7 @@ on:
 
 jobs:
   merge-master-back-to-dev:
-    name: Merged main (and tags) back to dev branch
+    name: Merge main (and tags) back to dev branch
     runs-on: ubuntu-latest
 
     steps:
