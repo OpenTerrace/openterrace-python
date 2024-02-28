@@ -18,8 +18,8 @@ documentation = "https://openterrace.github.io/openterrace-python/"
 [tool.poetry-dynamic-versioning]
 enable = true
 vcs = "git"
-format = "{base}"
-pattern ="^(?P<base>\d+\.\d+\.\d+)"
+format = "v{base}"
+enable = true
 latest-tag = true
 
 [tool.poetry.dependencies]
