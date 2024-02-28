@@ -1,5 +1,5 @@
 ![GitHub Release](https://img.shields.io/github/v/release/OpenTerrace/openterrace-python) ![PyPI - Version](https://img.shields.io/pypi/v/openterrace)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/openterrace) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/openterrace/openterrace-python/tests.yml)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/openterrace) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/openterrace/openterrace-python/test_numerical_schemes.yml)
 
 
 [![Logo](docs/_figures/logo-banner-paths-green.svg)](#)
