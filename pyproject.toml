@@ -19,7 +19,7 @@ documentation = "https://openterrace.github.io/openterrace-python/"
 enable = true
 vcs = "git"
 format = "{base}"
-style = "semver"
+pattern ="^(?P<base>\d+\.\d+\.\d+)"
 latest-tag = true
 
 [tool.poetry.dependencies]
