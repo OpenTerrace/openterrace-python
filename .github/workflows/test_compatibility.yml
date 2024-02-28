@@ -46,6 +46,10 @@ jobs:
         python -m build
         pip freeze
 
-    - name: Run tests
+    - name: Run tutorials
       run: |
-        python -m tutorials/tutorial_1.py
+        poetry run tut1
+        poetry run tut2
+        poetry run tut3
+        poetry run tut4
+        poetry run tut5

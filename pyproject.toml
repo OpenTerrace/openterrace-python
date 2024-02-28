@@ -45,6 +45,13 @@ optional = true
 [tool.poetry.group.github-actions.dependencies]
 pytest-github-actions-annotate-failures = "^0.1.7"
 
+[tool.poetry.scripts]
+tut1 = "tutorials.tutorials1"
+tut2 = "tutorials.tutorials2"
+tut3 = "tutorials.tutorials3"
+tut4 = "tutorials.tutorials4"
+tut5 = "tutorials.tutorials5"
+
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
 build-backend = "poetry_dynamic_versioning.backend"
