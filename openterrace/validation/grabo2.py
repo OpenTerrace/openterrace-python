@@ -10,24 +10,24 @@ grabo_sim = np.loadtxt(os.path.dirname(os.path.realpath(__file__))+"/grabo_A.txt
 
 ot = openterrace.Simulate(t_end=60*800, dt=0.1)
 
-fluid = ot.createPhase(n=290, type='fluid')
+fluid = ot.create_phase(n=290, type='fluid')
 fluid.select_substance_on_the_fly(rho=990, cp=4179, k=0.64)
 fluid.select_domain_shape(domain='cylinder_1d', D=0.79, H=1.9)
 fluid.select_porosity(phi=0.65)
 fluid.select_schemes(diff='central_difference_1d', conv='upwind_1d')
 fluid.select_initial_conditions(T=273.15+47)
 fluid.select_massflow(mdot=360/3600) #ok
-fluid.select_bc(bc_type='fixedValue', parameter='T', position=(slice(None, None, None), 0), value=273.15+67)
-fluid.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), -1), value=0)
+fluid.select_bc(bc_type='fixed_value', parameter='T', position=(slice(None, None, None), 0), value=273.15+67)
+fluid.select_bc(bc_type='zero_gradient', parameter='T', position=(slice(None, None, None), -1), value=0)
 fluid.select_output(times=range(0, 800*60+60, 30))
 
-bed = ot.createPhase(n=40, n_other=290, type='bed')
+bed = ot.create_phase(n=40, n_other=290, type='bed')
 bed.select_substance('ATS58')
 bed.select_domain_shape(domain='hollow_sphere_1d', Rinner=0.0553, Router=0.0665, Vcapsule=0.0005253)
 bed.select_schemes(diff='central_difference_1d')
 bed.select_initial_conditions(T=273.15+47)
-bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), 0))
-bed.select_bc(bc_type='zeroGradient', parameter='T', position=(slice(None, None, None), -1))
+bed.select_bc(bc_type='zero_gradient', parameter='T', position=(slice(None, None, None), 0))
+bed.select_bc(bc_type='zero_gradient', parameter='T', position=(slice(None, None, None), -1))
 bed.select_output(times=range(0, 800*60+60, 30))
 
 ot.select_coupling(fluid_phase=0, bed_phase=1, h_exp='constant', h_value=70)

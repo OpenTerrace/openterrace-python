@@ -31,7 +31,7 @@ class Simulate:
         self.coupling = []
         self.flag_coupling = False
 
-    def createPhase(self, n:int=None, n_other:int=1, type:str=None):
+    def create_phase(self, n:int=None, n_other:int=1, type:str=None):
         """Creates a fluid or bed phase.
 
         Args:
@@ -241,7 +241,7 @@ class Simulate:
                 value (float): Value of boundary condition
             """
 
-            valid_bc_types = ['fixedValue','zeroGradient']
+            valid_bc_types = ['fixed_value','zero_gradient']
             if bc_type not in valid_bc_types:
                 raise Exception("bc_type \'"+bc_type+"\' specified. Valid options for bc_type are:", valid_bc_types)
             valid_parameters = ['T','mdot']
@@ -249,8 +249,8 @@ class Simulate:
                 raise Exception("parameter \'"+parameter+"\' specified. Valid options for parameter are:", valid_parameters)
             if not position:
                 raise Exception("Keyword 'position' not specified.")
-            if value is None and bc_type=='fixedValue':
-                raise Exception("Keyword 'value' is needed for fixedValue type bc.")
+            if value is None and bc_type=='fixed_value':
+                raise Exception("Keyword 'value' is needed for fixed_value type bc.")
             self.bcs.append({'type': bc_type, 'parameter': parameter, 'position': position, 'value': np.array(value)})
 
         def select_source_term(self, **kwargs):
@@ -338,11 +338,11 @@ class Simulate:
             """
 
             for bc in self.bcs:
-                if bc['type'] == 'fixedValue':
+                if bc['type'] == 'fixed_value':
                     self.h[bc['position']] = self.fcns.h(bc['value'])
-                if bc['type'] == 'fixedValue_timevarying':
+                if bc['type'] == 'fixed_value_timevarying':
                     self.h[bc['position']] = self.fcns.h(np.interp(t,bc['value'][:,0],bc['value'][:,1]))
-                if bc['type'] == 'zeroGradient':
+                if bc['type'] == 'zero_gradient':
                     if bc['position'] == np.s_[:,0]:
                         self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,1]*self.D[1,:,0] - 2*self.T[:,0]*self.D[1,:,0] - self.F[0,:,1]*self.T[:,1] + self.F[1,:,0]*self.T[:,0]) / (self.rho[:,0]*self.domain.V[0])*dt
                     if bc['position'] == np.s_[:,-1]:

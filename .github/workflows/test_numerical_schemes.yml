@@ -1,34 +1,31 @@
-name: Tests
+name: Test numerical schemes
 
 on:
   push:
-    branches: 
-      - main
+    branches:
+      - development
+  workflow_dispatch:
 
 jobs:
   test-pip:
     name: Run tests (with pip)
-
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.11"]
-
     defaults:
       run:
         shell: bash
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-    - run: git fetch --prune --unshallow --tags
+    - name: Fetch all tags
+      run: git fetch --prune --unshallow --tags
 
-    - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
-      uses: actions/setup-python@v2
+    - name: Set up Python
+      uses: actions/setup-python@v3
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: '3.11'
 
     - name: Setup Python environment
       run: |
