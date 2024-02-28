@@ -18,7 +18,14 @@ documentation = "https://openterrace.github.io/openterrace-python/"
 [tool.poetry-dynamic-versioning]
 enable = true
 vcs = "git"
-format = "v{base}"
+pattern  = "^(?P<base>\\d+\\.\\d+\\.\\d+)(-?((?P<stage>[a-zA-Z]+)\\.?(?P<revision>\\d+)?))?"
+format-jinja = """
+    {%- if distance == 0 -%}
+        {{- base -}}
+    {%- else -%}
+        {{- base }}.dev{{ distance }}+g{{commit}}
+    {%- endif -%}
+"""
 
 [tool.poetry.dependencies]
 python = "~3.11"
