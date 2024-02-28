@@ -2,7 +2,7 @@
 
 ## Schematic overview
 The fluid and bed phase are discretised in *N* and *M* nodes respectively. All bed material within the same fluid node is assumed to have the same temperature distribution.
-<img src="_figures/schematic.svg">
+[![](_figures/schematic.svg)](#)
 
 ## Governing equations
 OpenTerrace solves partial differential equations for both phases.
