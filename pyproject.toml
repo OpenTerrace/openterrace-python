@@ -9,8 +9,7 @@ readme = "README.md"
 license = "MIT"
 
 packages = [
-    { include = "openterrace"},
-    { include = "tutorials"}
+    { include = "openterrace"}
 ]
 
 repository = "https://github.com/OpenTerrace/openterrace-python"
@@ -45,13 +44,6 @@ optional = true
 
 [tool.poetry.group.github-actions.dependencies]
 pytest-github-actions-annotate-failures = "^0.1.7"
-
-[tool.poetry.scripts]
-tut1 = "tutorials1:main"
-tut2 = "tutorials2:main"
-tut3 = "tutorials3:main"
-tut4 = "tutorials4:main"
-tut5 = "tutorials5:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
