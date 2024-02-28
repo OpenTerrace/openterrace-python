@@ -15,11 +15,11 @@ def main():
     fluid.select_schemes(diff='central_difference_1d', conv='upwind_1d')
     fluid.select_initial_conditions(T=273.15+20)
     fluid.select_massflow(mdot=0.1)
-    fluid.select_bc(bc_type='fixedValue', 
+    fluid.select_bc(bc_type='fixed_value', 
                     parameter='T', 
                     position=(slice(None, None, None), 0), 
                     value=273.15+80)
-    fluid.select_bc(bc_type='zeroGradient', 
+    fluid.select_bc(bc_type='zero_gradient', 
                     parameter='T', 
                     position=(slice(None, None, None), -1), 
                     value=0)

@@ -20,11 +20,11 @@ def main():
                                 [500, -0.1]
                                 ])
 
-    fluid.select_bc(bc_type='fixedValue', 
+    fluid.select_bc(bc_type='fixed_value', 
                     parameter='T',
                     position=(slice(None, None, None), 0),
                     value=273.15+600)
-    fluid.select_bc(bc_type='zeroGradient', 
+    fluid.select_bc(bc_type='zero_gradient', 
                     parameter='T',
                     position=(slice(None, None, None), -1),
                     value=0)

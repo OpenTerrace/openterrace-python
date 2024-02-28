@@ -19,10 +19,10 @@ def main():
     bed.select_domain_shape(domain='sphere_1d', R=R)
     bed.select_schemes(diff='central_difference_1d')
     bed.select_initial_conditions(T=T_init)
-    bed.select_bc(bc_type='zeroGradient', 
+    bed.select_bc(bc_type='zero_gradient', 
                 parameter='T', 
                 position=(slice(None, None, None), 0))
-    bed.select_bc(bc_type='zeroGradient', 
+    bed.select_bc(bc_type='zero_gradient', 
                 parameter='T',
                 position=(slice(None, None, None), -1))
     bed.select_source_term(source_type='thermal_resistance',

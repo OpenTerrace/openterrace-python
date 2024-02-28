@@ -16,11 +16,11 @@ def main():
     fluid.select_schemes(diff='central_difference_1d', conv='upwind_1d')
     fluid.select_initial_conditions(T=273.15+20)
     fluid.select_massflow(mdot=0.01)
-    fluid.select_bc(bc_type='fixedValue',
+    fluid.select_bc(bc_type='fixed_value',
                     parameter='T',
                     position=(slice(None, None, None), 0),
                     value=273.15+80)
-    fluid.select_bc(bc_type='zeroGradient',
+    fluid.select_bc(bc_type='zero_gradient',
                     parameter='T',
                     position=(slice(None, None, None), -1))
     fluid.select_output(times=[0, 30, 60, 90, 120, 150, 180, 210,
@@ -32,10 +32,10 @@ def main():
     bed.select_domain_shape(domain='hollow_sphere_1d', Rinner=0.005, Router=0.025)
     bed.select_schemes(diff='central_difference_1d')
     bed.select_initial_conditions(T=273.15+20)
-    bed.select_bc(bc_type='zeroGradient',
+    bed.select_bc(bc_type='zero_gradient',
                 parameter='T',
                 position=(slice(None, None, None), 0))
-    bed.select_bc(bc_type='zeroGradient',
+    bed.select_bc(bc_type='zero_gradient',
                 parameter='T',
                 position=(slice(None, None, None), -1))
     bed.select_output(times=range(0,600+300,300))
