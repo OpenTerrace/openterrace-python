@@ -12,7 +12,7 @@ def main():
 
     ot = openterrace.Simulate(t_end=t_end, dt=0.02)
 
-    fluid = ot.createPhase(n=50, type='fluid')
+    fluid = ot.create_phase(n=50, type='fluid')
     fluid.select_substance(substance='air')
     fluid.select_domain_shape(domain='cylinder_1d', D=0.3, H=1)
     fluid.select_porosity(phi=0.4)
@@ -30,7 +30,7 @@ def main():
                     )
     fluid.select_output(times=range(0, t_end+3600, 3600))
 
-    bed = ot.createPhase(n=20, n_other=50, type='bed')
+    bed = ot.create_phase(n=20, n_other=50, type='bed')
     bed.select_substance(substance='magnetite')
     bed.select_domain_shape(domain='sphere_1d', R=0.05)
     bed.select_schemes(diff='central_difference_1d')

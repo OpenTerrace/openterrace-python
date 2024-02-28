@@ -11,7 +11,7 @@ grabo_exp = np.loadtxt(os.path.dirname(os.path.realpath(__file__))+"/grabo_exp.t
 
 ot = openterrace.Simulate(t_end=60*725, dt=0.1)
 
-fluid = ot.createPhase(n=290, type='fluid')
+fluid = ot.create_phase(n=290, type='fluid')
 fluid.select_substance('water')
 fluid.select_domain_shape(domain='block_1d', A=0.734**2, L=1.45)
 fluid.select_porosity(phi=0.57)
@@ -22,7 +22,7 @@ fluid.select_bc(bc_type='fixed_value', parameter='T', position=(slice(None, None
 fluid.select_bc(bc_type='zero_gradient', parameter='T', position=(slice(None, None, None), -1), value=0)
 fluid.select_output(times=range(0, 750*60+60, 30))
 
-bed = ot.createPhase(n=40, n_other=290, type='bed')
+bed = ot.create_phase(n=40, n_other=290, type='bed')
 bed.select_substance('ATS58')
 bed.select_domain_shape(domain='hollow_sphere_1d', Rinner=0.0553, Router=0.0665, Vcapsule=0.00029)
 bed.select_schemes(diff='central_difference_1d')

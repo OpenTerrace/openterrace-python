@@ -15,7 +15,7 @@ def main():
 
     ot = openterrace.Simulate(t_end=6000, dt=0.05)
 
-    bed = ot.createPhase(n=30, type='bed')
+    bed = ot.create_phase(n=30, type='bed')
     bed.select_substance(substance='ATS58')
     bed.select_domain_shape(domain='hollow_sphere_1d', Rinner=Ri, Router=Ro)
     bed.select_schemes(diff='central_difference_1d')

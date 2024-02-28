@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 def main():
     ot = openterrace.Simulate(t_end=100*60, dt=0.05)
 
-    fluid = ot.createPhase(n=100, type='fluid')
+    fluid = ot.create_phase(n=100, type='fluid')
     fluid.select_substance(substance='water')
     fluid.select_domain_shape(domain='cylinder_1d', D=0.1, H=1)
     fluid.select_porosity(phi=0.4)
@@ -27,7 +27,7 @@ def main():
                         240, 270, 300, 600, 900,
                         1800, 3600, 5400, 6000])
 
-    bed = ot.createPhase(n=20, n_other=100, type='bed')
+    bed = ot.create_phase(n=20, n_other=100, type='bed')
     bed.select_substance('ATS58')
     bed.select_domain_shape(domain='hollow_sphere_1d', Rinner=0.005, Router=0.025)
     bed.select_schemes(diff='central_difference_1d')

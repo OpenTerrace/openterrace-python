@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 def main():
     ot = openterrace.Simulate(t_end=600, dt=0.01)
 
-    fluid = ot.createPhase(n=20, type='fluid')
+    fluid = ot.create_phase(n=20, type='fluid')
     fluid.select_substance_on_the_fly(rho=1000, cp=4200, k=0.6)
     fluid.select_domain_shape(domain='cylinder_1d', D=0.3, H=1)
     fluid.select_schemes(diff='central_difference_1d', conv='upwind_1d')

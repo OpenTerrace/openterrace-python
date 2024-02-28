@@ -14,7 +14,7 @@ def main():
 
     ot = openterrace.Simulate(t_end=15*60, dt=0.01)
 
-    bed = ot.createPhase(n=50, type='bed')
+    bed = ot.create_phase(n=50, type='bed')
     bed.select_substance('swedish_diabase')
     bed.select_domain_shape(domain='sphere_1d', R=R)
     bed.select_schemes(diff='central_difference_1d')

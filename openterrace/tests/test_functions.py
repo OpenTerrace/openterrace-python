@@ -17,7 +17,7 @@ class TestDiffusion:
         k = 0.627
 
         ot = openterrace.Simulate(t_end=t_end, dt=dt)
-        bed = ot.createPhase(n=n, type='bed')
+        bed = ot.create_phase(n=n, type='bed')
         bed.select_substance_on_the_fly(cp=cp, rho=rho, k=k)
         bed.select_domain_shape(domain='sphere_1d', R=Lc)
         bed.select_schemes(diff='central_difference_1d')
@@ -60,7 +60,7 @@ class TestDiffusion:
         A = 1
 
         ot = openterrace.Simulate(t_end=t_end, dt=1e-2)
-        bed = ot.createPhase(n=n, type='bed')
+        bed = ot.create_phase(n=n, type='bed')
         bed.select_substance_on_the_fly(cp=cp, rho=rho, k=k)
         bed.select_domain_shape(domain='block_1d', L=Lc, A=A)
         bed.select_schemes(diff='central_difference_1d')
@@ -104,7 +104,7 @@ class TestConvection:
         mdot = 1
 
         ot = openterrace.Simulate(t_end=t_end, dt=1e-2)
-        fluid = ot.createPhase(n=n, type='fluid')
+        fluid = ot.create_phase(n=n, type='fluid')
         fluid.select_substance_on_the_fly(cp=cp, rho=rho, k=k)
         fluid.select_domain_shape(domain='cylinder_1d', D=D, H=H)
         fluid.select_schemes(conv='upwind_1d')

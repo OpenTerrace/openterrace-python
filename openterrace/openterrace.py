@@ -31,7 +31,7 @@ class Simulate:
         self.coupling = []
         self.flag_coupling = False
 
-    def createPhase(self, n:int=None, n_other:int=1, type:str=None):
+    def create_phase(self, n:int=None, n_other:int=1, type:str=None):
         """Creates a fluid or bed phase.
 
         Args:
