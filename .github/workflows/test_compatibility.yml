@@ -48,4 +48,4 @@ jobs:
 
     - name: Run tests
       run: |
-        poetry run python -m tutorials/tutorial_1.py
+        python -m tutorials/tutorial_1.py
