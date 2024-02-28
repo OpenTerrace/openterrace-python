@@ -18,8 +18,8 @@ documentation = "https://openterrace.github.io/openterrace-python/"
 [tool.poetry-dynamic-versioning]
 enable = true
 vcs = "git"
-format = "v{base}"
-style = "pep440"
+format = "{base}"
+style = "semver"
 latest-tag = true
 
 [tool.poetry.dependencies]
