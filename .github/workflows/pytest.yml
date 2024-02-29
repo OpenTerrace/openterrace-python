@@ -31,7 +31,7 @@ jobs:
       id: python-version
       run: |
       version=$(awk -F'=' '/^python/ {print $3}' "${{ github.workspace }}/${{ matrix.python-version-file }}")
-      echo "version=$version" >> "$GITHUB_ENV"
+      echo "{version}=$version" >> $GITHUB_OUTPUT
 
     - name: Set up Python ${{ env.version }} on ${{ matrix.os }}
       uses: actions/setup-python@v2
