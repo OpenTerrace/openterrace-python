@@ -30,8 +30,20 @@ jobs:
     - name: Extract Python version and save as env variable
       id: python-version
       run: |
-        version=$(awk -F'=' '/^python/ {print $3}' "${{ github.workspace }}/${{ matrix.python-version-file }}")
-        echo "{version}=$version" >> $GITHUB_OUTPUT
+        file_path="${{ github.workspace }}/${{ matrix.python-version-file }}"
+        if [ -f "$file_path" ]; then
+          version=$(awk -F'=' '/^python/ {print $3}' "$file_path")
+          if [ -n "$version" ]; then
+            echo "Python version extracted: $version"
+            echo "version=$version" >> $GITHUB_ENV
+          else
+            echo "Python version not found in $file_path"
+            exit 1
+          fi
+        else
+          echo "File not found: $file_path"
+          exit 1
+        fi
 
     - name: Set up Python ${{ env.version }} on ${{ matrix.os }}
       uses: actions/setup-python@v2
