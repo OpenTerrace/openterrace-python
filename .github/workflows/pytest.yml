@@ -1,4 +1,4 @@
-name: Run pytests
+name: Run pytest
 
 on:
   push:
@@ -8,13 +8,13 @@ on:
 
 jobs:
   test-pip:
-    name: Run tests
+    name: Run test matrix
     runs-on: ${{ matrix.os }}
     
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version-file: ['pyproject.toml']  # Pass the filename here
+        python-version-file: ['pyproject.toml']
 
     defaults:
       run:
