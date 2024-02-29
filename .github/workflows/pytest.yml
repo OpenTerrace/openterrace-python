@@ -31,19 +31,9 @@ jobs:
       id: python-version
       run: |
         file_path="${{ github.workspace }}/${{ matrix.python-version-file }}"
-        if [ -f "$file_path" ]; then
-          version=$(awk -F'=' '/^python/ {print $2}' "$file_path" | tr -d '~' | xargs)
-          if [ -n "$version" ]; then
-            echo "Python version extracted: $version"
-            echo "version=$version" >> $GITHUB_ENV
-          else
-            echo "Python version not found in $file_path"
-            exit 1
-          fi
-        else
-          echo "File not found: $file_path"
-          exit 1
-        fi
+        version=$(awk -F'=' '/^python/ {print $2}' "$file_path" | tr -d '~' | xargs)
+        echo "Python version extracted: $version"
+        echo "version=$version" >> $GITHUB_ENV
 
     - name: Set up Python ${{ env.version }} on ${{ matrix.os }}
       uses: actions/setup-python@v2
