@@ -8,7 +8,7 @@ on:
 
 jobs:
   test-pip:
-    name: Run tests (with pip)
+    name: Run tests (with poetry)
     runs-on: ${{ matrix.os }}
     
     strategy:
@@ -17,10 +17,6 @@ jobs:
         with:
           python-version-file: 'pyproject.toml'
     
-    defaults:
-      run:
-        shell: bash
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -28,24 +24,23 @@ jobs:
     - name: Fetch all tags
       run: git fetch --prune --unshallow --tags
 
-    - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
-      uses: actions/setup-python@v5
+    - name: Set up Python
+      id: python-version
+      run: echo "::set-output name=version::$(awk -F'=' '/^python =/ {print $2}' pyproject.toml)"
+
+    - name: Set up Python ${{ steps.python-version.outputs.version }} on ${{ matrix.os }}
+      uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: ${{ steps.python-version.outputs.version }}
 
     - name: Setup Python environment
       run: |
-        python -m pip install --upgrade build pip setuptools
+        python -m pip install --upgrade pip setuptools
         pip install poetry
 
-    - name: Install dependencies
+    - name: Install OpenTerrace and its dependencies
       run: |
         poetry install
-
-    - name: Install OpenTerrace
-      run: |
-        python -m build
-        pip freeze
 
     - name: Run tests
       run: |
