@@ -29,7 +29,9 @@ jobs:
 
     - name: Set up Python
       id: python-version
-      run: echo "::set-output name=version::$(awk -F'=' '/^python/ {print $3}' ${{ matrix.python-version-file }})"
+      run: |
+      version=$(awk -F'=' '/^python/ {print $3}' ${{ matrix.python-version-file }})
+      echo "version::$version" >> $GITHUB_OUTPUT
 
     - name: Set up Python ${{ steps.python-version.outputs.version }} on ${{ matrix.os }}
       uses: actions/setup-python@v2
