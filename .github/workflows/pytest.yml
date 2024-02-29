@@ -32,7 +32,7 @@ jobs:
       run: |
         file_path="${{ github.workspace }}/${{ matrix.python-version-file }}"
         if [ -f "$file_path" ]; then
-          version=$(awk -F'=' '/^python/ {print $2}' "$file_path")
+          version=$(awk -F'=' '/^python/ {print $2}' "$file_path" | tr -d '~' | xargs)
           if [ -n "$version" ]; then
             echo "Python version extracted: $version"
             echo "version=$version" >> $GITHUB_ENV
