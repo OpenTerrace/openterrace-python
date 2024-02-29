@@ -8,7 +8,7 @@ on:
 
 jobs:
   test-pip:
-    name: Run tests (with pip)
+    name: Run tests
     runs-on: ${{ matrix.os }}
     
     strategy:
