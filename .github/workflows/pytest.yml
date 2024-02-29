@@ -27,16 +27,16 @@ jobs:
     - name: Fetch all tags
       run: git fetch --prune --unshallow --tags
 
-    - name: Set up Python
+    - name: Extract Python version and save as env variable
       id: python-version
       run: |
-      version=$(awk -F'=' '/^python/ {print $3}' ${{ matrix.python-version-file }})
-      echo "version::$version" >> $GITHUB_OUTPUT
+      version=$(awk -F'=' '/^python/ {print $3}' "${{ github.workspace }}/${{ matrix.python-version-file }}")
+      echo "version=$version" >> "$GITHUB_ENV"
 
-    - name: Set up Python ${{ steps.python-version.outputs.version }} on ${{ matrix.os }}
+    - name: Set up Python ${{ env.version }} on ${{ matrix.os }}
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ steps.python-version.outputs.version }}
+        python-version: ${{ env.version }}
 
     - name: Install dependencies
       run: |
