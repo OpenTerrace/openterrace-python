@@ -26,7 +26,7 @@ rm -rf ~/miniconda3/miniconda.sh
 
 4. Now, reopen your terminal and create a virtual environment called ``ot``:
 ```bash
-conda create -n ot
+conda create -n ot python=3.11.8 pip
 ```
 
 5. Then activate it:
@@ -34,30 +34,18 @@ conda create -n ot
 conda activate ot
 ```
 
-6. Make sure to use compatible Python version:
-```bash
-conda install python=3.11
-```
-
-7. Install pip inside the ``ot`` environment
-```bash
-conda install pip
-```
-
-8. Verify that the right pip version is picked up:
+6. Verify that the right pip version is picked up:
 ```bash
 which pip
 ```
 which should give you something like ``/home/[username]/miniconda3/envs/ot/bin/pip``
 
 
-9. Finally, install OpenTerrace inside our virtual environment by navigating to the "openterrace-python" folder and install in editable mode by:
+7. Finally, install OpenTerrace inside our virtual environment by navigating to the "openterrace-python" folder and install in editable mode by:
 ```bash
 pip install --editable .
 ```
 
-10. Verify that the ``ot`` virtual environment is picked up as the interpreter in VS Code.
+8. Verify that the ``ot`` virtual environment is picked up as the interpreter in VS Code.
 
-![Select ot environment](_figures/conda_ot.jpg)
-
-Now you are ready to run tutorials and modify the OpenTerrace like as you like.
+9. Now you are ready to run tutorials and modify the OpenTerrace like as you like.
