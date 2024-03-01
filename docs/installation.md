@@ -48,4 +48,4 @@ pip install --editable .
 
 8. Verify that the ``ot`` virtual environment is picked up as the interpreter in VS Code.
 
-9. Now you are ready to run tutorials and modify the OpenTerrace like as you like.
+9. Now you are ready to run tutorials and modify and extend OpenTerrace as you like.
