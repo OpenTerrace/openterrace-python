@@ -24,7 +24,7 @@ Being able to store energy for extended periods of time is important for modern 
 
 A fluid is heated up and pumped through a storage tank. The storage tank contains either just a fluid or is filled with a bedding material (known as a packed bed). The bedding material could range from regular, readily available stones to more exotic capsules containing phase-change material encapsulated in a plastic shell. In either case the hot fluid transfers energy to the bed material, which then stores the energy in form of sensible and/or latent heat. The process is simply reversed to extract energy from the bed material and transfer it to the fluid.
 
-![](../docs/_figures/logo-banner-paths-grey.svg)
+![](../docs/_figures/logo-banner-paths-green.svg)
 
 # Statement of need
 `OpenTerrace` is an open-source simulation framework providing easy access to complex simulations. The core part of the computations are made by calling low-level languages using packages such as NumPy [@harris], SciPy [@virtanen] and  Numba [@lam] for speed while maintaining the flexibility and user-friendliness of Python. Plotting and animation capabilities based on Matplotlib [@hunter] are provided with the framework to allow easy access to visualisations.
