@@ -77,6 +77,8 @@ nav:
       - tutorials/tutorial_3.md
       - tutorials/tutorial_4.md
       - tutorials/tutorial_5.md
+      - tutorials/tutorial_6.md
+      - tutorials/tutorial_7.md
   - User guide:
       - user-guide/get-started.md
       - Theory: theory.md
