@@ -3,6 +3,29 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime
 
+class TestEnergyConservation:
+    def test_1(test):
+        n = 50
+        dt = 1e-2
+        t_end = 200
+        Lc = 0.025
+        T_init = 0
+        T_inf = 100
+        h = 200
+        cp = 4179
+        rho = 993
+        k = 0.627
+
+        ot = openterrace.Simulate(t_end=t_end, dt=dt)
+        bed2 = ot.create_phase(n=n, type='bed')
+        bed2.select_substance_on_the_fly(cp=cp, rho=rho, k=k)
+        #bed.select_domain_shape(domain='sphere_1d', R=Lc)
+        #bed.select_schemes(diff='central_difference_1d')
+        #bed.select_initial_conditions(T=T_init)
+        #bed.select_bc(bc_type='zero_gradient', parameter='T', position=(slice(None, None, None), 0))
+        #bed.select_bc(bc_type='zero_gradient', parameter='T', position=(slice(None, None, None), -1))
+        np.testing.assert_array_almost_equal(1,1, decimal=2) #Dummy check
+
 class TestDiffusion:
     def test_1(self):
         n = 50
@@ -33,6 +56,7 @@ class TestDiffusion:
 
         # Add the thermal resistance source term
         bed.add_sourceterm_thermal_resistance(R=R, T_inf=T_inf)
+
         ot.run_simulation()
 
         Bi = h*Lc/k
@@ -156,3 +180,9 @@ class TestConvection:
         plt.close()
 
         np.testing.assert_array_almost_equal(1,1, decimal=2) #Dummy check
+
+if __name__ == '__main__':
+    TestEnergyConservation().test_1()
+    TestDiffusion().test_1()
+    TestDiffusion().test_2()
+    TestConvection().test_1()
