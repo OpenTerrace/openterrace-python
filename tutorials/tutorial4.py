@@ -5,12 +5,13 @@ in a hollow sphere made out of ATS58 (PCM material).
 
 import openterrace
 import matplotlib.pyplot as plt
+import numpy as np
 
 def main():
     Ri = 0.005
     Ro = 0.025
     T_init = 40+273.15
-    T_room = 80+273.15
+    T_inf = 80+273.15
     h = 50
 
     ot = openterrace.Simulate(t_end=6000, dt=0.05)
@@ -26,10 +27,14 @@ def main():
     bed.select_bc(bc_type='zero_gradient', 
                 parameter='T',
                 position=(slice(None, None, None), -1))
-    bed.select_source_term(source_type='thermal_resistance', 
-                        R=1/(h*4*3.14159*Ro**2),
-                        T_inf=T_room,
-                        position=(slice(None, None, None), -1))
+
+    # Initialise array of thermal resistances
+    R = np.inf*np.ones_like(bed.T)
+
+    # Set thermal resistance for the surface
+    R[0][-1] = 1/(h*4*np.pi*Ro**2)
+
+    bed.add_sourceterm_thermal_resistance(R=R, T_inf=T_inf)
     bed.select_output(times=range(0, 6000+600, 600))
 
     ot.run_simulation()

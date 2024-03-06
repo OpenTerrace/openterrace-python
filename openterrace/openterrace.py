@@ -253,25 +253,20 @@ class Simulate:
                 raise Exception("Keyword 'value' is needed for fixed_value type bc.")
             self.bcs.append({'type': bc_type, 'parameter': parameter, 'position': position, 'value': np.array(value)})
 
-        def select_source_term(self, **kwargs):
-            """Specify source term.
+        def add_sourceterm_thermal_resistance(self, R:list[float], T_inf:list[float]):
+            """Specify a thermal resistance source term.
                     
             Args:
-                bc_type (str): Type of boundary condition
-                parameter (str): Which field it applies to
-                position (int): indices of which cells it applies to
-                value (float): Value of boundary condition
+                R (float): List of thermal resistances
+                T_inf (float): List of fluid temperatures
             """
+            if not len([R]) in [1,self.n]:
+                raise Exception("Length of R must be 1 or equal to n")
 
-            valid_source_types = ['thermal_resistance']
-            if kwargs['source_type'] not in valid_source_types:
-                raise Exception("source_type \'"+kwargs['source_type']+"\' specified. Valid options for source_type are:", valid_source_types)
-            if kwargs['source_type'] == 'thermal_resistance':
-                required = ['R','T_inf', 'position']
-                for var in required:
-                    if not var in kwargs:
-                        raise Exception("Keyword \'"+var+"\' not specified for source of type \'"+kwargs['source_type']+"\'")
-            self.sources.append(kwargs)
+            if not len([T_inf]) in [1,self.n]:
+                raise Exception("Length of T_inf must be 1 or equal to n")
+
+            self.sources.append({'R': R, 'T_inf': T_inf})
 
         def select_output(self, times:list[float]=None):
             """Specify output times.
@@ -344,9 +339,13 @@ class Simulate:
                     self.h[bc['position']] = self.fcns.h(np.interp(t,bc['value'][:,0],bc['value'][:,1]))
                 if bc['type'] == 'zero_gradient':
                     if bc['position'] == np.s_[:,0]:
-                        self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,1]*self.D[1,:,0] - 2*self.T[:,0]*self.D[1,:,0] - self.F[0,:,1]*self.T[:,1] + self.F[1,:,0]*self.T[:,0]) / (self.rho[:,0]*self.domain.V[0])*dt
+                        self.h[bc['position']] = self.h[bc['position']] + (self.T[:,1]*self.D[1,:,0] - self.T[:,0]*self.D[1,:,0] - self.F[0,:,1]*self.T[:,1] + self.F[1,:,0]*self.T[:,0]) / (self.rho[:,0]*self.domain.V[0])*dt
                     if bc['position'] == np.s_[:,-1]:
-                        self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,-2]*self.D[0,:,-1] - 2*self.T[:,-1]*self.D[0,:,-1] + self.F[1,:,-2]*self.T[:,-2] - self.F[0,:,-1]*self.T[:,-1]) / (self.rho[:,-1]*self.domain.V[-1])*dt
+                        self.h[bc['position']] = self.h[bc['position']] + (self.T[:,-2]*self.D[0,:,-1] - self.T[:,-1]*self.D[0,:,-1] + self.F[1,:,-2]*self.T[:,-2] - self.F[0,:,-1]*self.T[:,-1]) / (self.rho[:,-1]*self.domain.V[-1])*dt
+                    #if bc['position'] == np.s_[:,0]:
+                    #    self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,1]*self.D[1,:,0] - 2*self.T[:,0]*self.D[1,:,0] - self.F[0,:,1]*self.T[:,1] + self.F[1,:,0]*self.T[:,0]) / (self.rho[:,0]*self.domain.V[0])*dt
+                    #if bc['position'] == np.s_[:,-1]:
+                    #    self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,-2]*self.D[0,:,-1] - 2*self.T[:,-1]*self.D[0,:,-1] + self.F[1,:,-2]*self.T[:,-2] - self.F[0,:,-1]*self.T[:,-1]) / (self.rho[:,-1]*self.domain.V[-1])*dt
 
         def _update_source(self, dt:float=None):
             """Update source term.
@@ -356,8 +355,7 @@ class Simulate:
             """
 
             for source in self.sources:
-                if source['source_type'] == 'thermal_resistance':
-                    self.h[source['position']] = self.h[source['position']] + (2/source['R'] * (source['T_inf']-self.T[source['position']])) / (self.rho[source['position']]*self.domain.V[source['position'][1]])*dt
+                self.h = self.h + (source['T_inf']-self.T) / source['R'] * dt/(self.rho*self.domain.V)
 
         def _solve_equations(self, t:float=None, dt:float=None):
             """Solve equations at each time step.

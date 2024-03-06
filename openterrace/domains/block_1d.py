@@ -47,7 +47,7 @@ def node_pos(vars):
     return np.array(np.linspace(0,L,n))
 
 def A(vars):
-    """Cross-sectional area for faces of node.
+    """Area of faces between nodes.
 
     Args:
         vars (list): List of arguments
