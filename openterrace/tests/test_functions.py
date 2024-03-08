@@ -5,18 +5,18 @@ import datetime
 import pytest
 import sys
 
-n = 11
+
 
 def test_1():
-    ot = openterrace.Simulate(t_end=100000, dt=1)
-    fluidbox = ot.create_phase(n=n, type='fluid')
+    ot = openterrace.Simulate(t_end=10000, dt=1)
+    fluidbox = ot.create_phase(n=101, type='fluid')
     fluidbox.select_substance_on_the_fly(cp=4200, rho=1000, k=0.6)
     fluidbox.select_domain_shape(domain='block_1d', A=0.1, L=0.1)
     fluidbox.select_schemes(diff='central_difference_1d')
-    fluidbox.select_initial_conditions(T=np.linspace(0,100,n))
+    fluidbox.select_initial_conditions(T=np.linspace(0,100, 101))
     fluidbox.select_bc(bc_type='zero_gradient', parameter='T', position=(slice(None, None, None), 0))
     fluidbox.select_bc(bc_type='zero_gradient', parameter='T', position=(slice(None, None, None), -1))
-    fluidbox.select_output(times=range(0, 100000, 1000), output_parameters=['T','h'])
+    fluidbox.select_output(times=range(0, 11000, 1000), output_parameters=['T','h'])
     
     ot.run_simulation()
 
