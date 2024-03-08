@@ -9,10 +9,8 @@ from . import convection_schemes
 import sys
 import tqdm
 import numpy as np
-import datetime
 import matplotlib
 matplotlib.use('agg')
-import matplotlib.pyplot as plt
 
 class Simulate:
     """OpenTerrace class."""
@@ -210,10 +208,14 @@ class Simulate:
             Args:
                 T (float): List of length n with initial temperatures
             """
+            
+            if np.array(T).size == 1:
+                self.T = np.tile(T,(np.append(self.n_other,self.domain.shape)))   
+            elif np.array(T).size == self.n:
+                self.T = np.tile(T,(np.append(self.n_other,1)))
+            else: Exception("Length of T must be 1 or equal to n")
 
-            if T is not None:
-                self.T = np.tile(T,(np.append(self.n_other,self.domain.shape)))
-                self.h = self.fcns.h(self.T)
+            self.h = self.fcns.h(self.T)
             self.T = self.fcns.T(self.h)
             self.rho = self.fcns.rho(self.h)
             self.cp = self.fcns.cp(self.h)
@@ -344,10 +346,6 @@ class Simulate:
                         self.h[bc['position']] = self.h[bc['position']] + (self.T[:,1]*self.D[1,:,0] - self.T[:,0]*self.D[1,:,0] - self.F[0,:,1]*self.T[:,1] + self.F[1,:,0]*self.T[:,0]) / (self.rho[:,0]*self.domain.V[0])*dt
                     if bc['position'] == np.s_[:,-1]:
                         self.h[bc['position']] = self.h[bc['position']] + (self.T[:,-2]*self.D[0,:,-1] - self.T[:,-1]*self.D[0,:,-1] + self.F[1,:,-2]*self.T[:,-2] - self.F[0,:,-1]*self.T[:,-1]) / (self.rho[:,-1]*self.domain.V[-1])*dt
-                    #if bc['position'] == np.s_[:,0]:
-                    #    self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,1]*self.D[1,:,0] - 2*self.T[:,0]*self.D[1,:,0] - self.F[0,:,1]*self.T[:,1] + self.F[1,:,0]*self.T[:,0]) / (self.rho[:,0]*self.domain.V[0])*dt
-                    #if bc['position'] == np.s_[:,-1]:
-                    #    self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,-2]*self.D[0,:,-1] - 2*self.T[:,-1]*self.D[0,:,-1] + self.F[1,:,-2]*self.T[:,-2] - self.F[0,:,-1]*self.T[:,-1]) / (self.rho[:,-1]*self.domain.V[-1])*dt
 
         def _update_source(self, dt:float=None):
             """Update source term.
