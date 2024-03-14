@@ -61,21 +61,33 @@ class Simulate:
         self.flag_coupling = True
 
     def _coupling(self):
+        """"""
         for couple in self.coupling:
-            Q = couple['h_value']*self.Phase.instances[couple['bed_phase']].domain.A[-1][-1]*(self.Phase.instances[couple['fluid_phase']].T[0]-self.Phase.instances[couple['bed_phase']].T[:,-1])*self.dt
-            self.Phase.instances[couple['bed_phase']].h[:,-1] = self.Phase.instances[couple['bed_phase']].h[:,-1] + Q/(self.Phase.instances[couple['bed_phase']].rho[:,-1] * self.Phase.instances[couple['bed_phase']].domain.V[-1])
-            self.Phase.instances[couple['fluid_phase']].h[0] = self.Phase.instances[couple['fluid_phase']].h[0] - (1-self.Phase.instances[couple['fluid_phase']].phi)/self.Phase.instances[couple['fluid_phase']].phi * self.Phase.instances[couple['fluid_phase']].domain.V/self.Phase.instances[couple['bed_phase']].domain.V0 * Q/(self.Phase.instances[couple['fluid_phase']].rho*self.Phase.instances[couple['fluid_phase']].domain.V)
-
+            Q = couple['h_value']*self.Phase.instances[couple['bed_phase']].domain.A[-1][-1]*(self.Phase.instances[couple['fluid_phase']].T[0]-self.Phase.instances[couple['bed_phase']].T[:,-1])*self.dt #ok
+            
+            #n_capsules = self.Phase.instances[couple['fluid_phase']].domain.V/self.Phase.instances[couple['fluid_phase']].phi*(1-self.Phase.instances[couple['fluid_phase']].phi)/self.Phase.instances[couple['bed_phase']].domain.V0
+            
+            #deltah_bed = Q/(self.Phase.instances[couple['bed_phase']].rho[:,-1] * self.Phase.instances[couple['bed_phase']].domain.V[-1])
+            
+            #deltaQ_bed = deltah_bed * self.Phase.instances[couple['bed_phase']].rho[:,-1] * self.Phase.instances[couple['bed_phase']].domain.V[-1]
+            
+            self.Phase.instances[couple['bed_phase']].h[:,-1] = self.Phase.instances[couple['bed_phase']].h[:,-1] + Q/(self.Phase.instances[couple['bed_phase']].rho[:,-1] * self.Phase.instances[couple['bed_phase']].domain.V[-1]) #ok
+            
+            #deltaQ_fluid = (1-self.Phase.instances[couple['fluid_phase']].phi)/self.Phase.instances[couple['fluid_phase']].phi * self.Phase.instances[couple['fluid_phase']].domain.V/self.Phase.instances[couple['bed_phase']].domain.V0 * Q/(self.Phase.instances[couple['fluid_phase']].rho*self.Phase.instances[couple['fluid_phase']].domain.V)
+            
+            self.Phase.instances[couple['fluid_phase']].h[0] = self.Phase.instances[couple['fluid_phase']].h[0] - (1-self.Phase.instances[couple['fluid_phase']].phi)/self.Phase.instances[couple['fluid_phase']].phi * self.Phase.instances[couple['fluid_phase']].domain.V/self.Phase.instances[couple['bed_phase']].domain.V0 * Q/(self.Phase.instances[couple['fluid_phase']].rho*self.Phase.instances[couple['fluid_phase']].domain.V) #ok
+            
     def run_simulation(self):
         """This is the function full of magic."""
 
         for t in tqdm.tqdm(np.arange(self.t_start, self.t_end+self.dt, self.dt)):
             for phase_instance in self.Phase.instances:
                 phase_instance._save_data(t)
+                if self.flag_coupling:
+                    self._coupling()
                 phase_instance._solve_equations(t, self.dt)
                 phase_instance._update_properties()
-            if self.flag_coupling:
-                self._coupling()
+
     class Phase:
         instances = []
         """Main class to define either the fluid or bed phase."""
