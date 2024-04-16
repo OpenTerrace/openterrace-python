@@ -63,9 +63,13 @@ class Simulate:
     def _coupling(self):
         """This is the function that couples the fluid and bed phase."""
         for couple in self.coupling:
-            Q = couple['h_value']*self.Phase.instances[couple['bed_phase']].domain.A[-1][-1]*(self.Phase.instances[couple['fluid_phase']].T[0]-self.Phase.instances[couple['bed_phase']].T[:,-1])*self.dt
-            self.Phase.instances[couple['bed_phase']].h[:,-1] = self.Phase.instances[couple['bed_phase']].h[:,-1] + Q/(self.Phase.instances[couple['bed_phase']].rho[:,-1] * self.Phase.instances[couple['bed_phase']].domain.V[-1])
-            self.Phase.instances[couple['fluid_phase']].h[0] = self.Phase.instances[couple['fluid_phase']].h[0] - (1-self.Phase.instances[couple['fluid_phase']].phi)/self.Phase.instances[couple['fluid_phase']].phi * self.Phase.instances[couple['fluid_phase']].domain.V/self.Phase.instances[couple['bed_phase']].domain.V0 * Q/(self.Phase.instances[couple['fluid_phase']].rho*self.Phase.instances[couple['fluid_phase']].domain.V)
+            n_bed = self.Phase.instances[couple['fluid_phase']].domain.V/self.Phase.instances[couple['fluid_phase']].phi*(1-self.Phase.instances[couple['fluid_phase']].phi)/self.Phase.instances[couple['bed_phase']].domain.V0 #ok
+
+            Q = couple['h_value']*self.Phase.instances[couple['bed_phase']].domain.A[-1][-1]*(self.Phase.instances[couple['fluid_phase']].T[0]-self.Phase.instances[couple['bed_phase']].T[:,-1])*self.dt #ok
+
+            self.Phase.instances[couple['bed_phase']].h[:,-1] = self.Phase.instances[couple['bed_phase']].h[:,-1] + Q/(self.Phase.instances[couple['bed_phase']].rho[:,-1] * self.Phase.instances[couple['bed_phase']].domain.V[-1]) #ok
+
+            self.Phase.instances[couple['fluid_phase']].h[0] = self.Phase.instances[couple['fluid_phase']].h[0] - n_bed * Q/(self.Phase.instances[couple['fluid_phase']].rho*self.Phase.instances[couple['fluid_phase']].domain.V) #ok
             
     def run_simulation(self):
         """This is the function full of magic."""
@@ -160,7 +164,7 @@ class Simulate:
             if not domain in globals()['domains'].__all__:
                 raise Exception("domain \'"+domain+"\' specified. Valid options for domain are:", self.valid_domains)
 
-            kwargs['n'] = self.n
+            kwargs['n'] = self.n 
             self.domain = getattr(globals()['domains'], domain)
             self.domain.type = domain
             self.domain.validate_input(kwargs, domain)
