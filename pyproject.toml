@@ -15,9 +15,6 @@ packages = [
 repository = "https://github.com/OpenTerrace/openterrace-python"
 documentation = "https://openterrace.github.io/openterrace-python/"
 
-[tool.poetry]
-readme = "README.md"
-
 [tool.poetry-dynamic-versioning]
 enable = true
 vcs = "git"
