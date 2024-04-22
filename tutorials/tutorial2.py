@@ -1,6 +1,14 @@
 """ 
 This example shows how to simulate advection of temperature
-in a cylindrical tank without any bed material.
+in a cylindrical tank without any bed material. At the bottom (y=0)
+the temperature is fixed at 80℃ (direchlet-type BC), and at the top (y=1)
+a neumann-type BC is applied. 20 nodes are used to discretize the domain.
+The fluid is water. The simulation time is 600 seconds, and the output
+is saved every 60 seconds.
+As opposed to the previous example, the mass flow rate is not constant.
+It is set to 0.1 kg/s for the first 400 seconds. Between 400 and 500
+ seconds, the mass flow decreased so that -0.1 kg/s is reached 
+ after 500 seconds.
 """
 
 import openterrace
@@ -13,7 +21,7 @@ def main():
     fluid.select_substance_on_the_fly(rho=1000, cp=4200, k=0.6)
     fluid.select_domain_shape(domain='cylinder_1d', D=0.3, H=1)
     fluid.select_schemes(diff='central_difference_1d', conv='upwind_1d')
-    fluid.select_initial_conditions(T=273.15+100)
+    fluid.select_initial_conditions(T=273.15+20)
     fluid.select_massflow(mdot=[
                                 [0, 0.1],
                                 [400, 0.1],
@@ -23,7 +31,7 @@ def main():
     fluid.select_bc(bc_type='fixed_value', 
                     parameter='T',
                     position=(slice(None, None, None), 0),
-                    value=273.15+600)
+                    value=273.15+80)
     fluid.select_bc(bc_type='zero_gradient', 
                     parameter='T',
                     position=(slice(None, None, None), -1),

@@ -1,3 +1,5 @@
+# This workflow generates the documentation and deploys it to GitHub Pages.
+
 name: Generate Docs
 
 on:

@@ -1,6 +1,12 @@
 """
 This example shows how to simulate heat diffusion
 in a hollow sphere made out of ATS58 (PCM material).
+The sphere has an inner radius of 5 mm and an outer
+radius of 25 mm. The initial temperature is 40℃.
+The sphere is exposed to a convection heat transfer
+with a heat transfer coefficient of 50 W/m²K. The
+simulation time is 100 minutes, and the output is
+saved every 10 minutes.
 """
 
 import openterrace

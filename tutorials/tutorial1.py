@@ -1,6 +1,10 @@
 """ 
 This example shows how to simulate advection of temperature
-in a cylindrical tank without any bed material.
+in a cylindrical tank without any bed material. At the bottom (y=0)
+the temperature is fixed at 80℃ (direchlet-type BC), and at the top (y=1)
+a neumann-type BC is applied. 20 nodes are used to discretize the domain.
+The fluid is water, and the mass flow rate is 0.1 kg/s. The simulation
+time is 600 seconds, and the output is saved every 60 seconds.
 """
 
 import openterrace

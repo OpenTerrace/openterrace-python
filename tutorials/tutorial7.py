@@ -1,6 +1,12 @@
 """
 This example sets up a water tank with PCM material
-as the bed material.
+as the bed material. The tank has a diameter of 10 cm
+and a height of 1 m. The initial temperature of the
+water is 20℃. The water is heated up to 80℃ at the
+bottom. Heat transfer from the fluid phase to the bed
+phase is modelled with a constant heat transfer coefficient
+of 200 W/m²K. The simulation time is 100 minutes, and the
+output is saved every 5 minutes.
 """
 
 import openterrace

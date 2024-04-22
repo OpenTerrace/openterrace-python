@@ -61,15 +61,21 @@ class Simulate:
         self.flag_coupling = True
 
     def _coupling(self):
+        """This is the function that couples the fluid and bed phase."""
         for couple in self.coupling:
-            Q = couple['h_value']*self.Phase.instances[couple['bed_phase']].domain.A[-1][-1]*(self.Phase.instances[couple['fluid_phase']].T[0]-self.Phase.instances[couple['bed_phase']].T[:,-1])*self.dt
-            self.Phase.instances[couple['bed_phase']].h[:,-1] = self.Phase.instances[couple['bed_phase']].h[:,-1] + Q/(self.Phase.instances[couple['bed_phase']].rho[:,-1] * self.Phase.instances[couple['bed_phase']].domain.V[-1])
-            self.Phase.instances[couple['fluid_phase']].h[0] = self.Phase.instances[couple['fluid_phase']].h[0] - (1-self.Phase.instances[couple['fluid_phase']].phi)/self.Phase.instances[couple['fluid_phase']].phi * self.Phase.instances[couple['fluid_phase']].domain.V/self.Phase.instances[couple['bed_phase']].domain.V0 * Q/(self.Phase.instances[couple['fluid_phase']].rho*self.Phase.instances[couple['fluid_phase']].domain.V)
+            n_bed = self.Phase.instances[couple['fluid_phase']].domain.V/self.Phase.instances[couple['fluid_phase']].phi*(1-self.Phase.instances[couple['fluid_phase']].phi)/self.Phase.instances[couple['bed_phase']].domain.V0 #ok
 
+            Q = couple['h_value']*self.Phase.instances[couple['bed_phase']].domain.A[-1][-1]*(self.Phase.instances[couple['fluid_phase']].T[0]-self.Phase.instances[couple['bed_phase']].T[:,-1])*self.dt #ok
+
+            self.Phase.instances[couple['bed_phase']].h[:,-1] = self.Phase.instances[couple['bed_phase']].h[:,-1] + Q/(self.Phase.instances[couple['bed_phase']].rho[:,-1] * self.Phase.instances[couple['bed_phase']].domain.V[-1]) #ok
+
+            self.Phase.instances[couple['fluid_phase']].h[0] = self.Phase.instances[couple['fluid_phase']].h[0] - n_bed * Q/(self.Phase.instances[couple['fluid_phase']].rho*self.Phase.instances[couple['fluid_phase']].domain.V) #ok
+            
     def run_simulation(self):
         """This is the function full of magic."""
 
         for t in tqdm.tqdm(np.arange(self.t_start, self.t_end+self.dt, self.dt)):
+            
             for phase_instance in self.Phase.instances:
                 phase_instance._save_data(t)
                 phase_instance._solve_equations(t, self.dt)
@@ -158,7 +164,7 @@ class Simulate:
             if not domain in globals()['domains'].__all__:
                 raise Exception("domain \'"+domain+"\' specified. Valid options for domain are:", self.valid_domains)
 
-            kwargs['n'] = self.n
+            kwargs['n'] = self.n 
             self.domain = getattr(globals()['domains'], domain)
             self.domain.type = domain
             self.domain.validate_input(kwargs, domain)
@@ -343,9 +349,9 @@ class Simulate:
                     self.h[bc['position']] = self.fcns.h(np.interp(t,bc['value'][:,0],bc['value'][:,1]))
                 if bc['type'] == 'zero_gradient':
                     if bc['position'] == np.s_[:,0]:
-                        self.h[bc['position']] = self.h[bc['position']] + (self.T[:,1]*self.D[1,:,0] - self.T[:,0]*self.D[1,:,0] - self.F[0,:,1]*self.T[:,1] + self.F[1,:,0]*self.T[:,0]) / (self.rho[:,0]*self.domain.V[0])*dt
+                        self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,1]*self.D[1,:,0] - 2*self.T[:,0]*self.D[1,:,0] - self.F[0,:,1]*self.T[:,1] + self.F[1,:,0]*self.T[:,0]) / (self.rho[:,0]*self.domain.V[0])*dt
                     if bc['position'] == np.s_[:,-1]:
-                        self.h[bc['position']] = self.h[bc['position']] + (self.T[:,-2]*self.D[0,:,-1] - self.T[:,-1]*self.D[0,:,-1] + self.F[1,:,-2]*self.T[:,-2] - self.F[0,:,-1]*self.T[:,-1]) / (self.rho[:,-1]*self.domain.V[-1])*dt
+                        self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,-2]*self.D[0,:,-1] - 2*self.T[:,-1]*self.D[0,:,-1] + self.F[1,:,-2]*self.T[:,-2] - self.F[0,:,-1]*self.T[:,-1]) / (self.rho[:,-1]*self.domain.V[-1])*dt
 
         def _update_source(self, dt:float=None):
             """Update source term.
@@ -355,7 +361,7 @@ class Simulate:
             """
 
             for source in self.sources:
-                self.h = self.h + (source['T_inf']-self.T) / source['R'] * dt/(self.rho*self.domain.V)
+                self.h = self.h + (source['T_inf']-self.T)*2 / source['R'] * dt/(self.rho*self.domain.V)
 
         def _solve_equations(self, t:float=None, dt:float=None):
             """Solve equations at each time step.
