@@ -1,3 +1,5 @@
+# This workflow will build a JOSS paper draft.
+
 name: Generate JOSS paper
 
 on: [workflow_dispatch]

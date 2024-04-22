@@ -4,7 +4,7 @@
 
 [![Logo](docs/_figures/logo-banner-paths-green.svg)](#)
 
-OpenTerrace is a pure Python framework for thermal energy storage packed bed simulations. It is built from the ground up to be flexible and extendable on modern Python 3.x with speed in mind. It utilises Nvidia CUDA cores to harness the power of modern GPUs and has automatic fallback to CPU cores.
+OpenTerrace is a pure Python framework for thermal energy storage packed bed simulations. It is built from the ground up to be flexible and extendable on modern Python 3.x with speed in mind.
 
 OpenTerrace uses awesome open-source software such as
 [Numba](https://numba.pydata.org), [NumPy](https://numpy.org/) and [SciPy](https://scipy.org/):grey_exclamation:
@@ -13,7 +13,7 @@ OpenTerrace uses awesome open-source software such as
 
 ## Why OpenTerrace?
 - **FAST**  
-By making use of modern compilers and optimised tri-diagonal matrix solvers, OpenTerrace approaches the speed of compiled C or FORTRAN code with the added convenience of easy-to-read Python language.
+By making use of modern compilers and optimised tri-diagonal matrix solvers, OpenTerrace is built to be fast.
 
 - **FLEXIBLE**  
 OpenTerrace is built from the ground up to be flexible for easy integration in system models or optimisation loops.

@@ -1,6 +1,11 @@
 """
 This example shows how to simulate heat diffusion
 in a sphere made out of swedish diabase stone.
+The sphere has a radius of 2.5 cm, and the initia 
+temperature is 40℃. The sphere is exposed to a 
+convection heat transfer with a heat transfer 
+coefficient of 200 W/m²K. The simulation time 
+is 15 minutes, and the output is saved every 60 seconds.
 """
 
 import openterrace

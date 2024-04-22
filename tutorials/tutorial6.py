@@ -1,6 +1,11 @@
 """ 
 This example shows how a cylindrical pit storage looses
-energy to the surroundings over a period of 30 days.
+energy to the surroundings over a period of 30 days. The
+pit has a diameter of 2 m and a height of 10 m. The initial
+temperature is 80℃. The pit is exposed to a convection heat
+transfer with a heat transfer coefficient of 10 W/m²K. The
+simulation time is 30 days, and the output is saved every
+2 days.
 """
 
 import openterrace

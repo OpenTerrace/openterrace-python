@@ -1,3 +1,5 @@
+# This workflow will merge the main branch back to the development branch when a push is made to the main branch. This is in order to keep the development branch up-to-date with the main branch.
+
 name: Merge main back to dev branch
 
 on:

@@ -1,7 +1,13 @@
 """ 
 This example shows how to simulate a cylindrical
 thermal storage tank with air and spherical magnetite
-stones as the bed material.
+stones as the bed material. The tank has a diameter of
+30 cm and a height of 1 m. The initial temperature of
+the air is 25℃. The air is heated up to 500℃ at the
+bottom. Heat transfer from the fluid phase to the bed
+phase is modelled with a constant heat transfer coefficient
+of 100 W/m²K. The simulation time is 10 hours, and the
+output is saved every hour.
 """
 
 import openterrace

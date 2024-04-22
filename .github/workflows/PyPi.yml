@@ -1,3 +1,5 @@
+# This workflow will build a Python project and publish it to PyPI using the tag as version number.
+
 name: Publish to PyPI
 
 on: [workflow_dispatch]

@@ -1,3 +1,5 @@
+# This workflow will install the dependencies and run the tests when a push is made to the main branch or when the workflow is manually triggered.
+
 name: Run pytest
 
 on:
