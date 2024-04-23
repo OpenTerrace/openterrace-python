@@ -5,15 +5,30 @@ version = "0.0.0" # This will be overwritten by the dynamic versioning by Poetry
 authors = [
     "Jakob Hærvig"
 ]
+maintainers = [
+    "Jakob Hærvig <jakob.haervig@gmail.com>"
+]
 readme = "README.md"
 license = "MIT"
 
 packages = [
     { include = "openterrace"}
 ]
+keywords = [
+    "Thermal energy storage",
+    "Packed bed",
+    "Simulation",
+    "Heat transfer",
+    "Phase change material",
+    "PCM",
+    "Python"
+]
 
 repository = "https://github.com/OpenTerrace/openterrace-python"
 documentation = "https://openterrace.github.io/openterrace-python/"
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/OpenTerrace/openterrace-python/issues"
 
 [tool.poetry-dynamic-versioning]
 enable = true
