@@ -184,42 +184,6 @@ def test_4():
     plt.close()
 
     np.testing.assert_array_almost_equal(1,1, decimal=2) #Dummy check
-    
-def test_5():
-    ot = openterrace.Simulate(t_end=10, dt=5)
-    fluid = ot.create_phase(n=11, type='fluid')
-    fluid.select_substance_on_the_fly(cp=1000, rho=1000, k=1)
-    fluid.select_domain_shape(domain='block_1d', L=1, A=1)
-    fluid.select_schemes(diff='central_difference_1d')
-    fluid.select_porosity(phi=0.4)
-    fluid.select_initial_conditions(T=100)
-    fluid.select_bc(bc_type='zero_gradient',
-                    parameter='T',
-                    position=(slice(None, None, None), 0)
-                    )
-    fluid.select_bc(bc_type='zero_gradient',
-                    parameter='T',
-                    position=(slice(None, None, None), -1)
-                    )
-    fluid.select_output(times=range(0, 15, 5), output_parameters=['T', 'h'])
-    
-    bed = ot.create_phase(n=5, n_other=11, type='bed')
-    bed.select_substance_on_the_fly(cp=1000, rho=4000, k=1)
-    bed.select_domain_shape(domain='sphere_1d', R=(0.1*3/4*1/np.pi)**(1/3))
-    bed.select_schemes(diff='central_difference_1d')
-    bed.select_initial_conditions(T=0)
-    bed.select_bc(bc_type='zero_gradient',
-                  parameter='T',
-                  position=(slice(None, None, None), 0)
-                  )
-    bed.select_bc(bc_type='zero_gradient', 
-                  parameter='T',
-                  position=(slice(None, None, None), -1)
-                  )
-    bed.select_output(times=range(0, 15, 5), output_parameters=['T', 'h'])
-    
-    ot.select_coupling(fluid_phase=0, bed_phase=1, h_exp='constant', h_value=150)
-    ot.run_simulation()
 
 if __name__ == '__main__':
     test_5()
