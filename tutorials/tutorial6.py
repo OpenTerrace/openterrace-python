@@ -18,7 +18,7 @@ H = 10
 T_inf = 273.15+10
 
 def main():
-    ot = openterrace.Simulate(t_end=3600*24*30, dt=5)
+    ot = openterrace.Simulate(t_end=3600*24*14, dt=5)
 
     fluid = ot.create_phase(n=101, type='fluid')
     fluid.select_substance_on_the_fly(rho=1000, cp=4200, k=0.6)
@@ -33,7 +33,7 @@ def main():
                     parameter='T', 
                     position=(slice(None, None, None), -1)
                     )
-    fluid.select_output(times=range(0, 3600*24*60+3600*24, 3600*24*2))
+    fluid.select_output(times=range(0, 60*60*24*15, 3600*24*1))
 
     # Calculate surface area of each node
     As = fluid.domain.dx*np.pi*D
@@ -45,7 +45,7 @@ def main():
     As[-1] = As[-1]/2 + np.pi*(D/2)**2
 
     # Overall heat transfer coefficient
-    U = 10
+    U = 0.05
 
     # Thermal resistance
     R = 1/(U*As)
