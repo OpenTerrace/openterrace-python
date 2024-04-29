@@ -1,5 +1,5 @@
 ---
-title: 'OpenTerrace: A fast, flexible and extendable Python framework for thermal storage packed bed simulations'
+title: 'OpenTerrace: A pure Python framework for thermal energy storage packed bed simulations'
 tags:
   - Python
   - Heat transfer
@@ -18,13 +18,17 @@ date: 11 December 2023
 bibliography: paper.bib
 ---
 
+![](https://raw.githubusercontent.com/OpenTerrace/openterrace-python/main/docs/_figures/logo-banner-paths-green.svg)
+
 # Summary
+Being able to store energy for extended periods of time is important for modern societies where increasing amounts of energy comes from renewable sources with time-varying production. Many storage technologies exist, each with their own set of disadvantages and advantages. Storing energy in the form of thermal energy is a promising solution because it is cheap and can easily be scaled up.
 
-Being able to store energy for extended periods of time is important for modern societies where increasing amounts of energy comes from renewable sources with time-varying production. Many storage technologies exist, each with their own set of disadvantages and advantages. Storing energy in the form of thermal energy is a promising, cheap and energy efficient solution, which can easily be scaled up.
+`OpenTerrace` is a simulation framework to predict the transient temperature response of thermal energy storage systems. The thermal energy storage system contains a carrier fluid and an optional bed phase. Heat is transferred from the fluid to the bed phase during charging and from the bed phase to the fluid during discharging. `OpenTerrace` uses a finite volume formulation to discretise a set of coupled partial differential equations representing the fluid and bed phase. OpenTerrace comes with a wide range of predefined substances to be used as either fluid or bed material. Also, the set of primitive, predefined shapes that comes with `OpenTerrace` cover many applications. `OpenTerrace` is build to be:
+- Fast by making use of modern compilers and optimised tri-diagonal matrix solvers, OpenTerrace is built to be fast.
+- Flexible for easy integration in system models or optimisation loops.
+- Extendable by allowing new modules for new materials such as non-spherical rocks or exotic Phase Change Materials (PCM) to easily be plugged into the OpenTerrace framework.
 
-A fluid is heated up and pumped through a storage tank. The storage tank contains either just a fluid or is filled with a bedding material (known as a packed bed). The bedding material could range from regular, readily available stones to more exotic capsules containing phase-change material encapsulated in a plastic shell. In either case the hot fluid transfers energy to the bed material, which then stores the energy in form of sensible and/or latent heat. The process is simply reversed to extract energy from the bed material and transfer it to the fluid.
-
-![](../docs/_figures/logo-banner-paths-green.svg)
+More information about how to get started and the latest functionaly can be in the [GitHub repository](https://github.com/OpenTerrace/openterrace-python) and the [Documentation](https://openterrace.github.io/openterrace-python/).
 
 # Statement of need
 `OpenTerrace` is an open-source simulation framework providing easy access to complex simulations. The core part of the computations are made by calling low-level languages using packages such as NumPy [@harris], SciPy [@virtanen] and  Numba [@lam] for speed while maintaining the flexibility and user-friendliness of Python. Plotting and animation capabilities based on Matplotlib [@hunter] are provided with the framework to allow easy access to visualisations.
@@ -35,7 +39,12 @@ Each phase is described by a non-linear, partial differential equation. The phas
 
 ![](../docs/_figures/schematic.svg)
 
-`OpenTerrace` serves different purposes. First, it was designed to be used by both researchers doing research projects and industry making design decisions. Also, it has now proven useful for engineering students working on semester projects where the learning outcome includes both thermal energy storage knowledge and coding experience with Python.
+# Features and functionality
+
+
+# Target Audience
+
+`OpenTerrace` serves different purposes. First and foremost it is a research tool to be used by researchers and industry for design decisions. Also, it has now proven in an educational context where engineering students become familiar with thermal storage systems, test out new ideas, or extend the functionality of OpenTerrace to include new  and improve their where the learning outcome includes both thermal energy storage knowledge and coding experience with Python.
 
 # Acknowledgements
 
