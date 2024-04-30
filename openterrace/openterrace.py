@@ -90,7 +90,8 @@ class Simulate:
             """Initialise a phase with number of control points and type.
 
             Args:
-                n_self (int): Number of discretisations for the given phase
+                outer (object): Outer class
+                n (int): Number of discretisations for the given phase
                 n_other (int): Number of discretisations for the other phase
                 type (str): Type of phase
             """
@@ -156,7 +157,7 @@ class Simulate:
             
             Args:
                 domain (str): Domain type
-                additional arguments (float): Dimensions of domain
+                **kwargs (float): Dimensions of domain to be specified depnding on the domain type
             """
 
             if not domain:
