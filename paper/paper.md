@@ -18,10 +18,12 @@ date: 11 December 2023
 bibliography: paper.bib
 ---
 
-![](https://raw.githubusercontent.com/OpenTerrace/openterrace-python/main/docs/_figures/logo-banner-paths-green.svg)
+![](https://raw.githubusercontent.com/OpenTerrace/openterrace-python/main/docs/_figures/logo-openterrace.svg)
 
 # Summary
-`OpenTerrace` is a simulation framework to predict the transient temperature response of thermal energy storage systems. The thermal energy storage system contains a carrier fluid and an optional bed phase. Heat is transferred from the fluid to the bed material during charging and from the bed phase to the fluid during discharging. `OpenTerrace` uses a finite volume formulation to discretise a set of coupled partial differential equations governing heat transfer in the fluid and bed phase. `OpenTerrace` comes with a wide range of predefined substances to be used as either fluid or bed material. Also, the set of primitive, predefined shapes that comes with `OpenTerrace` cover many applications. `OpenTerrace` is build to be:
+`OpenTerrace` is a simulation framework for prediction of transient temperature responses in thermal energy storage systems. The thermal energy storage system contains a carrier fluid and an optional bed phase. A set of coupled partial differential equations that govern heat transfer are solved using a finite volume formulation.
+
+`OpenTerrace` comes with a wide range of predefined substances to be used as either fluid or bed material. Also, the set of primitive, predefined shapes that comes with `OpenTerrace` cover many thermal energy storage applications. `OpenTerrace` is build to be:
 - Fast by making use of modern compilers and optimised tri-diagonal matrix solvers, OpenTerrace is built to be fast.
 - Flexible for easy integration in system models or optimisation loops.
 - Extendable by allowing new modules for new materials such as non-spherical rocks or exotic Phase Change Materials (PCM) to easily be plugged into the OpenTerrace framework.
