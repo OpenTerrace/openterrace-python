@@ -1,8 +1,9 @@
 ![GitHub Release](https://img.shields.io/github/v/release/OpenTerrace/openterrace-python) ![PyPI - Version](https://img.shields.io/pypi/v/openterrace)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/openterrace) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/openterrace/openterrace-python/pytest.yml)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/openterrace) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/openterrace/openterrace-python/pytest.yml) ![GitHub Issues](https://img.shields.io/github/issues/openterrace/openterrace-python
+)
 
 
-![Logo](https://raw.githubusercontent.com/OpenTerrace/openterrace-python/main/docs/_figures/logo-banner-paths-green.svg)
+![Logo](https://raw.githubusercontent.com/OpenTerrace/openterrace-python/main/docs/_figures/logo-openterrace.svg)
 
 OpenTerrace is a pure Python framework for thermal energy storage packed bed simulations. It is built from the ground up to be flexible and extendable on modern Python 3.x with speed in mind.
 

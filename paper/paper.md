@@ -1,5 +1,5 @@
 ---
-title: 'OpenTerrace - A fast, flexible and extendable Python framework for thermal energy packed bed simulations'
+title: 'OpenTerrace - A fast, flexible and extendable Python framework for thermal energy storage packed bed simulations'
 tags:
   - Python
   - Heat transfer
