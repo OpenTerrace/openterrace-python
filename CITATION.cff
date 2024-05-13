@@ -3,6 +3,6 @@ message: "If you use OpenTerrace, please cite it as below."
 authors:
 - family-names: "Haervig"
   given-names: "Jakob"
-title: "OpenTerrace - A fast, flexible and extendable Python framework for thermal energy packed bed simulations"
+title: "OpenTerrace: A fast, flexible and extendable Python framework for packed bed thermal energy storage simulations"
 #doi: 
 url: "https://github.com/OpenTerrace/openterrace-python"
