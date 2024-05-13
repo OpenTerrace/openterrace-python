@@ -1,5 +1,5 @@
 ---
-title: 'OpenTerrace: A fast, flexible and extendable Python framework for thermal energy storage packed bed simulations'
+title: 'OpenTerrace: A fast, flexible and extendable Python framework for packed bed thermal energy storage simulations'
 tags:
   - Python
   - Heat transfer
@@ -21,7 +21,7 @@ bibliography: paper.bib
 ![](https://raw.githubusercontent.com/OpenTerrace/openterrace-python/main/docs/_figures/logo-openterrace.svg)
 
 # Summary
-`OpenTerrace` is a simulation framework for prediction of transient temperature responses in thermal energy storage systems. Being able to store energy for extended periods of time is important for modern societies where increasing amounts of energy stem from renewable sources with time-varying production. Many storage technologies exist, each with their own set of disadvantages and advantages. Storing energy in the form of thermal energy is a promising solution because it is cheap and can easily be scaled up. While the total energy content of thermal energy storage systems can be estimated easily, the transient response requires solving a set of partial differential equations in space and time. Using `OpenTerrace` the transient response of a wide range of thermal energy storage systems can be simulated. The storage system contains a storage tank filled with a carrier fluid and an optional bed phase. `OpenTerrace` comes with a wide range of predefined substances to be used as either fluid or bed material. Also, `OpenTerrace` ships with a set of primitive, predefined shapes that act as either storage tank and bed material. Besides that a set of predefined boundary conditions and source terms cover many different thermal energy storage applications.
+`OpenTerrace` is a simulation framework for prediction of transient temperature responses in packed bed thermal energy storage systems. Being able to store energy for extended periods of time is important for modern societies where increasing amounts of energy stem from renewable sources with time-varying production. Many storage technologies exist, each with their own set of disadvantages and advantages. Storing energy in the form of thermal energy is a promising solution because it is cheap and can easily be scaled up. While the total energy content of thermal energy storage systems can be estimated easily, the transient response requires solving a set of partial differential equations in space and time. Using `OpenTerrace` the transient response of a wide range of thermal energy storage systems can be simulated. The storage system contains a storage tank filled with a carrier fluid and an optional bed phase. `OpenTerrace` comes with a wide range of predefined substances to be used as either fluid or bed material. Also, `OpenTerrace` ships with a set of primitive, predefined shapes that act as either storage tank and bed material. Besides that a set of predefined boundary conditions and source terms cover many different thermal energy storage applications.
 
 `OpenTerrace` is built to be:
 - Fast by making use of modern compilers and optimised tri-diagonal matrix solvers, OpenTerrace is built to be fast.

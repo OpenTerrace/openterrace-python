@@ -5,7 +5,7 @@
 
 ![Logo](https://raw.githubusercontent.com/OpenTerrace/openterrace-python/main/docs/_figures/logo-openterrace.svg)
 
-OpenTerrace is a pure Python framework for thermal energy storage packed bed simulations. It is built from the ground up to be flexible and extendable on modern Python 3.x with speed in mind.
+OpenTerrace is a pure Python framework for packed bed thermal energy storage simulations. It is built from the ground up to be flexible and extendable on modern Python 3.x with speed in mind.
 
 OpenTerrace uses awesome open-source software such as
 [Numba](https://numba.pydata.org), [NumPy](https://numpy.org/) and [SciPy](https://scipy.org/):grey_exclamation:
