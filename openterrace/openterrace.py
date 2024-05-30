@@ -72,7 +72,8 @@ class Simulate:
             self.Phase.instances[couple['fluid_phase']].h[0] = self.Phase.instances[couple['fluid_phase']].h[0] - n_bed * Q/(self.Phase.instances[couple['fluid_phase']].rho*self.Phase.instances[couple['fluid_phase']].domain.V) #ok
             
     def run_simulation(self):
-        """This is the function full of magic."""
+        """If you want to run the simulation, you need to call this function. If data output is specified using the select_output function, the data will live in that specific phase instance. For more details on how to access the data, please refer to the tutorials."""
+        
 
         for t in tqdm.tqdm(np.arange(self.t_start, self.t_end+self.dt, self.dt)):
             
