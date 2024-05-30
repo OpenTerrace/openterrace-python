@@ -80,7 +80,7 @@ nav:
       - tutorials/tutorial_6.md
       - tutorials/tutorial_7.md
   - User guide:
-      - user-guide/get-started.md
+      - user-guide/getting-started.md
       - Theory: theory.md
       - Substances:
         - Fluid:

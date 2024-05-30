@@ -6,5 +6,3 @@ The OpenTerrace code is tested against known analytical solution in limiting cas
 
 ## Pure advection
 To be added...
-
-![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https://raw.githubusercontent.com/OpenTerrace/openterrace-python/main/pyproject.toml)

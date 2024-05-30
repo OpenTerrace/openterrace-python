@@ -1,0 +1,2 @@
+
+Welcome to the OpenTerrace user guide! Using the panel to the left, you may more nerdy details on the equations being solved along with the numerous substances, domain types and numerical schemes that come with OpenTerrace. Also, verification and validation studies are presented.
