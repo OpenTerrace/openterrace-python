@@ -29,18 +29,23 @@ jobs:
     - name: Fetch all tags
       run: git fetch --prune --unshallow --tags
 
-    - name: Extract Python version and save as env variable
-      id: python-version
-      run: |
-        file_path="${{ github.workspace }}/${{ matrix.python-version-file }}"
-        version=$(awk -F'=' '/^python/ {print $2}' "$file_path" | tr -d '~' | xargs)
-        echo "Python version extracted: $version"
-        echo "version=$version" >> $GITHUB_ENV
+    # - name: Extract Python version and save as env variable
+    #   id: python-version
+    #   run: |
+    #     file_path="${{ github.workspace }}/${{ matrix.python-version-file }}"
+    #     version=$(awk -F'=' '/^python/ {print $2}' "$file_path" | tr -d '~' | xargs)
+    #     echo "Python version extracted: $version"
+    #     echo "version=$version" >> $GITHUB_ENV
 
-    - name: Set up Python ${{ env.version }} on ${{ matrix.os }}
+    # - name: Set up Python ${{ env.version }} on ${{ matrix.os }}
+    #   uses: actions/setup-python@v5
+    #   with:
+    #     python-version: ${{ env.version }}
+
+    - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ env.version }}
+        python-version-file: 'pyproject.toml'
 
     - name: Install dependencies
       run: |

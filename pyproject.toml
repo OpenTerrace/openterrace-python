@@ -37,29 +37,29 @@ format = "v{base}"
 latest-tag = true
 
 [tool.poetry.dependencies]
-python = "3.11.8"
-numpy = "1.26.4"
-numba = "0.59.0"
-scipy = "1.12.0"
-matplotlib = "3.8.3"
-tqdm = "4.66.2"
-pytest-xdist = "3.5.0"
+python = "^3.11.8"
+numpy = "^1.26.4"
+numba = "^0.59.0"
+scipy = "^1.12.0"
+matplotlib = "^3.8.3"
+tqdm = "^4.66.2"
+pytest-xdist = "^3.5.0"
 
 # Only used for documentation
 [tool.poetry.group.doc]
 optional = true
 
 [tool.poetry.group.doc.dependencies]
-mkdocs-material = "9.5.12"
-mkdocstrings-python = "1.8.0"
-markdown-katex = "202112.1034"
-pytkdocs = "0.16.1"
+mkdocs-material = "^9.5.12"
+mkdocstrings-python = "^1.8.0"
+markdown-katex = "^202112.1034"
+pytkdocs = "^0.16.1"
 
 [tool.poetry.group.github-actions]
 optional = true
 
 [tool.poetry.group.github-actions.dependencies]
-pytest-github-actions-annotate-failures = "0.1.7"
+pytest-github-actions-annotate-failures = "^0.1.7"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
