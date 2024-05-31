@@ -24,6 +24,14 @@ keywords = [
     "Python"
 ]
 
+classifiers = [
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Education",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Programming Language :: Python :: Implementation :: PyPy"
+]
+
 repository = "https://github.com/OpenTerrace/openterrace-python"
 documentation = "https://openterrace.github.io/openterrace-python/"
 
