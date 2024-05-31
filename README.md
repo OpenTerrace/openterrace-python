@@ -4,6 +4,7 @@
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/openterrace/openterrace-python/pytest.yml?label=tests)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/openterrace/openterrace-python/docs.yml?label=docs)
 ![GitHub Issues](https://img.shields.io/github/issues/openterrace/openterrace-python?label=github%20issues)
+[![status](https://joss.theoj.org/papers/cc89107c74cba69a948a98e5b0604336/status.svg)](https://joss.theoj.org/papers/cc89107c74cba69a948a98e5b0604336)
 
 ![Logo](https://raw.githubusercontent.com/OpenTerrace/openterrace-python/main/docs/_figures/logo-openterrace.svg)
 
