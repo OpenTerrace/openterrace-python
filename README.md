@@ -11,7 +11,7 @@
 OpenTerrace is a pure Python framework for packed bed thermal energy storage simulations. It is built from the ground up to be flexible and extendable on modern Python 3.x with speed in mind.
 
 OpenTerrace uses awesome open-source software such as
-[Numba](https://numba.pydata.org), [NumPy](https://numpy.org/) and [SciPy](https://scipy.org/)
+[Numba](https://numba.pydata.org), [NumPy](https://numpy.org/) and [SciPy](https://scipy.org/).
 
 ### [Read the documentation of OpenTerrace](https://openterrace.github.io/openterrace-python/)
 
@@ -29,4 +29,4 @@ Modules for new materials such as non-spherical rocks or exotic Phase Change Mat
 Contributions are most welcome! Feel free to send pull requests or get in touch with me to discuss how to collaborate. More details in the [docs](https://openterrace.github.io/openterrace-python/).
 
 ## Code contributors
-* Jakob Hærvig, Associate Professor, AAU Energy, Aalborg University, Denmark
+* Jakob Hærvig, Associate Professor, AAU Energy, Aalborg University, Denmark.
