@@ -1,10 +1,10 @@
-![PyPI - Version](https://img.shields.io/pypi/v/openterrace)
+[![PyPI - Version](https://img.shields.io/pypi/v/openterrace)](https://pypi.org/project/openterrace/)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/openterrace?label=pypi%20downloads)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/openterrace) 
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/openterrace)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/openterrace/openterrace-python/pytest.yml?label=tests)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/openterrace/openterrace-python/docs.yml?label=docs)
-![GitHub Issues](https://img.shields.io/github/issues/openterrace/openterrace-python?label=github%20issues)
-[![status](https://joss.theoj.org/papers/cc89107c74cba69a948a98e5b0604336/status.svg)](https://joss.theoj.org/papers/cc89107c74cba69a948a98e5b0604336)
+[![GitHub Issues](https://img.shields.io/github/issues/openterrace/openterrace-python?label=github%20issues)](https://github.com/OpenTerrace/openterrace-python/issues)
+[[![status](https://joss.theoj.org/papers/cc89107c74cba69a948a98e5b0604336/status.svg)](https://doi.org/10.21105/joss.06411)
 
 ![Logo](https://raw.githubusercontent.com/OpenTerrace/openterrace-python/main/docs/_figures/logo-openterrace.svg)
 
