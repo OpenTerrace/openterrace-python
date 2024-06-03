@@ -1,8 +1,15 @@
 cff-version: 1.2.0
 message: "If you use OpenTerrace, please cite it as below."
-authors:
-- family-names: "Haervig"
-  given-names: "Jakob"
-title: "OpenTerrace: A fast, flexible and extendable Python framework for packed bed thermal energy storage simulations"
-#doi: 
-url: "https://github.com/OpenTerrace/openterrace-python"
+preferred-citation:
+  type: "article"
+  authors:
+  - family-names: "Hærvig"
+    given-names: "Jakob"
+    orcid: "https://orcid.org/0000-0001-8710-1610"
+  title: "OpenTerrace: A fast, flexible and extendable Python framework for thermal energy storage packed bed simulations"
+  doi: 10.21105/joss.06411
+  journal: "Journal of Open Source Software"
+  issue: 9
+  volume: 98
+  start: 6411
+  url: "https://github.com/OpenTerrace/openterrace-python"
