@@ -24,11 +24,8 @@ bibliography: paper.bib
 `OpenTerrace` is a simulation framework for the prediction of transient temperature responses in thermal energy storage systems. Being able to store energy for extended periods of time is important for modern societies where increasing amounts of energy stem from renewable sources with time-varying production. Many storage technologies exist, each with their own set of disadvantages and advantages. Storing energy in the form of thermal energy is a promising solution because it is cheap and can be scaled up easily. While the total energy content of thermal energy storage systems can be estimated easily, the transient response requires solving partial differential equations in space and time. Using `OpenTerrace` the transient response of a wide range of thermal energy storage systems can be simulated easily. The storage system contains a storage tank filled with a carrier fluid and an optional bed phase. `OpenTerrace` comes with a wide range of predefined substances to be used as either fluid or bed material. Also, `OpenTerrace` ships with a set of primitive, predefined shapes that act as either storage tank or bed material. Besides that a set of predefined boundary conditions and source terms cover many different thermal energy storage applications.
 
 `OpenTerrace` is built to be:
-
-- Fast by making use of modern compilers and optimised tri-diagonal matrix solvers, OpenTerrace is built to be fast.
-
+- Fast by making use of modern compilers and optimised tri-diagonal matrix solvers.
 - Flexible for easy integration in system models and optimisation loops.
-
 - Extendable by allowing new modules for new materials such as non-spherical rocks or exotic Phase Change Materials (PCM) to easily be plugged into the OpenTerrace framework.
 
 More information about how to get started, along with a user guide, can be found in the [OpenTerrace documentation](https://openterrace.github.io/openterrace-python/). Users may send [pull requests](https://github.com/OpenTerrace/openterrace-python) to have their contributions with new functionality added to the official [OpenTerrace GitHub repository](https://github.com/OpenTerrace/openterrace-python). A set of tutorials is also provided within the framework to highlight its current functionality and to ease the learning curve for new users. Also, various unit tests are provided to verify different parts of the code in some well-defined benchmark cases.
