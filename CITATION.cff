@@ -6,10 +6,20 @@ preferred-citation:
   - family-names: "Hærvig"
     given-names: "Jakob"
     orcid: "https://orcid.org/0000-0001-8710-1610"
-  title: "OpenTerrace: A fast, flexible and extendable Python framework for thermal energy storage packed bed simulations"
+  date-published: 2024-06-04
   doi: 10.21105/joss.06411
+  issn: 2475-9066
+  issue: 98
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 6411
+  title: "OpenTerrace: A fast, flexible and extendable Python framework
+    for thermal energy storage packed bed simulations"
   journal: "Journal of Open Source Software"
-  issue: 9
-  volume: 98
+  issue: 98
+  volume: 9
   start: 6411
   url: "https://github.com/OpenTerrace/openterrace-python"
+title: "OpenTerrace: A fast, flexible and extendable Python framework
+  for thermal energy storage packed bed simulations"
