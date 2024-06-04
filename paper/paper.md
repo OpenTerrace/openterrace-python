@@ -9,7 +9,6 @@ tags:
 authors:
   - name: Jakob Hærvig
     orcid: 0000-0001-8710-1610
-    equal-contrib: true
     affiliation: 1
 affiliations:
  - name: Aalborg University, Denmark
@@ -34,17 +33,16 @@ bibliography: paper.bib
 More information about how to get started, along with a user guide, can be found in the [OpenTerrace documentation](https://openterrace.github.io/openterrace-python/). Users may send [pull requests](https://github.com/OpenTerrace/openterrace-python) to have their contributions with new functionality added to the official [OpenTerrace GitHub repository](https://github.com/OpenTerrace/openterrace-python). A set of tutorials is also provided within the framework to highlight its current functionality and to ease the learning curve for new users. Also, various unit tests are provided to verify different parts of the code in some well-defined benchmark cases.
 
 # Statement of need
-Research on thermal energy storage systems commonly relies on in-house developed code, which makes the results presented in research papers less transparent and not reproducible. Various models of varying complexity have been proposed in the literature. For a packed bed storage system, Schumann [@schumann] proposed a model that neglects heat conduction in the fluid, between the bed material, and inside the bed material. Later research by [@littman] included conduction in the fluid and between bed particles, which was shown to be important for low Reynolds number flows. Depending on the Biot number for the bed material, temperature gradients inside the particles may also be important, as shown by [@handley]. This is especially important when the bed material consists of Phase Change Material (PCM).
+Research on thermal energy storage systems commonly relies on in-house developed code, which makes the results presented in research papers less transparent and not reproducible. Various models of varying complexity have been proposed in the literature. For a packed bed storage system, @schumann proposed a model that neglects heat conduction in the fluid, between the bed material, and inside the bed material. Later research by @littman included conduction in the fluid and between bed particles, which was shown to be important for low Reynolds number flows. Depending on the Biot number for the bed material, temperature gradients inside the particles may also be important, as shown by @handley. This is especially important when the bed material consists of Phase Change Material (PCM).
 
 `OpenTerrace` is an open-source simulation framework, which aims to provide researchers and decision makers in industry with a common, transparent, open-source framework for simulating thermal energy storage packed bed systems. It includes the possibility to easily include or exclude the above-mentioned effects. It assumes 1D heat transfer in both the fluid and bed phases. Also, 1D heat transfer is assumed inside the bed material. 
 
 The core part of the computations relies on calls to low-level languages using packages such as NumPy [@harris], SciPy [@virtanen] and Numba [@lam] for speed while maintaining the flexibility and user-friendliness of Python. Plotting and animation capabilities rely on Matplotlib [@hunter] and are provided with the framework to allow easy access to visualisations.
 
 # Features and functionality
-`OpenTerrace` solves for a fluid phase, which is descretised in `N` nodes. Within each fluid volume element, the bed material is assumed to have the same temperature distribution. The bed material is discretised in `M` nodes, which results in a total of `N x M` equations to be solved at each time step, see the figure below.
+`OpenTerrace` solves for a fluid phase, which is descretised in `N` nodes. Within each fluid volume element, the bed material is assumed to have the same temperature distribution. The bed material is discretised in `M` nodes, which results in a total of `N x M` equations to be solved at each time step, as \autoref{fig:schematic} shows.
 
-![](../docs/_figures/schematic.svg)
-*Right side figure shows a cylindrical storage tank with 4 nodes. The bed material in each volume element is assumed to have similar temperature distribution. Left side figure shows discretisation of the bed material, which in this case is assumed to be a hollow sphere.*
+![Right-side figure shows a cylindrical storage tank with four nodes. The bed material in each volume element is assumed to have similar temperature distribution. Left-side figure shows discretisation of the bed material, which in this case is assumed to be a hollow sphere.\label{fig:schematic}](../docs/_figures/schematic.svg)
 
 Each phase is described by a non-linear, partial differential equation. The phases are coupled using source terms to account for various physical mechanisms such as heat loss and convective heat transfer between the phases. The framework is flexible in such a way that new types of source terms, new domain shape functions, new fluid and bed substances (including phase-changing substances) with both temperature dependent- and independent properties, and new numerical discretisation schemes can be added easily.
 
