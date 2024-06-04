@@ -42,7 +42,7 @@ The core part of the computations relies on calls to low-level languages using p
 # Features and functionality
 `OpenTerrace` solves for a fluid phase, which is descretised in `N` nodes. Within each fluid volume element, the bed material is assumed to have the same temperature distribution. The bed material is discretised in `M` nodes, which results in a total of `N x M` equations to be solved at each time step, as \autoref{fig:schematic} shows.
 
-![Right-side figure shows a cylindrical storage tank with four nodes. The bed material in each volume element is assumed to have similar temperature distribution. Left-side figure shows discretisation of the bed material, which in this case is assumed to be a hollow sphere.\label{fig:schematic}](../docs/_figures/schematic.svg)
+![Right-side figure shows a cylindrical storage tank with four nodes. The bed material in each volume element is assumed to have similar temperature distribution. Left-side figure shows discretisation of the bed material, which in this case is assumed to be a hollow sphere.\label{fig:schematic}](https://raw.githubusercontent.com/OpenTerrace/openterrace-python/main/docs/_figures/schematic.pdf)
 
 Each phase is described by a non-linear, partial differential equation. The phases are coupled using source terms to account for various physical mechanisms such as heat loss and convective heat transfer between the phases. The framework is flexible in such a way that new types of source terms, new domain shape functions, new fluid and bed substances (including phase-changing substances) with both temperature dependent- and independent properties, and new numerical discretisation schemes can be added easily.
 
