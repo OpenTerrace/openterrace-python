@@ -58,9 +58,6 @@ extra:
 
 plugins:
 - search
-- social
-    cards_layout_options:
-      background_color: "#4cae4f"
 - autorefs
 - mkdocstrings:
     default_handler: python
