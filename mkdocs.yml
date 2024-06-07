@@ -105,6 +105,7 @@ nav:
       - Verification studies: user-guide/verification-and-validation/verification.md
       - Validation studies: user-guide/verification-and-validation/validation.md
   - source_code.md
+  - Citing OpenTerrace: citing.md
   - Contributing and contact:
     - contributing.md
     - contact.md
