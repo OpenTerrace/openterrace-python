@@ -26,7 +26,4 @@ OpenTerrace is built from the ground up to be flexible for easy integration in s
 Modules for new materials such as non-spherical rocks or exotic Phase Change Materials (PCM) can easily be plugged into the OpenTerrace framework.
 
 ## Want to contribute?
-Contributions are most welcome! Feel free to send pull requests or get in touch with me to discuss how to collaborate. More details in the [docs](https://openterrace.github.io/openterrace-python/).
-
-## Code contributors
-* Jakob Hærvig, Associate Professor, AAU Energy, Aalborg University, Denmark.
+Contributions are most welcome! Feel free to send pull requests or [get in touch](https://openterrace.github.io/openterrace-python/contact/) to discuss how to collaborate.
