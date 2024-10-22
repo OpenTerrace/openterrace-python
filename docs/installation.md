@@ -32,7 +32,7 @@ Then, initialise your conda environment:
 ##### Step 4
 Now, open a terminal and create a virtual environment called ``ot``:
 ```bash
-conda create -n ot pip
+conda create -n ot pip python=3.12
 ```
 
 ##### Step 5
