@@ -86,7 +86,7 @@ nav:
         - Fluid:
           - user-guide/fluid_substances/air.md
           - user-guide/fluid_substances/water.md
-          - user-guide/fluid_substances/sodium-potassium-22-78.md
+          - user-guide/fluid_substances/nak2278.md
         - Bed:
           - user-guide/bed_substances/swedish_diabase.md
           - user-guide/bed_substances/magnetite.md
