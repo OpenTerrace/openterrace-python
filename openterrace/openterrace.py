@@ -143,45 +143,25 @@ class Phase:
             raise Exception("Keyword 'domain' not specified.")
         if not domain in globals()['domains'].__all__:
             raise Exception("domain \'"+domain+"\' specified. Valid options for domain are:", globals()['domains'].__all__)
-        self.domain = getattr(globals()['domains'], domain).Domain
+        self.domain = getattr(globals()['domains'], domain).Domain()
 
     def create_domain(self, **kwargs):
         """Selects domain size and parameters.
 
         Args:
-            **kwargs (float): Dimensions of domain to be specified depnding on the domain type
+            **kwargs (float): Dimensions of domain to be specified depending on the domain type
         """
-
-        self.domain(H=3, D=0.1, n=20)
-        
-        print(self.domain.n_nodes(self))
-
-
-        sys.exit()
 
         for var in self.domain.required_input():
             if not var in kwargs:
-                raise Exception("Keyword \'"+var+"\' is missing for domain \'"+self.domain.__name__+"\'")
+                raise Exception("Keyword \'"+var+"\' is missing for domain \'"+self.domain.__module__+"\'")
 
-        sys.exit()
-
-        print(self.domain.__dict__)
-
-
-        
-    
-        sys.exit()
         self.domain.__dict__.update(kwargs)
-
-        self.domain.n_nodes = self.domain.n_nodes()
-
-
-        sys.exit()
-        self.domain.dx = self.domain.dx(kwargs)
-        self.domain.A = self.domain.A(kwargs)
-        self.domain.V = self.domain.V(kwargs)
-        self.domain.V0 = self.domain.V0(kwargs)
-        self.node_pos = self.domain.node_pos(kwargs)
+        self.domain.dx()
+        self.domain.A()
+        self.domain.V()
+        self.domain.V0()
+        self.domain.node_pos()
 
     def select_porosity(self, phi:float=1):
         """Select porosity from 0 to 1, e.g. filling the domain with the phase up to a certain degree.
@@ -200,9 +180,6 @@ class Phase:
             diff (str): Differenctial scheme
             conv (str): Convection scheme
         """
-
-        if self.domain.type == 'lumped':
-            raise Exception("'lumped' has been selected as domain type. Please don't specify a discretisation scheme.")
 
         if diff is not None:
             try:
