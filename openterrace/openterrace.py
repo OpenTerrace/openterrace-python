@@ -4,18 +4,20 @@ from . import bed_substances
 from . import domains
 from . import diffusion_schemes
 from . import convection_schemes
+from . import boundary_conditions
 
 # Import common Python modules
 import sys
 import tqdm
 import numpy as np
 import matplotlib
+import time
 matplotlib.use('agg')
 
 class Setup:
     """OpenTerrace class."""
 
-    def __init__(self, t_simulate:float=None, dt:float=None):
+    def __init__(self, t_simulate:float=None, dt:float=None, t_start:float=0):
         """Initialise with various control parameters.
 
         Args:
@@ -26,6 +28,7 @@ class Setup:
         self.dt = dt
         self.coupling = []
         self.flag_coupling = False
+        self.t = t_start
         
     def select_coupling(self, fluid_phase:int=None, bed_phase:int=None, h_exp:str=None, h_value:float=None):
         """Selects coupling of a fluid and bed phase
@@ -55,18 +58,33 @@ class Setup:
 
             self.Phase.instances[couple['fluid_phase']].h[0] = self.Phase.instances[couple['fluid_phase']].h[0] - n_bed * Q/(self.Phase.instances[couple['fluid_phase']].rho*self.Phase.instances[couple['fluid_phase']].domain.V) #ok
             
-    def run_simulation(self):
+    def run_simulation(self, phases:list[str]=None):
         """If you want to run the simulation, you need to call this function. If data output is specified using the select_output function, the data will live in that specific phase instance. For more details on how to access the data, please refer to the tutorials."""
         
+        t_start = self.t
 
-        for t in tqdm.tqdm(np.arange(self.t_start, self.t_end+self.dt, self.dt)):
-            
-            for phase_instance in self.Phase.instances:
-                phase_instance._save_data(t)
-                phase_instance._solve_equations(t, self.dt)
-                phase_instance._update_properties()
+        pbar = tqdm.tqdm(desc="Simulating",total=(t_start+self.t_simulate)/self.dt)
+
+        while self.t < t_start+self.t_simulate:
+            self.t = self.t+self.dt
+            pbar.update(self.t)
+            time.sleep(0.0001)
+
+        sys.exit()
+
+        for t in tqdm.tqdm(np.arange(self.t, self.t_simulate+self.dt, self.dt)):
+            for phase in phases:
+                #phase._save_data(t)
+                phase._solve_equations(t, self.dt)
+                phase._update_properties()
+
+                
             if self.flag_coupling:
                 self._coupling()
+
+        self.t = self.t+self.dt
+
+
 class Phase:
     instances = []
     """Main class to create a phase."""
@@ -82,7 +100,7 @@ class Phase:
         if type not in valid_types:
             raise Exception("Type \'"+type+"\' specified. Valid options for types are:", valid_types)
 
-        self.bcs = []
+        self.bc = [[],[]]
         self.sources = []
 
         self._flag_save_data = False
@@ -157,11 +175,7 @@ class Phase:
                 raise Exception("Keyword \'"+var+"\' is missing for domain \'"+self.domain.__module__+"\'")
 
         self.domain.__dict__.update(kwargs)
-        self.domain.dx()
-        self.domain.A()
-        self.domain.V()
-        self.domain.V0()
-        self.domain.node_pos()
+        self.domain.update_parameters()
 
     def select_porosity(self, phi:float=1):
         """Select porosity from 0 to 1, e.g. filling the domain with the phase up to a certain degree.
@@ -193,19 +207,14 @@ class Phase:
             except:
                 raise Exception("Convection scheme \'"+conv+"\' specified. Valid options for convection schemes are:", convection_schemes.__all__)
 
-    def select_initial_conditions(self, T:list[float]=None):
+    def select_initial_temperature(self, T:list[float]=None):
         """Initialises temperature field.
 
         Args:
             T (float): List of length n with initial temperatures
         """
-            
-        if np.array(T).size == 1:
-            self.T = np.tile(T,(np.append(self.n_other,self.domain.shape)))   
-        elif np.array(T).size == self.n:
-            self.T = np.tile(T,(np.append(self.n_other,1)))
-        else: Exception("Length of T must be 1 or equal to n")
-
+        
+        self.T = np.tile(T,self.domain.n)
         self.h = self.fcns.h(self.T)
         self.T = self.fcns.T(self.h)
         self.rho = self.fcns.rho(self.h)
@@ -224,27 +233,26 @@ class Phase:
 
         self.mdot_array = np.array(mdot)
 
-    def select_bc(self, bc_type:str=None, parameter:str=None, position=None, value:float=None):
+    def select_bc(self, position:int=None, bc_type:str=None, value:float=None):
         """Specify boundary condition type.
                     
         Args:
-            bc_type (str): Type of boundary condition
-            parameter (str): Which field it applies to
-            position (int): indices of which cells it applies to
+            position (int): 0 or -1
+            bc_type (str): Type of boundary condition            
             value (float): Value of boundary condition
         """
 
-        valid_bc_types = ['fixed_value','zero_gradient']
-        if bc_type not in valid_bc_types:
-            raise Exception("bc_type \'"+bc_type+"\' specified. Valid options for bc_type are:", valid_bc_types)
-        valid_parameters = ['T','mdot']
-        if parameter not in valid_parameters:
-            raise Exception("parameter \'"+parameter+"\' specified. Valid options for parameter are:", valid_parameters)
-        if not position:
-            raise Exception("Keyword 'position' not specified.")
-        if value is None and bc_type=='fixed_value':
-            raise Exception("Keyword 'value' is needed for fixed_value type bc.")
-        self.bcs.append({'type': bc_type, 'parameter': parameter, 'position': position, 'value': np.array(value)})
+        if bc_type is None:
+            raise Exception("Keyword 'bc_type' not specified.")
+        if not bc_type in globals()['boundary_conditions'].__all__:
+            raise Exception("bc_type \'"+bc_type+"\' specified. Valid options for bc_type are:", globals()['boundary_conditions'].__all__)
+
+        if not position in [0,-1]:
+            raise Exception("Keyword 'position' should be either 0 or -1.")
+        if value is None:
+            raise Exception("Keyword 'value' not specified.")
+      
+        self.bc[position] = {'type': bc_type, 'value': value}
 
     def add_sourceterm_thermal_resistance(self, R:list[float], T_inf:list[float]):
         """Specify a thermal resistance source term.
@@ -327,7 +335,7 @@ class Phase:
             dt (float): Time step size
         """
 
-        for bc in self.bcs:
+        for bc in self.bc:
             if bc['type'] == 'fixed_value':
                 self.h[bc['position']] = self.fcns.h(bc['value'])
             if bc['type'] == 'fixed_value_timevarying':
