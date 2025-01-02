@@ -30,7 +30,7 @@ class Domain:
     def dx(self):
         """Node spacing."""
 
-        return np.tile(self.H/(self.n[0]-1), (self.n[0],1))
+        return np.tile(self.H/(self.n[0]-1), (self.n[0], 1))
 
     def node_pos(self):
         """Node position function."""
@@ -40,14 +40,13 @@ class Domain:
     def A(self):
         """Area of faces between nodes."""
 
-        return (np.tile(np.pi*(self.D/2)**2, self.n[0]), np.tile(np.pi*(self.D/2)**2, self.n[0]))
+        return (np.tile(np.pi*(self.D/2)**2, (self.n[0],1)), np.tile(np.pi*(self.D/2)**2, (self.n[0],1)))
 
     def V(self):
         """Volume of node element."""
         
         dx = self.H/(self.n[0]-1)
-        face_pos_vec = np.concatenate(([0],np.linspace(dx/2,self.H-dx/2,self.n[0]-1),[self.H]))
-        return np.tile(np.diff(np.pi*(self.D/2)**2*face_pos_vec), (1,1))
+        return np.tile(dx*np.pi*self.D**2/4, (self.n[0],1))
 
     def V0(self):
         """Volume of shape."""

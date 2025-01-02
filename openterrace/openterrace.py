@@ -63,27 +63,24 @@ class Setup:
         
         t_start = self.t
 
+        print("Simulation started at t = "+str(t_start)+" s")
+        print("Simulation will run until t = "+str(t_start+self.t_simulate)+" s")
+        print("Time step size is "+str(self.dt)+" s")
         pbar = tqdm.tqdm(desc="Simulating",total=(t_start+self.t_simulate)/self.dt)
 
         while self.t < t_start+self.t_simulate:
-            self.t = self.t+self.dt
-            pbar.update(self.t)
-            time.sleep(0.0001)
-
-        sys.exit()
-
-        for t in tqdm.tqdm(np.arange(self.t, self.t_simulate+self.dt, self.dt)):
             for phase in phases:
-                #phase._save_data(t)
-                phase._solve_equations(t, self.dt)
+                phase._save_data(self.t)
+                phase._update_massflow_rate(self.t)
                 phase._update_properties()
+                phase._solve_equations(self.dt)
 
-                
-            if self.flag_coupling:
-                self._coupling()
+                if self.flag_coupling:
+                    self._coupling()
 
-        self.t = self.t+self.dt
-
+            self.t = self.t+self.dt
+            pbar.update()
+        pbar.close()
 
 class Phase:
     instances = []
@@ -100,7 +97,7 @@ class Phase:
         if type not in valid_types:
             raise Exception("Type \'"+type+"\' specified. Valid options for types are:", valid_types)
 
-        self.bc = [[],[]]
+        self.bc = []
         self.sources = []
 
         self._flag_save_data = False
@@ -207,7 +204,7 @@ class Phase:
             except:
                 raise Exception("Convection scheme \'"+conv+"\' specified. Valid options for convection schemes are:", convection_schemes.__all__)
 
-    def select_initial_temperature(self, T:list[float]=None):
+    def select_initial_temperature(self, T:float=None):
         """Initialises temperature field.
 
         Args:
@@ -252,7 +249,13 @@ class Phase:
         if value is None:
             raise Exception("Keyword 'value' not specified.")
       
-        self.bc[position] = {'type': bc_type, 'value': value}
+        for bc_cond in self.bc:
+            if bc_cond['position'] == np.s_[:,position]:
+                bc_cond['type'] = bc_type
+                bc_cond['value'] = value
+                break
+        else:
+            self.bc.append({'type': bc_type, 'value': value, 'position': np.s_[:,position]})
 
     def add_sourceterm_thermal_resistance(self, R:list[float], T_inf:list[float]):
         """Specify a thermal resistance source term.
@@ -305,12 +308,15 @@ class Phase:
         Args:
             t (float): Current time
         """
+        if not hasattr(self, 'mdot_array'):
+            raise Exception("Mass flow rate not specified.")
 
         if self.mdot_array.ndim == 0:
-            self.mdot = np.tile(self.mdot_array,(np.append(self.n_other,self.domain.shape)))
-        elif self.mdot_array.ndim == 2:
-            self.mdot = np.interp(t, self.mdot_array[:,0], self.mdot_array[:,1])
+            self.mdot = self.mdot_array
 
+        if self.mdot_array.ndim == 2:
+            self.mdot = np.interp(t, self.mdot_array[:,0], self.mdot_array[:,1])
+            
     def _update_properties(self):
         """Update properties at each time step."""
             
@@ -320,26 +326,23 @@ class Phase:
 
         if hasattr(self, 'diff'):
             self.k = self.fcns.k(self.h)
-            self.D[0,:,:] = self.k*self.domain.A[0]/self.domain.dx
-            self.D[1,:,:] = self.k*self.domain.A[1]/self.domain.dx
-
+            self.D[0] = self.k*self.domain.A[0]/self.domain.dx
+            self.D[1] = self.k*self.domain.A[1]/self.domain.dx
+            
         if hasattr(self, 'conv'):
-            self.F[0,:,:] = self.mdot*self.cp
-            self.F[1,:,:] = self.mdot*self.cp
+            self.F[0] = self.mdot*self.cp
+            self.F[1] = self.mdot*self.cp
 
-    def _update_boundary_nodes(self, t:float=None, dt:float=None):
+    def _update_boundary_nodes(self, dt:float=None):
         """Update boundary nodes.
             
         Args:
-            t (float): Current time
             dt (float): Time step size
         """
 
         for bc in self.bc:
             if bc['type'] == 'fixed_value':
                 self.h[bc['position']] = self.fcns.h(bc['value'])
-            if bc['type'] == 'fixed_value_timevarying':
-                self.h[bc['position']] = self.fcns.h(np.interp(t,bc['value'][:,0],bc['value'][:,1]))
             if bc['type'] == 'zero_gradient':
                 if bc['position'] == np.s_[:,0]:
                     self.h[bc['position']] = self.h[bc['position']] + (2*self.T[:,1]*self.D[1,:,0] - 2*self.T[:,0]*self.D[1,:,0] - self.F[0,:,1]*self.T[:,1] + self.F[1,:,0]*self.T[:,0]) / (self.rho[:,0]*self.domain.V[0])*dt
@@ -356,7 +359,8 @@ class Phase:
         for source in self.sources:
             self.h = self.h + (source['T_inf']-self.T)*2 / source['R'] * dt/(self.rho*self.domain.V)
 
-    def _solve_equations(self, t:float=None, dt:float=None):
+    def _solve_equations(self, dt:float=None):
+
         """Solve equations at each time step.
 
         Args:
@@ -364,11 +368,10 @@ class Phase:
             dt (float): Time step size
         """
 
-        self._update_boundary_nodes(t, dt)
+        self._update_boundary_nodes(dt)
         if hasattr(self, 'diff'):
             self.h = self.h + self.diff(self.T, self.D)/(self.rho*self.domain.V)*dt
         if hasattr(self, 'conv'):
-            self._update_massflow_rate(t)
             self.h = self.h + self.conv(self.T, self.F)/(self.rho*self.domain.V)*dt
         if self.sources is not None:
             self._update_source(dt)

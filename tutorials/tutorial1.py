@@ -25,8 +25,7 @@ def main():
     fluid.select_bc(position=0, bc_type='fixed_value', value=273.15+80)
     fluid.select_bc(position=-1, bc_type='fixed_gradient', value=0)
 
-
-    # fluid.select_output(times=range(0, 15*60+60, 60))
+    fluid.select_output(times=range(0, 15*60+60, 60))
 
     ot.run_simulation(phases=[fluid])
 
