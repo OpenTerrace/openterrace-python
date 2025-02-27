@@ -66,9 +66,10 @@ class Setup:
         print("Simulation started at t = "+str(t_start)+" s")
         print("Simulation will run until t = "+str(t_start+self.t_simulate)+" s")
         print("Time step size is "+str(self.dt)+" s")
-        pbar = tqdm.tqdm(desc="Simulating",total=(t_start+self.t_simulate)/self.dt)
 
         while self.t < t_start+self.t_simulate:
+            self.t = self.t+self.dt
+
             for phase in phases:
                 phase._save_data(self.t)
                 phase._update_massflow_rate(self.t)
@@ -77,10 +78,7 @@ class Setup:
 
                 if self.flag_coupling:
                     self._coupling()
-
-            self.t = self.t+self.dt
-            pbar.update()
-        pbar.close()
+        self.t_start = self.t
 
 class Phase:
     instances = []
@@ -272,22 +270,24 @@ class Phase:
 
         self.sources.append({'R': R, 'T_inf': T_inf})
 
-    def select_output(self, times:list[float]=None, output_parameters:list[str]=['T']):
+    def select_output(self, times:list[float]=None, parameters:list[str]=['T']):
         """Specify output times.
 
         Args:
             times (float): List of times to output data
         """
 
-        self.output_parameters = output_parameters
         class Data(object):
             pass
+
         self.data = Data()
-        self.data.time = np.intersect1d(np.array(times), np.arange(self.outer.t_start, self.outer.t_end+self.outer.dt, self.outer.dt))
-        for parameter in output_parameters:
-            setattr(self.data,parameter, np.full((len(self.data.time), self.n_other, self.n),np.nan))
-            self._flag_save_data = True
-            self._q = 0
+        self.data.times = times
+        self.data.parameters = {}
+
+        for i in range(len(parameters)):
+            self.data.parameters.update({parameters[i]:np.zeros((len(times),)+self.T.shape)})
+
+        self._q = 0
 
     def _save_data(self, t:float=None):
         """Save data at specified times.
@@ -296,11 +296,10 @@ class Phase:
             t (float): Current time
         """
 
-        if self._flag_save_data:
-            if t in self.data.time:
-                for parameter in self.output_parameters:
-                    getattr(self.data,parameter)[self._q] = getattr(self,parameter)
-                self._q = self._q+1
+        if t>=self.data.times[self._q]:
+            for parameter in self.data.parameters:
+                self.data.parameters[parameter][self._q] = getattr(self,parameter)
+            self._q = self._q+1
 
     def _update_massflow_rate(self, t:float):
         """Update mass flow rate at specified times.

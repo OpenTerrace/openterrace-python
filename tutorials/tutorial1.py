@@ -29,16 +29,19 @@ def main():
 
     ot.run_simulation(phases=[fluid])
 
-    # plt.plot(fluid.node_pos,fluid.data.T[:,0,:].T-273.15, label=fluid.data.time)
-    # plt.legend(title='Simulation time (s)')
-    # plt.show()
-    # plt.xlabel(u'Cylinder position (m)')
-    # plt.ylabel(u'Temperature (℃)')
-    # plt.grid()
-    # plt.grid(which='major', color='#DDDDDD', linewidth=1)
-    # plt.grid(which='minor', color='#EEEEEE', linestyle=':', linewidth=0.8)
-    # plt.minorticks_on()
-    # plt.savefig('ot_plot_tutorial1.svg')
+
+    print(fluid.domain.node_pos)
+
+    plt.plot(fluid.domain.node_pos,fluid.data.parameters['T']-273.15)#, label=fluid.data.times)
+    plt.legend(title='Simulation time (s)')
+    plt.show()
+    plt.xlabel(u'Cylinder position (m)')
+    plt.ylabel(u'Temperature (℃)')
+    plt.grid()
+    plt.grid(which='major', color='#DDDDDD', linewidth=1)
+    plt.grid(which='minor', color='#EEEEEE', linestyle=':', linewidth=0.8)
+    plt.minorticks_on()
+    plt.savefig('ot_plot_tutorial1.svg')
 
 if __name__ == "__main__":
     main()

@@ -3,16 +3,6 @@ import numpy as np
 class Domain:
     """Domain class."""
 
-    def add_input(self, **kwargs):
-        """Add input to class.
-
-        Args:
-            kwargs (dict): Dictionary of arguments
-        """
-
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
     def required_input(self):
         """List of required input."""
 
@@ -35,7 +25,7 @@ class Domain:
     def node_pos(self):
         """Node position function."""
 
-        return np.tile(np.linspace(0,self.H,self.n[0]), (1,1))
+        return np.tile(np.linspace(0,self.H,self.n[0]), (self.n[1],1)).T
 
     def A(self):
         """Area of faces between nodes."""
