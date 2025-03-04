@@ -29,7 +29,6 @@ def main():
 
     ot.run_simulation(phases=[fluid])
 
-
     print(fluid.domain.node_pos)
 
     plt.plot(fluid.domain.node_pos,fluid.data.parameters['T']-273.15)#, label=fluid.data.times)

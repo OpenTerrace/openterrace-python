@@ -18,7 +18,7 @@ class Domain:
         self.V0 = self.V0()
 
     def dx(self):
-        """Node spacing."""
+        """Node spacing function."""
 
         return np.tile(self.H/(self.n[0]-1), (self.n[0], 1))
 
