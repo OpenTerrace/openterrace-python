@@ -1,87 +1,47 @@
 import numpy as np
 
-def validate_input(vars, domain_shape):
-    """Validates input arguments.
+class Domain:
+    """Domain class."""
 
-    Args:
-        vars (list): List of arguments
-        domain_shape (str): Name of domain type
-    """
+    def required_input(self):
+            """List of required input."""
 
-    required = ['n','Rinner','Router']
-    for var in required:
-        if not var in vars:
-            raise Exception("Keyword \'"+var+"\' not specified for domain of type \'"+domain_shape+"\'")
+            return ['n','radius_inner','radius_outer']
 
-def shape(vars):
-    """Shape function.
+    def update_parameters(self):
+        """Update parameters."""
+        
+        self.dx = self.dx_fcn()
+        self.node_pos = self.node_pos_fcn()
+        self.A = self.A_fcn()
+        self.V = self.V_fcn()
+        self.V0 = self.V0_fcn()
 
-    Args:
-        vars (list): List of arguments
-    """
+    def dx_fcn(self):
+        """Node spacing function."""
 
-    n = vars['n']
-    return np.array([n])
+        return np.tile((self.radius_outer-self.radius_inner)/(self.n[0]-1), (self.n[0], 1))
 
-def dx(vars):
-    """Node spacing function.
+    def node_pos_fcn(self):
+        """Node position function."""
 
-    Args:
-        vars (list): List of arguments
-    """
+        return np.tile(np.linspace(self.radius_inner,self.radius_outer,self.n[0]), (self.n[1],1)).T
 
-    n = vars['n']
-    Rinner = vars['Rinner']
-    Router = vars['Router']
-    dx = (Router-Rinner)/(n-1)
-    return np.repeat(dx, n)
+    def A_fcn(self):
+        """Area of faces between nodes."""
 
-def node_pos(vars):
-    """Node position function.
+        dx = (self.radius_outer-self.radius_inner)/(self.n[0]-1)
+        face_pos_vec = np.concatenate(([self.radius_inner],np.linspace(self.radius_inner+dx/2,self.radius_outer-dx/2,self.n[0]-1),[self.radius_outer]))
+        return (np.tile(4*np.pi*face_pos_vec[:-1]**2, (1,1)).T, np.tile(4*np.pi*face_pos_vec[1:]**2, (1,1)).T)
 
-    Args:
-        vars (list): List of arguments
-    """
+    def V_fcn(self):
+        """Volume of node element."""
 
-    n = vars['n']
-    Rinner = vars['Rinner']
-    Router = vars['Router']
-    return np.array(np.linspace(Rinner,Router,n))
+        dx = (self.radius_outer-self.radius_inner)/(self.n[0]-1)
+        face_pos_vec = np.concatenate(([self.radius_inner],np.linspace(self.radius_inner+dx/2,self.radius_outer-dx/2,self.n[0]-1),[self.radius_outer]))
+        return np.tile(np.diff(4/3*np.pi*face_pos_vec**3), (1,1)).T
 
-def A(vars):
-    """Area of faces between nodes.
-
-    Args:
-        vars (list): List of arguments
-    """
-
-    n = vars['n']
-    Rinner = vars['Rinner']
-    Router = vars['Router']
-    dx = (Router-Rinner)/(n-1)
-    face_pos_vec = np.concatenate(([Rinner],np.linspace(Rinner+dx/2,Router-dx/2,n-1),[Router]))
-    return np.array([(4*np.pi*face_pos_vec**2)[:-1], (4*np.pi*face_pos_vec**2)[1:]])
-
-def V(vars):
-    """Volume of node element.
-
-    Args:
-        vars (list): List of arguments
-    """
-    
-    n = vars['n']
-    Rinner = vars['Rinner']
-    Router = vars['Router']
-    dx = (Router-Rinner)/(n-1)
-    face_pos_vec = np.concatenate(([Rinner],np.linspace(Rinner+dx/2,Router-dx/2,n-1),[Router]))
-    return np.diff(4/3*np.pi*face_pos_vec**3)
-
-def V0(vars):
-    """Volume of shape.
-
-    Args:
-        vars (list): List of arguments
-    """
-    
-    Router = vars['Router']
-    return 4/3*np.pi*Router**3
+    def V0_fcn(self):
+        """Volume of shape."""
+            
+        return 4/3*np.pi*self.radius_outer**3

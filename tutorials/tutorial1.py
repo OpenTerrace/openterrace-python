@@ -11,27 +11,27 @@ import openterrace
 import matplotlib.pyplot as plt
 
 def main():
-    ot = openterrace.Simulate(t_end=600, dt=0.01)
+    ot = openterrace.Setup(t_simulate=600, dt=0.01)
 
-    fluid = ot.create_phase(n=20, type='fluid')
+    fluid = openterrace.Phase(type='fluid')
     fluid.select_substance_on_the_fly(rho=1000, cp=4200, k=0.6)
-    fluid.select_domain_shape(domain='cylinder_1d', D=0.3, H=1)
+    fluid.select_domain_type(domain='cylinder_1d')
+    fluid.create_domain(n=(10,1), D=0.1, H=1)
     fluid.select_schemes(diff='central_difference_1d', conv='upwind_1d')
-    fluid.select_initial_conditions(T=273.15+20)
+    fluid.select_porosity(phi=1)
+    fluid.select_initial_temperature(T=273.15+20)
     fluid.select_massflow(mdot=0.1)
-    fluid.select_bc(bc_type='fixed_value', 
-                    parameter='T', 
-                    position=(slice(None, None, None), 0), 
-                    value=273.15+80)
-    fluid.select_bc(bc_type='zero_gradient', 
-                    parameter='T', 
-                    position=(slice(None, None, None), -1), 
-                    value=0)
+
+    fluid.select_bc(position=0, bc_type='fixed_value', value=273.15+80)
+    fluid.select_bc(position=-1, bc_type='fixed_gradient', value=0)
+
     fluid.select_output(times=range(0, 15*60+60, 60))
 
-    ot.run_simulation()
+    ot.run_simulation(phases=[fluid])
 
-    plt.plot(fluid.node_pos,fluid.data.T[:,0,:].T-273.15, label=fluid.data.time)
+    print(fluid.domain.node_pos)
+
+    plt.plot(fluid.domain.node_pos,fluid.data.parameters['T']-273.15)#, label=fluid.data.times)
     plt.legend(title='Simulation time (s)')
     plt.show()
     plt.xlabel(u'Cylinder position (m)')

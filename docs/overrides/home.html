@@ -5,8 +5,15 @@
 {{ super() }}
 <style>
 
+
+
     .md-main {
         flex-grow: 0
+    }
+
+    .md-container {
+        background: linear-gradient(to bottom, var(--md-primary-fg-color), hsla(160deg,47%,55%,1) 99%,#fff 99%)
+
     }
 
     .md-main__inner {
@@ -17,10 +24,10 @@
     .tx-container {
         padding-top: .0rem;
         background: linear-gradient(to bottom, var(--md-primary-fg-color), hsla(160deg,47%,55%,1) 99%,#fff 99%)
+        padding-bottom: .0rem;
     }
 
     .tx-hero {
-        margin: 32px 2.8rem;
         color: var(--md-primary-bg-color);
         justify-content: center;
     }

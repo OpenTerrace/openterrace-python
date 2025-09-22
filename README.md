@@ -25,5 +25,9 @@ OpenTerrace is built from the ground up to be flexible for easy integration in s
 - **EXTENDABLE**  
 Modules for new materials such as non-spherical rocks or exotic Phase Change Materials (PCM) can easily be plugged into the OpenTerrace framework.
 
-## Want to contribute?
-Contributions are most welcome! Feel free to send pull requests or [get in touch](https://openterrace.github.io/openterrace-python/contact/) to discuss how to collaborate.
+## Want to join the list of contributors?
+OpenTerrace welcomes contributions! Find more details  [here](./CONTRIBUTING.md). Current list of contributors:
+
+<a href="https://github.com/OpenTerrace/openterrace-python/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=OpenTerrace/openterrace-python&max=204" />
+</a>

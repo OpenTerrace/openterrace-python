@@ -1,84 +1,44 @@
 import numpy as np
 
-def validate_input(vars, domain_shape):
-    """Validates input arguments.
+class Domain:
+    """Domain class."""
 
-    Args:
-        vars (list): List of arguments
-        domain_shape (str): Name of domain type
-    """
+    def required_input(self):
+        """List of required input."""
 
-    required = ['n','D','H']
-    for var in required:
-        if not var in vars:
-            raise Exception("Keyword \'"+var+"\' not specified for domain of type \'"+domain_shape+"\'")
+        return ['n','D','H']
 
-def shape(vars):
-    """Shape function.
+    def update_parameters(self):
+        """Update parameters."""
 
-    Args:
-        vars (list): List of arguments
-    """
+        self.dx = self.dx()
+        self.node_pos = self.node_pos()
+        self.A = self.A()
+        self.V = self.V()
+        self.V0 = self.V0()
 
-    n = vars['n']
-    return np.array([n])
+    def dx(self):
+        """Node spacing function."""
 
-def dx(vars):
-    """Node spacing function.
+        return np.tile(self.H/(self.n[0]-1), (self.n[0], 1))
 
-    Args:
-        vars (list): List of arguments
-    """
+    def node_pos(self):
+        """Node position function."""
 
-    n = vars['n']
-    H = vars['H']
-    dx = H/(n-1)
-    return np.repeat(dx, n)
+        return np.tile(np.linspace(0,self.H,self.n[0]), (self.n[1],1)).T
 
-def node_pos(vars):
-    """Node position function.
+    def A(self):
+        """Area of faces between nodes."""
 
-    Args:
-        vars (list): List of arguments
-    """
+        return (np.tile(np.pi*(self.D/2)**2, (self.n[0],1)), np.tile(np.pi*(self.D/2)**2, (self.n[0],1)))
 
-    n = vars['n']
-    H = vars['H']
-    return np.array(np.linspace(0,H,n))
+    def V(self):
+        """Volume of node element."""
+        
+        dx = self.H/(self.n[0]-1)
+        return np.tile(dx*np.pi*self.D**2/4, (self.n[0],1))
 
-def A(vars):
-    """Area of faces between nodes.
-
-    Args:
-        vars (list): List of arguments
-    """
-
-    n = vars['n']
-    D = vars['D']
-    H = vars['H']
-    return (np.repeat(np.pi*(D/2)**2, n), np.repeat(np.pi*(D/2)**2, n))
-
-def V(vars):
-    """Volume of node element.
-
-    Args:
-        vars (list): List of arguments
-    """
-    
-    n = vars['n']
-    D = vars['D']
-    H = vars['H']
-    dx = H/(n-1)
-    face_pos_vec = np.concatenate(([0],np.linspace(dx/2,H-dx/2,n-1),[H]))
-    return np.diff(np.pi*(D/2)**2*face_pos_vec)
-
-def V0(vars):
-    """Volume of shape.
-
-    Args:
-        vars (list): List of arguments
-    """
-    
-    D = vars['D']
-    H = vars['H']
-    return np.pi*(D/2)**2*H
+    def V0(self):
+        """Volume of shape."""
+        
+        return np.pi*(self.D/2)**2*self.H
